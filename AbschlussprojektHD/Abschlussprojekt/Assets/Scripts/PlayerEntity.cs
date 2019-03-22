@@ -16,8 +16,13 @@ public class PlayerEntity : AEntity {
     protected Camera m_playerCamera;
 
     // Use this for initialization
-    void Start () {
-        
+    void Start ()
+    {
+
+        m_currentdashtime = m_maxdashtime;
+
+        m_DefaultMovementSpeed = m_MovementSpeed;
+
 	}
 	
 	// Update is called once per frame
@@ -34,7 +39,10 @@ public class PlayerEntity : AEntity {
         Vector3 dir = new Vector3(Input.GetAxisRaw("Horizontal"), 0,
                 Input.GetAxisRaw("Vertical"));
         Move(dir);
-	}
+
+        Dash(dir);
+        
+    }
 
 
     #region Override Functions
@@ -59,6 +67,91 @@ public class PlayerEntity : AEntity {
         Vector3 velocity = _direction.normalized * m_MovementSpeed;
         velocity.y = m_rigidbody.velocity.y;
         m_rigidbody.velocity = velocity;
+    }
+
+    
+
+    public float m_maxdashtime = 1.0f;
+
+    public float m_dashstopspeed = 0.25f;
+
+    public float m_currentdashtime = 0f;
+
+    public float m_resetdashtime = 2f;
+
+    private float m_DefaultMovementSpeed;
+
+    
+
+    private void Dash(Vector3 _direction)
+    {
+        
+
+        #region ---DASH RIGHT---
+        if(Input.GetButtonDown("LeftShift")  && Input.GetButton("D_Key") || Input.GetButtonDown("D_Key") && Input.GetButton("LeftShift"))
+        {
+
+            m_currentdashtime = 0.0f;
+
+            if (m_currentdashtime < m_maxdashtime)
+            {
+                m_MovementSpeed = 20f;
+            }
+            
+        }
+        #endregion
+
+        #region ---DASH LEFT---
+        if (Input.GetButtonDown("LeftShift") && Input.GetButton("A_Key") || Input.GetButtonDown("A_Key") && Input.GetButton("LeftShift"))
+        {
+
+            m_currentdashtime = 0.0f;
+
+            if (m_currentdashtime < m_maxdashtime)
+            {
+                m_MovementSpeed = 20f;
+            }
+
+        }
+        #endregion
+
+        #region ---DASH FORWARD---
+        if (Input.GetButtonDown("LeftShift") && Input.GetButton("W_Key") || Input.GetButtonDown("W_Key") && Input.GetButton("LeftShift"))
+        {
+
+            m_currentdashtime = 0.0f;
+
+            if (m_currentdashtime < m_maxdashtime)
+            {
+                m_MovementSpeed = 20f;
+            }
+
+        }
+        #endregion
+
+        #region ---DASH BACKWARDS---
+        if (Input.GetButtonDown("LeftShift") && Input.GetButton("S_Key") || Input.GetButtonDown("S_Key") && Input.GetButton("LeftShift"))
+        {
+
+            m_currentdashtime = 0.0f;
+
+            if (m_currentdashtime < m_maxdashtime)
+            {
+                m_MovementSpeed = 20f;
+            }
+
+        }
+        #endregion
+
+        
+
+        m_currentdashtime += m_dashstopspeed;
+
+        if (m_currentdashtime == m_resetdashtime)
+        {
+            m_MovementSpeed = m_DefaultMovementSpeed;
+        }
+
     }
 
     private void Rotate(Vector3 _rotation)
