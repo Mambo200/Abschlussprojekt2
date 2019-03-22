@@ -28,7 +28,7 @@ public class MyNetworkManager : NetworkManager {
     private void Update()
     {
         SearchPlayer();
-        Debug.Log(allPlayers.Count);
+        //Debug.Log(allPlayers.Count);
     }
 
     public static void AddPlayer(PlayerEntity _player)
