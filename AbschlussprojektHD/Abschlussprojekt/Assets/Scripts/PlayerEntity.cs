@@ -31,8 +31,8 @@ public class PlayerEntity : AEntity {
             Jump();
         }
 
-        Vector3 dir = new Vector3(Input.GetAxisRaw("Horizontal"), 0,
-                Input.GetAxisRaw("Vertical"));
+        Vector3 dir = Input.GetAxisRaw("Horizontal") * transform.right + 
+            Input.GetAxisRaw("Vertical") * transform.forward;
         Move(dir);
 	}
 
@@ -56,7 +56,7 @@ public class PlayerEntity : AEntity {
 
     private void Move(Vector3 _direction)
     {
-        Vector3 velocity = _direction.normalized * m_MovementSpeed;
+        Vector3 velocity = _direction * m_MovementSpeed;
         velocity.y = m_rigidbody.velocity.y;
         m_rigidbody.velocity = velocity;
     }

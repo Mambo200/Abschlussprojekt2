@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class Chaser : PlayerEntity {
+public class Chaser {
     
     /// <summary>static Random</summary>
     private static readonly System.Random random = new System.Random();
@@ -27,7 +27,7 @@ public class Chaser : PlayerEntity {
                     }
                 }
             }
-
+    
             return _single;
         }
     }
@@ -73,7 +73,7 @@ public class Chaser : PlayerEntity {
 
                 }
                 // if true set lowest value
-                lowest = ChaserCount;
+                lowest = item.ChaserCount;
             }
             else
             {
