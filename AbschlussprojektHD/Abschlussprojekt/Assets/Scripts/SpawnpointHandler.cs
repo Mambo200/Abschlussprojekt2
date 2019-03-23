@@ -19,8 +19,8 @@ public class SpawnpointHandler : NetworkBehaviour{
         }
     }
 
-    private static SpawnpointHandler _single;
-    private static object _lock = new object();
+    //private static SpawnpointHandler _single;
+    //private static object _lock = new object();
     /// <summary>SpawnpointHandler Singleton Getter</summary>
     //public static SpawnpointHandler Get
     //{
@@ -52,7 +52,7 @@ public class SpawnpointHandler : NetworkBehaviour{
         Transform[] goArray = GetComponentsInChildren<Transform>();
         foreach (Transform go in goArray)
         {
-            if (go != this.gameObject)
+            if (go != this.gameObject.transform)
             {
                 m_spawnPoints.Add(go);
             }

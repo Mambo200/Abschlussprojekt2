@@ -19,8 +19,8 @@ public class RoundManager : NetworkBehaviour {
         }
     }
     /// <summary>Chaser Singleton</summary>
-    private static RoundManager _single;
-    private static object _lock = new object();
+    //private static RoundManager _single;
+    //private static object _lock = new object();
     /// <summary>Roundmanager Singleton Getter</summary>
     //public static RoundManager Get
     //{
@@ -72,7 +72,7 @@ public class RoundManager : NetworkBehaviour {
         }
     }
     /// <summary>When round starts, this value if the default time to start (0 players)</summary>
-    private float StartTime { get { return 10f; } }
+    private float StartTime { get { return 60f; } }
     /// <summary>for each player add this to the round time (0 player -> 60 + (this * playercount) seconds)</summary>
     private float PlayerSeconds { get { return 5f; } }
     /// <summary>calculates the time for the next round</summary>
