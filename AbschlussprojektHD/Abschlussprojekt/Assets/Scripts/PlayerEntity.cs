@@ -36,8 +36,8 @@ public class PlayerEntity : AEntity {
             Jump();
         }
 
-        Vector3 dir = new Vector3(Input.GetAxisRaw("Horizontal"), 0,
-                Input.GetAxisRaw("Vertical"));
+        Vector3 dir = Input.GetAxisRaw("Horizontal") * transform.right +
+            Input.GetAxisRaw("Vertical") * transform.forward;
         Move(dir);
 
         Dash(dir);
