@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 public class CameraController : MonoBehaviour {
 
     [SerializeField]
-    private GameObject m_Body;
+    private GameObject m_PlayerParent;
     /// <summary>Invert X mouse input</summary>
     public bool invertX = false;
     /// <summary>Invert Y mouse input</summary>
@@ -57,7 +57,7 @@ public class CameraController : MonoBehaviour {
             y = -y;
 
 #if UNITY_EDITOR
-        if (Input.GetKeyDown(KeyCode.X))
+        if (Input.GetKeyDown(KeyCode.Z))
             invertX = !invertX;
         if (Input.GetKeyDown(KeyCode.Y))
             invertY = !invertY;
@@ -71,10 +71,10 @@ public class CameraController : MonoBehaviour {
         _x *= rotateSpeedX;
         _x += gameObject.transform.eulerAngles.x;
         _y *= rotateSpeedY;
-        _y += gameObject.transform.eulerAngles.y;
-        gameObject.transform.eulerAngles = new Vector3(_x, _y, 0);
+        _y += m_PlayerParent.gameObject.transform.eulerAngles.y;
+        gameObject.transform.eulerAngles = new Vector3(_x, gameObject.transform.eulerAngles.y, gameObject.transform.eulerAngles.z);
 
-        // set rotation of body
-        m_Body.transform.eulerAngles = new Vector3(0, gameObject.transform.eulerAngles.y, 0);
+        // set rotation of parent
+        m_PlayerParent.transform.eulerAngles = new Vector3(m_PlayerParent.transform.eulerAngles.x, _y, m_PlayerParent.transform.eulerAngles.z);
     }
 }
