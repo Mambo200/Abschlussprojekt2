@@ -64,6 +64,7 @@
     <Compile Include="Assets\Scripts\AEntity.cs" />
     <Compile Include="Assets\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\Chaser.cs" />
+    <Compile Include="Assets\Scripts\GetParent.cs" />
     <Compile Include="Assets\Scripts\Movement.cs" />
     <Compile Include="Assets\Scripts\MyNetworkManager.cs" />
     <Compile Include="Assets\Scripts\PlayerEntity.cs" />

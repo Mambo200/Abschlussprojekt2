@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody))]
 public abstract class AEntity : NetworkBehaviour
@@ -10,6 +11,15 @@ public abstract class AEntity : NetworkBehaviour
     public Material[] mat;
     [SerializeField]
     private GameObject m_body;
+    ///<summary>Player Canvas</summary>
+    [SerializeField]
+    protected Canvas m_Canvas;
+    ///<summary>Player HP Text</summary>
+    [SerializeField]
+    protected Text m_HPText;
+    ///<summary>Player SP Text</summary>
+    [SerializeField]
+    protected Text m_SPText;
 
     #region Game Variables
     /// <summary>Max HP variable (DO NOT USE! USE <see cref="MaxHP"/> INSTEAD)</summary>
@@ -30,6 +40,8 @@ public abstract class AEntity : NetworkBehaviour
             BeforeMaxHPChanged(value);
             maxHP = value;
             AfterMaxHPChanged();
+            // change UI Text
+            RpcChangeTextHP( currentHP, maxHP);
         }
     }
 
@@ -52,6 +64,8 @@ public abstract class AEntity : NetworkBehaviour
             BeforeCurrentHPChanged(value);
             currentHP = value;
             AfterCurrentHPChanged();
+            // change UI Text
+            RpcChangeTextHP(currentHP, maxHP);
         }
     }
 
@@ -73,6 +87,8 @@ public abstract class AEntity : NetworkBehaviour
             BeforeMaxSPChanged(value);
             maxSP = value;
             AfterMaxSPChanged();
+            // change UI Text
+            RpcChangeTextSP(currentSP, maxSP);
 
         }
         /// <summary>Max HP property (Everyone can get, only Server can set)</summary>
@@ -97,6 +113,8 @@ public abstract class AEntity : NetworkBehaviour
             BeforeCurrentSPChanged(value);
             currentSP = value;
             AfterCurrentSPChanged();
+            // change UI Text
+            RpcChangeTextSP(currentSP, maxSP);
         }
     }
 
@@ -432,6 +450,10 @@ public abstract class AEntity : NetworkBehaviour
     #region Private Functions
     #endregion
 
+    #region Protected Functions    
+
+    #endregion
+
     #region Public static Functions
     #endregion
 
@@ -643,6 +665,52 @@ public abstract class AEntity : NetworkBehaviour
     public void RpcTeleport(Vector3 _newPosition)
     {
         this.transform.position = _newPosition;
+    }
+
+    /// <summary>
+    /// Changes the text.
+    /// </summary>
+    /// <param name="_text">Text UI Text to change</param>
+    /// <param name="_currentValue">Current value</param>
+    /// <param name="_maxValue">Maximum value</param>
+    [ClientRpc]
+    protected void RpcChangeTextHP(float _currentValue, float _maxValue)
+    {
+        // set new UI Text
+        m_HPText.text = _currentValue + " / " + _maxValue;
+    }
+
+    /// <summary>
+    /// Changes the text.
+    /// </summary>
+    /// <param name="_text">Text UI Text to change</param>
+    /// <param name="_currentValue">Current value</param>
+    /// <param name="_maxValue">Maximum value</param>
+    [ClientRpc]
+    protected void RpcChangeTextSP(float _currentValue, float _maxValue)
+    {
+        // set new UI Text
+        m_SPText.text = _currentValue + " / " + _maxValue;
+    }
+
+    /// <summary>
+    /// Changes HP
+    /// </summary>
+    /// <param name="_newHP">new HP value</param>
+    [Command]
+    protected void CmdChangeHP(float _newHP)
+    {
+        CurrentHP = _newHP;
+    }
+
+    /// <summary>
+    /// Changes SP
+    /// </summary>
+    /// <param name="_newSP">new SP value</param>
+    [Command]
+    protected void CmdChangeSP(float _newSP)
+    {
+        CurrentSP = _newSP;
     }
     #endregion
     #endregion

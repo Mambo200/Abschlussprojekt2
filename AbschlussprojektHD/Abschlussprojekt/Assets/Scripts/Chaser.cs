@@ -14,7 +14,6 @@ public class Chaser {
     /// <summary>Chaser Singleton Getter</summary>
     public static Chaser Get
     {
-        [Server]
         get
         {
             if (_single == null)
@@ -38,7 +37,6 @@ public class Chaser {
     /// <summary>
     /// Chooses the chaser randomly. Eliminate players who do not have the lowest amount of Chaser players, afterwards choose randomly from pool
     /// </summary>
-    [Server]
     public void ChooseChaser()
     {
         // set stats for last round chaser
