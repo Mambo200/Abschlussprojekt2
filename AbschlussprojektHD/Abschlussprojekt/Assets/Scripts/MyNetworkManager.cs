@@ -57,6 +57,8 @@ public class MyNetworkManager : NetworkManager {
     {
         base.OnStopServer();
         allPlayers.Clear();
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     private void OnPlayerConnected()
@@ -67,5 +69,11 @@ public class MyNetworkManager : NetworkManager {
     private void OnPlayerDisconnected()
     {
         SearchPlayer();
+    }
+
+    public override void OnClientDisconnect(NetworkConnection conn)
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 }

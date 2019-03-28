@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 public class PlayerEntity : AEntity {
 
@@ -11,10 +12,12 @@ public class PlayerEntity : AEntity {
     public float m_RotationSpeed;
     ///<summary>The force with which the Player can Jump</summary>
     public float m_JumpForce;
+    ///<summary>Playaer UI</summary>
+    [SerializeField]
+    protected GameObject m_UI;
     ///<summary>Player Camera</summary>
     [SerializeField]
     protected Camera m_playerCamera;
-
     // Use this for initialization
     void Start ()
     {
@@ -30,17 +33,26 @@ public class PlayerEntity : AEntity {
         if (!isLocalPlayer)
             return;
 
+        // Jump
         if (Input.GetKeyDown(KeyCode.Space))
         {
-
             Jump();
         }
+
+        // Shoot
+        if (Input.GetAxisRaw("Fire1") > 0)
+        {
+            Shoot();
+        } 
+        
 
         Vector3 dir = Input.GetAxisRaw("Horizontal") * transform.right +
             Input.GetAxisRaw("Vertical") * transform.forward;
         Move(dir);
 
         Dash(dir);
+
+
         
     }
 
@@ -154,6 +166,31 @@ public class PlayerEntity : AEntity {
 
     }
 
+    private void Shoot()
+    {
+        RaycastHit hit;
+        Ray ray = m_playerCamera.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out hit))
+        {
+            Debug.Log(hit.collider.gameObject.name);
+            if (hit.collider.gameObject.tag != "Player")
+                return;
+            // get Playerentity
+            PlayerEntity p = hit.collider.gameObject.GetComponent<GetParent>().GetMyParent.GetComponent<PlayerEntity>();
+            if (isServer)
+            {
+                p.SetCurrentHP(p.CurrentHP - 2);
+                p.SetCurrentSP(p.CurrentSP - 1);
+            }
+            else
+            {
+                p.CmdChangeHP(p.CurrentHP - 2);
+                p.CmdChangeSP(p.CurrentSP - 1);
+            }
+
+        }
+    }
+
     private void Rotate(Vector3 _rotation)
     {
         Vector3 rotation = transform.localEulerAngles
@@ -167,8 +204,18 @@ public class PlayerEntity : AEntity {
         base.OnStartLocalPlayer();
         // activate Player Camera
         m_playerCamera.gameObject.SetActive(true);
+        m_UI.gameObject.SetActive(true);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         MyNetworkManager.AddPlayer(this);
     }
 
-    
+    private void OnDisconnectedFromServer(NetworkIdentity info)
+    {
+        Debug.Log(info);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+
 }
