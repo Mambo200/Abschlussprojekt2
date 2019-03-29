@@ -126,31 +126,28 @@ public class RoundManager : NetworkBehaviour {
     {
         // rotate new chaser
         Chaser.ChooseChaser();
+
+        TillNextRound = 5f;
+        CurrentRoundTime = NextRoundTime;
+        RoundCount++;
+
         // reset hp and sp values for new round and teleport to new position.
         foreach (PlayerEntity player in MyNetworkManager.AllPlayers)
         {
             // reset stats for player
             player.NewRoundReset();
 
-            TillNextRound = 5f;
-            CurrentRoundTime = NextRoundTime;
-            RoundCount++;
+
 
             #region PROBLEM: Nach dem Teleport Springt der Compiler aus NextRound() raus
             // teleport player to new position
             if (player.IsChaser)
             {
-                if (isServer)
-                    player.ServerTeleport(SpawnpointHandler.NextChaserpoint());
-                else
-                    player.RpcTeleport(SpawnpointHandler.NextChaserpoint());
+                player.RpcTeleport(SpawnpointHandler.NextChaserpoint());
             }
             else
             {
-                if (isServer)
-                    player.ServerTeleport(SpawnpointHandler.NextSpawnpoint());
-                else
-                    player.RpcTeleport(SpawnpointHandler.NextSpawnpoint());
+                player.RpcTeleport(SpawnpointHandler.NextSpawnpoint());
             }
             #endregion
         }

@@ -99,9 +99,6 @@ public class MyNetworkManager : NetworkManager {
 
     public static List<PlayerEntity> AllPlayerCopy()
     {
-        PlayerEntity[] temp = new PlayerEntity[allPlayers.Count];
-        System.Array.Copy(AllPlayers.ToArray(), temp, temp.Length);
-        allPlayers.CopyTo(temp);
-        return temp.ToList();
+        return new List<PlayerEntity>(AllPlayers);
     }
 }
