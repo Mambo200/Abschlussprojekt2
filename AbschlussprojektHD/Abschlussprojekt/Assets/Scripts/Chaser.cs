@@ -22,11 +22,7 @@ public class Chaser : NetworkBehaviour {
         // Copy of all players
         List<PlayerEntity> chaserPool = MyNetworkManager.AllPlayerCopy();
         // copy of chaser pool
-        List<PlayerEntity> peCopy;
-        // create an array copy to copy the pool list to array and transfer array to list
-        PlayerEntity[] peCopyArray = new PlayerEntity[chaserPool.Count];
-        chaserPool.CopyTo(peCopyArray);
-        peCopy = peCopyArray.ToList();
+        List<PlayerEntity> peCopy = new List<PlayerEntity>(chaserPool);
 
         foreach (PlayerEntity pe in peCopy)
         {
@@ -40,9 +36,7 @@ public class Chaser : NetworkBehaviour {
 
         // Get lowest chasernumber
         peCopy.Clear();
-        peCopyArray = new PlayerEntity[chaserPool.Count];
-        chaserPool.CopyTo(peCopyArray);
-        peCopy = peCopyArray.ToList();
+        peCopy = new List<PlayerEntity>(chaserPool);
 
         int lowest = int.MaxValue;
         foreach (PlayerEntity pe in peCopy)
@@ -61,9 +55,7 @@ public class Chaser : NetworkBehaviour {
 
         // remove all players which does not match chasercount with lowest variable
         peCopy.Clear();
-        peCopyArray = new PlayerEntity[chaserPool.Count];
-        chaserPool.CopyTo(peCopyArray);
-        peCopy = peCopyArray.ToList();
+        peCopy = new List<PlayerEntity>(chaserPool);
         foreach (PlayerEntity pe in peCopy)
         {
             if (pe.ChaserCount != lowest)

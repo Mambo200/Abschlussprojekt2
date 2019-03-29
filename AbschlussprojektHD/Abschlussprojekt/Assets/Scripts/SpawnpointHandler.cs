@@ -22,20 +22,21 @@ public class SpawnpointHandler : NetworkBehaviour{
                 index = value;
         }
     }
+    private static int indexChaser = 0;
     private static int IndexChaser
     {
         get
         {
             // if no spawn points can be found search them
-            return index;
+            return indexChaser;
         }
             set
         {
             // if index is bigger than player array set index to 0
             if (value >= m_chaserSpawn.Count)
-                index = 0;
+                indexChaser = 0;
             else
-                index = value;
+                indexChaser = value;
         }
     }
 
@@ -69,11 +70,6 @@ public class SpawnpointHandler : NetworkBehaviour{
         Debug.Log("Spawnfield count: " + m_spawnPoints.Count);
     }
 
-    public override void OnStartServer()
-    {
-        Start();
-    }
-
     /// <summary>
     /// Get the next spawnpoint of Player. set new index
     /// </summary>
@@ -93,7 +89,7 @@ public class SpawnpointHandler : NetworkBehaviour{
     public static Vector3 NextChaserpoint()
     {
         Vector3 toReturn = m_chaserSpawn[IndexChaser].position;
-        Index++;
+        IndexChaser++;
         return toReturn;
     }
 
