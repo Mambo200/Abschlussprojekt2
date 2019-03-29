@@ -73,6 +73,9 @@ public class PlayerEntity : AEntity {
     protected override void Initialize()
     {
         base.Initialize();
+
+        if (!isServer)
+            return;
         // set players current values
         SetCurrentHP(MaxHP);
         SetCurrentSP(MaxSP);
@@ -180,26 +183,9 @@ public class PlayerEntity : AEntity {
 
     private void Shoot()
     {
-        RaycastHit hit;
-        Ray ray = m_playerCamera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out hit))
-        {
-            if (hit.collider.gameObject.tag != "Player")
-                return;
-            // get Playerentity
-            PlayerEntity p = hit.collider.gameObject.GetComponentInParent<PlayerEntity>();
-            if (isServer)
-            {
-                p.SetCurrentHP(p.CurrentHP - 2);
-                p.SetCurrentSP(p.CurrentSP - 1);
-            }
-            else
-            {
-                p.CmdChangeHP(p.CurrentHP - 2);
-                p.CmdChangeSP(p.CurrentSP - 1);
-            }
-
-        }
+        Ray ray = m_playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
+        Debug.Log(Input.mousePosition);
+        CmdHit(ray.origin, ray.direction);
     }
 
     private void Rotate(Vector3 _rotation)
