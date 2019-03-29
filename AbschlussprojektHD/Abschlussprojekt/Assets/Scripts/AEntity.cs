@@ -658,15 +658,22 @@ public abstract class AEntity : NetworkBehaviour
     #region Network
     #region RPC    
     /// <summary>
-    /// Set new position of player
+    /// Set new position of player (RPC Call)
     /// </summary>
     /// <param name="_newPosition">The new position.</param>
     [ClientRpc]
     public void RpcTeleport(Vector3 _newPosition)
     {
-        this.transform.position = _newPosition;
+        gameObject.transform.position = _newPosition;
     }
-
+    /// <summary>
+    /// Set new Position of Player (Server Only)
+    /// </summary>
+    /// <param name="_newPosition">The new position.</param>
+    public void ServerTeleport(Vector3 _newPosition)
+    {
+        gameObject.transform.position = _newPosition;
+    }
     /// <summary>
     /// Changes the text.
     /// </summary>
