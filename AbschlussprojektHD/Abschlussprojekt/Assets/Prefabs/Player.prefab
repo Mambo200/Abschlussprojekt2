@@ -37,10 +37,8 @@ GameObject:
   - component: {fileID: 33122316668260898}
   - component: {fileID: 23684980986389972}
   - component: {fileID: 136908496619425784}
-  - component: {fileID: 114160310331644438}
-  - component: {fileID: 114365580471341522}
   m_Layer: 0
-  m_Name: Capsule
+  m_Name: Body
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -491,18 +489,6 @@ MonoBehaviour:
     i15: 105
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 1
---- !u!114 &114160310331644438
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1194594503269390}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6641ba6b13806664c9797400682f0596, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_parent: {fileID: 1865574214244210}
 --- !u!114 &114235473622301880
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -558,38 +544,6 @@ MonoBehaviour:
     m_RotationOrder: 4
   rotationLerpTime: 0.01
   invertY: 0
---- !u!114 &114365580471341522
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1194594503269390}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SceneId:
-    m_Value: 0
-  m_AssetId:
-    i0: 69
-    i1: 137
-    i2: 190
-    i3: 77
-    i4: 165
-    i5: 25
-    i6: 139
-    i7: 196
-    i8: 248
-    i9: 147
-    i10: 35
-    i11: 201
-    i12: 151
-    i13: 138
-    i14: 211
-    i15: 105
-  m_ServerOnly: 0
-  m_LocalPlayerAuthority: 1
 --- !u!114 &114401938479738404
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -823,7 +777,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1210879338126804}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 904022433fa1f9b4085e5475bd84bacb, type: 3}
+  m_Script: {fileID: 11500000, guid: 0303c19fd3172d54f80b1fce745c07c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_PlayerParent: {fileID: 1865574214244210}

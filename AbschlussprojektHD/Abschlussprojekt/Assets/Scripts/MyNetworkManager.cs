@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -12,11 +13,21 @@ public class MyNetworkManager : NetworkManager {
     /// <summary>List with all players</summary>
     private static List<PlayerEntity> allPlayers = new List<PlayerEntity>();
     /// <summary>List with all players</summary>
+    private static List<GameObject> allPlayersGo = new List<GameObject>();
+    /// <summary>List with all players</summary>
     public static List<PlayerEntity> AllPlayers
     {
         get
         {
             return allPlayers;
+        }
+    }
+    /// <summary>List with all players</summary>
+    public static List<GameObject> AllPlayersGo
+    {
+        get
+        {
+            return allPlayersGo;
         }
     }
 
@@ -44,10 +55,19 @@ public class MyNetworkManager : NetworkManager {
 
         // reset list
         allPlayers.Clear();
+        allPlayersGo.Clear();
 
         // find objects with tag
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        foreach (GameObject go in players)
+        List<GameObject> tempGO = (GameObject.FindGameObjectsWithTag("Player")).ToList();
+        foreach (GameObject go in tempGO)
+        {
+            if (go.name == "Player(Clone)")
+            {
+                allPlayersGo.Add(go);
+            }
+        }
+
+        foreach (GameObject go in allPlayersGo)
         {
             allPlayers.Add(go.gameObject.GetComponent<PlayerEntity>());
         }
@@ -75,5 +95,13 @@ public class MyNetworkManager : NetworkManager {
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+    }
+
+    public static List<PlayerEntity> AllPlayerCopy()
+    {
+        PlayerEntity[] temp = new PlayerEntity[allPlayers.Count];
+        System.Array.Copy(AllPlayers.ToArray(), temp, temp.Length);
+        allPlayers.CopyTo(temp);
+        return temp.ToList();
     }
 }

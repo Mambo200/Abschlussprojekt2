@@ -52,7 +52,19 @@ public class PlayerEntity : AEntity {
 
         Dash(dir);
 
-
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (Cursor.lockState == CursorLockMode.None)
+            {
+                Cursor.visible = false;
+                Cursor.lockState = CursorLockMode.Locked;
+            }
+            else
+            {
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
+            }
+        }
         
     }
 
@@ -172,11 +184,10 @@ public class PlayerEntity : AEntity {
         Ray ray = m_playerCamera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit))
         {
-            Debug.Log(hit.collider.gameObject.name);
             if (hit.collider.gameObject.tag != "Player")
                 return;
             // get Playerentity
-            PlayerEntity p = hit.collider.gameObject.GetComponent<GetParent>().GetMyParent.GetComponent<PlayerEntity>();
+            PlayerEntity p = hit.collider.gameObject.GetComponentInParent<PlayerEntity>();
             if (isServer)
             {
                 p.SetCurrentHP(p.CurrentHP - 2);
