@@ -52,7 +52,6 @@ public abstract class AEntity : NetworkBehaviour
     public float CurrentHP
     {
         get { return currentHP; }
-        [Server]
         private set
         {
             if (!isServer)
@@ -700,30 +699,30 @@ public abstract class AEntity : NetworkBehaviour
         m_SPText.text = _currentValue + " / " + _maxValue;
     }
 
-    /// <summary>
-    /// Changes HP
-    /// </summary>
-    /// <param name="_newHP">new HP value</param>
     [Command]
-    protected void CmdChangeHP(float _newHP)
+    protected void CmdHit(Vector3 _origin, Vector3 _direction)
     {
-        CurrentHP = _newHP;
+        Ray ray = new Ray(_origin, _direction);
+        RaycastHit hit;
+        Debug.DrawLine(ray.origin, ray.origin + ray.direction * 10, Color.black, 2f);
+        if (Physics.Raycast(ray, out hit))
+        {
+            if (hit.collider.gameObject.tag != "Player")
+                return;
+
+            // get Playerentity
+            PlayerEntity p = hit.collider.gameObject.GetComponentInParent<PlayerEntity>();
+            p.SetCurrentHP(p.CurrentHP - 2);
+            p.SetCurrentSP(p.CurrentSP - 1);
+            Debug.Log(p.gameObject.name + ", " + new Vector2(p.CurrentHP, p.CurrentSP));
+        }
     }
 
-    /// <summary>
-    /// Changes SP
-    /// </summary>
-    /// <param name="_newSP">new SP value</param>
-    [Command]
-    protected void CmdChangeSP(float _newSP)
-    {
-        CurrentSP = _newSP;
-    }
     #endregion
-    #endregion
-    /// <summary>
-    /// Initializes this instance
-    /// </summary>
+        #endregion
+        /// <summary>
+        /// Initializes this instance
+        /// </summary>
     protected virtual void Initialize()
     {
         m_rigidbody = GetComponent<Rigidbody>();
