@@ -116,7 +116,7 @@ public class RoundManager : NetworkBehaviour {
             }
         }
 
-        Debug.Log(new Vector3(CurrentRoundTime, TillNextRound, RoundCount));
+        //Debug.Log(new Vector3(CurrentRoundTime, TillNextRound, RoundCount));
 	}
 
     /// <summary>
@@ -137,9 +137,6 @@ public class RoundManager : NetworkBehaviour {
             // reset stats for player
             player.NewRoundReset();
 
-
-
-            #region PROBLEM: Nach dem Teleport Springt der Compiler aus NextRound() raus
             // teleport player to new position
             if (player.IsChaser)
             {
@@ -149,7 +146,9 @@ public class RoundManager : NetworkBehaviour {
             {
                 player.RpcTeleport(SpawnpointHandler.NextSpawnpoint());
             }
-            #endregion
+
+            // set current round time for player to save it local
+            player.RpcSetRoundTime(currentRoundTime);
         }
     }
 }

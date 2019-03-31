@@ -33,6 +33,8 @@ public class PlayerEntity : AEntity {
         if (!isLocalPlayer)
             return;
 
+        TimeCounter();
+
         // Jump
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -45,7 +47,7 @@ public class PlayerEntity : AEntity {
             Shoot();
         } 
         
-
+        // Mouse Input
         Vector3 dir = Input.GetAxisRaw("Horizontal") * transform.right +
             Input.GetAxisRaw("Vertical") * transform.forward;
         Move(dir);
@@ -184,7 +186,7 @@ public class PlayerEntity : AEntity {
     private void Shoot()
     {
         Ray ray = m_playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
-        Debug.Log(Input.mousePosition);
+        //Debug.Log(Input.mousePosition);
         CmdHit(ray.origin, ray.direction);
     }
 
@@ -214,5 +216,8 @@ public class PlayerEntity : AEntity {
         Cursor.visible = true;
     }
 
-
+    private void TimeCounter()
+    {
+        LocalRoundTime -= Time.deltaTime;
+    }
 }

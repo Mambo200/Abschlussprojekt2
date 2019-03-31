@@ -19,7 +19,13 @@ public abstract class AEntity : NetworkBehaviour
     protected Text m_HPText;
     ///<summary>Player SP Text</summary>
     [SerializeField]
-    protected Text m_SPText;
+    protected Text m_SPText;    
+    ///<summary>Player SP Text</summary>
+    [SerializeField]
+    protected Text m_TimeText;
+    ///<summary>local time of current Round</summary>
+    private float m_localRoundTime;
+    private RoundManager RoundManager { get; set; }
 
     #region Game Variables
     /// <summary>Max HP variable (DO NOT USE! USE <see cref="MaxHP"/> INSTEAD)</summary>
@@ -60,11 +66,11 @@ public abstract class AEntity : NetworkBehaviour
                 return;
             }
 
-            BeforeCurrentHPChanged(value);
+            value = BeforeCurrentHPChanged(value);
             currentHP = value;
             AfterCurrentHPChanged();
             // change UI Text
-            RpcChangeTextHP(currentHP, maxHP);
+            RpcChangeTextHP((int)currentHP, maxHP);
         }
     }
 
@@ -87,7 +93,7 @@ public abstract class AEntity : NetworkBehaviour
             maxSP = value;
             AfterMaxSPChanged();
             // change UI Text
-            RpcChangeTextSP(currentSP, maxSP);
+            RpcChangeTextSP((int)currentSP, maxSP);
 
         }
         /// <summary>Max HP property (Everyone can get, only Server can set)</summary>
@@ -109,7 +115,7 @@ public abstract class AEntity : NetworkBehaviour
                 return;
             }
 
-            BeforeCurrentSPChanged(value);
+            value = BeforeCurrentSPChanged(value);
             currentSP = value;
             AfterCurrentSPChanged();
             // change UI Text
@@ -164,7 +170,7 @@ public abstract class AEntity : NetworkBehaviour
     /// <summary>Default variable of Player armor. 
     /// If you want to change the current armor of player use <see cref="CurrentArmor"/> instead. (DO NOT USE! USE <see cref="PlayerArmor"/> INSTEAD)</summary>
     [SyncVar]
-    private float playerArmor = 0f;
+    private float playerArmor = 1f;
     /// <summary>Player Armor property. Please change current armor in <see cref="CurrentArmor"/>. (Everyone can get, only Server can set in <see cref="SetDefaultPlayerArmor(float)"/>)</summary>
     public float PlayerArmor
     {
@@ -290,6 +296,22 @@ public abstract class AEntity : NetworkBehaviour
     }
     #endregion
 
+    /// <summary>Current round time property</summary>
+    public float LocalRoundTime
+    {
+        get { return m_localRoundTime; }
+        set
+        {
+            if (value <= 0)
+                m_localRoundTime = 0;
+            else
+                m_localRoundTime = value;
+
+            // change text
+            m_TimeText.text = ((int)m_localRoundTime).ToString();
+        }
+    }
+
     #region Override Functions
     public override void OnStartServer()
     {
@@ -325,6 +347,27 @@ public abstract class AEntity : NetworkBehaviour
     public void SetCurrentHP (float _newCurrentHP)
     {
         CurrentHP = _newCurrentHP;
+    }
+
+    /// <summary>
+    /// Set new current HP using Property (<see cref="CurrentHP"/>)
+    /// </summary>
+    /// <param name="_damage">Damage taken</param>
+    public void GetDamage(float _damage, PlayerEntity _enemy)
+    {
+        // when enemy is chaser multiply damage
+        if (_enemy.IsChaser)
+        {
+            _damage *= Chaser.DamageMultiplier;
+        }
+        CurrentHP -= _damage / CurrentArmor;
+
+        // check if dead
+        if (CurrentHP <= 0)
+        {
+            DeathCount++;
+            _enemy.KillCount++;
+        }
     }
 
     /// <summary>
@@ -477,7 +520,13 @@ public abstract class AEntity : NetworkBehaviour
     /// Function is called before players Current HP is set
     /// </summary>
     /// <param name="_newValue">new Value of variable</param>
-    public virtual void BeforeCurrentHPChanged(float _newValue) { }
+    public virtual float BeforeCurrentHPChanged(float _newValue)
+    {
+        if (_newValue <= 0)
+            return 0;
+        else
+            return _newValue;
+    }
     /// <summary>
     /// Function is called after players Current HP was set
     /// </summary>
@@ -501,7 +550,13 @@ public abstract class AEntity : NetworkBehaviour
     /// Function is called before players Current SP is set
     /// </summary>
     /// <param name="_newValue">new Value of variable</param>
-    public virtual void BeforeCurrentSPChanged(float _newValue) { }
+    public virtual float BeforeCurrentSPChanged(float _newValue)
+    {
+        if (_newValue <= 0)
+            return 0;
+        else
+            return _newValue;
+    }
     /// <summary>
     /// Function is called after players Current SP was set
     /// </summary>
@@ -698,34 +753,71 @@ public abstract class AEntity : NetworkBehaviour
         // set new UI Text
         m_SPText.text = _currentValue + " / " + _maxValue;
     }
+    #endregion
+    /// <summary>
+    /// Set next round time and save it local
+    /// </summary>
+    /// <param name="_time">time for next round</param>
+    [ClientRpc]
+    public void RpcSetRoundTime(float _time)
+    {
+        LocalRoundTime = _time;
+    }
 
+    #region Command
+
+    /// <summary>
+    /// When Player hits another Player deal damage
+    /// </summary>
+    /// <param name="_origin">Start position</param>
+    /// <param name="_direction">direction of shot</param>
     [Command]
     protected void CmdHit(Vector3 _origin, Vector3 _direction)
     {
+        // if player dont have HP left return
+        if (CurrentHP <= 0)
+            return;
+
+        // get roundmanager
+        if (RoundManager == null)
+            RoundManager = GameObject.Find("Rundenmanager").GetComponent<RoundManager>();
+
+        // if round is overr no damage will be applied
+        if (RoundManager.CurrentRoundTime <= 0)
+            return;
+
         Ray ray = new Ray(_origin, _direction);
         RaycastHit hit;
         Debug.DrawLine(ray.origin, ray.origin + ray.direction * 10, Color.black, 2f);
         if (Physics.Raycast(ray, out hit))
         {
+            // check if hit object is player
             if (hit.collider.gameObject.tag != "Player")
                 return;
 
-            // get Playerentity
+            // get Playerentity (GetParent because Capsule is hit and Capsules parent has playerentity)
             PlayerEntity p = hit.collider.gameObject.GetComponentInParent<PlayerEntity>();
-            p.SetCurrentHP(p.CurrentHP - 2);
-            p.SetCurrentSP(p.CurrentSP - 1);
+
+            // check if chaserstatus is not equal
+            if (IsChaser != p.IsChaser)
+            {
+                p.GetDamage(2, p);
+            }
+
             Debug.Log(p.gameObject.name + ", " + new Vector2(p.CurrentHP, p.CurrentSP));
         }
     }
+    #endregion
 
     #endregion
-        #endregion
-        /// <summary>
-        /// Initializes this instance
-        /// </summary>
+    /// <summary>
+    /// Initializes this instance
+    /// </summary>
     protected virtual void Initialize()
     {
         m_rigidbody = GetComponent<Rigidbody>();
         m_rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
     }
+
+    
 }

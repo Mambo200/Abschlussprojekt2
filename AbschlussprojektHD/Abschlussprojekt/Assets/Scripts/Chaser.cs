@@ -6,12 +6,7 @@ using UnityEngine.Networking;
 
 public class Chaser : NetworkBehaviour {
     
-    /// <summary>static Random</summary>
-    private static readonly System.Random random = new System.Random();
-
-    //[SyncVar]
-    ///// <summary>Chaser Singleton</summary>
-    //public static GameObject currentChaser;
+    public static float DamageMultiplier { get { return 3f; } }
 
     /// <summary>
     /// Chooses the chaser randomly. Eliminate players who do not have the lowest amount of Chaser players, afterwards choose randomly from pool
