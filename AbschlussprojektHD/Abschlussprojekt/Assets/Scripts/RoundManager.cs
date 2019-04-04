@@ -94,13 +94,12 @@ public class RoundManager : NetworkBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        //Debug.Log(CurrentRoundTime + ", " + TillNextRound + ", " + RoundCount);
         // reduce current round time by deltatime each frame
         if (!isServer)
             return;
 
-        //if (MyNetworkManager.AllPlayersGo.Count <= 1)
-        //    return;
+        if (MyNetworkManager.AllPlayersGo.Count <= 1)
+            return;
 
         CurrentRoundTime -= Time.deltaTime;
 

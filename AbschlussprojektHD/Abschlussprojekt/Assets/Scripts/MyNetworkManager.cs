@@ -6,8 +6,8 @@ using UnityEngine.Networking;
 
 public class MyNetworkManager : NetworkManager {
 
-    /// <summary>Get every Player in Lobby</summary>
-    //public static NetworkLobbyPlayer[] GetSingletonPlayer { get { return ((MyNetworkManager)singleton).lobbyslots; } }
+    /// <summary>Timer for Manager, every x seconds Server is looking for new player</summary>
+    private float Timer { get; set; }
     /// <summary>Get Networkmanager Singleton</summary>
     public static NetworkManager GetSingleton { get { return singleton; } }
     /// <summary>List with all players</summary>
@@ -33,32 +33,65 @@ public class MyNetworkManager : NetworkManager {
 
     private void Start()
     {
-        SearchPlayer();
+        Timer = 30f;
     }
 
     private void Update()
     {
-        SearchPlayer();
-        //Debug.Log(allPlayers.Count);
+        // reduce Timer. Every x seconds search for new player
+        //Timer -= Time.deltaTime;
+        //if (Timer <= 0)
+        //{
+            SearchPlayer(true);
+        //    Timer = 30f;
+        //}
+        Debug.Log(AllPlayers.Count);
     }
 
-    public static void AddPlayer(PlayerEntity _player)
+    /// <summary>
+    /// Add player
+    /// </summary>
+    /// <param name="_player">The player</param>
+    public static void AddPlayer(GameObject _player)
     {
-        allPlayers.Add(_player);
+        allPlayersGo.Add(_player);
+        allPlayers.Add(_player.GetComponent<PlayerEntity>());
+    }
+
+    /// <summary>
+    /// Remove player
+    /// </summary>
+    /// <param name="_player">The player</param>
+    public static void RemovePlayer(GameObject _player)
+    {
+        allPlayersGo.Remove(_player);
+        allPlayers.Remove(_player.GetComponent<PlayerEntity>());
     }
 
     /// <summary>
     /// Searching player in this Scene
     /// </summary>
-    private void SearchPlayer()
+    /// <param name="_force">
+    /// false: Only overrite list when playercount is equal with found players
+    /// || 
+    /// true: overrite list even that playercount is equal with found players
+    /// </param>
+    private static void SearchPlayer(bool _force = false)
     {
+        // find objects with tag
+        List<GameObject> tempGO = (GameObject.FindGameObjectsWithTag("Player")).ToList();
+        if (!_force)
+        {
+            if (tempGO.Count == allPlayers.Count)
+            {
+                return;
+            }
+        }
 
         // reset list
         allPlayers.Clear();
         allPlayersGo.Clear();
 
-        // find objects with tag
-        List<GameObject> tempGO = (GameObject.FindGameObjectsWithTag("Player")).ToList();
         foreach (GameObject go in tempGO)
         {
             if (go.name == "Player(Clone)")
@@ -77,18 +110,19 @@ public class MyNetworkManager : NetworkManager {
     {
         base.OnStopServer();
         allPlayers.Clear();
+        allPlayersGo.Clear();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
 
-    private void OnPlayerConnected()
+    /// <summary>
+    /// Called on the server when a client disconnects.
+    /// </summary>
+    /// <param name="conn">Connection from client.</param>
+    public override void OnServerDisconnect(NetworkConnection conn)
     {
-        SearchPlayer();
-    }
-
-    private void OnPlayerDisconnected()
-    {
-        SearchPlayer();
+        base.OnServerDisconnect(conn);
+        Timer = 3f;
     }
 
     public override void OnClientDisconnect(NetworkConnection conn)
@@ -97,6 +131,10 @@ public class MyNetworkManager : NetworkManager {
         Cursor.visible = true;
     }
 
+    /// <summary>
+    /// Returns a Copy of all players
+    /// </summary>
+    /// <returns>copy of all players</returns>
     public static List<PlayerEntity> AllPlayerCopy()
     {
         return new List<PlayerEntity>(AllPlayers);

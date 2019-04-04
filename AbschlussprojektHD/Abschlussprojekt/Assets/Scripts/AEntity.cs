@@ -25,6 +25,7 @@ public abstract class AEntity : NetworkBehaviour
     protected Text m_TimeText;
     ///<summary>local time of current Round</summary>
     private float m_localRoundTime;
+    ///<summary>CAREFUL!!! Will only be set when Roundmanager is active AND Player shoot at someone</summary>
     private RoundManager RoundManager { get; set; }
 
     #region Game Variables
@@ -138,9 +139,9 @@ public abstract class AEntity : NetworkBehaviour
                 return;
             }
 
-            BeforeKillCountChanged(value);
+            BeforeKillCountPlayerChanged(value);
             killCount = value;
-            AfterKillCountChanged();
+            AfterKillCountPlayerChanged();
         }
 
     }
@@ -294,6 +295,25 @@ public abstract class AEntity : NetworkBehaviour
             AfterChaserChanged();
         }
     }
+
+    [SyncVar]
+    private int chaserKillCount = 0;
+    public int ChaserKillCount
+    {
+        get { return chaserKillCount; }
+        private set
+        {
+            if (!isServer)
+            {
+                Debug.Log("Client tried to set Chaser kill count to " + value, this.gameObject);
+                return;
+            }
+
+            BeforeKillCountChaserChanged(value);
+            chaserKillCount = value;
+            AfterKillCountChaserChanged();
+        }
+    }
     #endregion
 
     /// <summary>Current round time property</summary>
@@ -313,11 +333,11 @@ public abstract class AEntity : NetworkBehaviour
     }
 
     #region Override Functions
-    public override void OnStartServer()
-    {
-        base.OnStartServer();
-        Initialize();
-    }
+    //public override void OnStartServer()
+    //{
+    //    base.OnStartServer();
+    //    Initialize();
+    //}
 
     public override void OnStartClient()
     {
@@ -563,16 +583,16 @@ public abstract class AEntity : NetworkBehaviour
     public virtual void AfterCurrentSPChanged() { }
     #endregion
 
-    #region Kill Count Changed
+    #region Kill Count Player Changed
     /// <summary>
-    /// Function is called before players kill count is set
+    /// Function is called before players kill count is set (Chaser kills Player)
     /// </summary>
     /// <param name="_newValue">New value of Variable</param>
-    public virtual void BeforeKillCountChanged(int _newValue) { }
+    public virtual void BeforeKillCountPlayerChanged(int _newValue) { }
     /// <summary>
-    /// Function is called after players kill count was set
+    /// Function is called after players kill count was set (Chaser kills Player)
     /// </summary>
-    public virtual void AfterKillCountChanged() { }
+    public virtual void AfterKillCountPlayerChanged() { }
     #endregion
 
     #region Death Count Changed
@@ -690,7 +710,7 @@ public abstract class AEntity : NetworkBehaviour
     /// <param name="_newValue">New value of Variable</param>
     public virtual void BeforeChaserChanged(bool _newValue) { }
     /// <summary>
-    /// Function is called after players Chaser status was set.
+    /// Function is called after players Chaser status was set
     /// Set Armor
     /// </summary>
     public virtual void AfterChaserChanged()
@@ -706,6 +726,18 @@ public abstract class AEntity : NetworkBehaviour
             m_body.GetComponent<Renderer>().material = mat[1];
         }
     }
+    #endregion
+
+    #region Kill Count Chaser Changed
+    /// <summary>
+    /// Function is called before players Kill Count Chaser is set (Player kills Chaser)
+    /// </summary>
+    /// <param name="_newValue">New value of variable</param>
+    public virtual void BeforeKillCountChaserChanged(int _newValue) { }
+    /// <summary>
+    /// Function is called after players Kill Count Chaser was set (Player kills Chaser)
+    /// </summary>
+    public virtual void AfterKillCountChaserChanged() { }
     #endregion
     #endregion
 
@@ -779,16 +811,30 @@ public abstract class AEntity : NetworkBehaviour
             return;
 
         // get roundmanager
+#if UNITY_EDITOR
+        if (RoundManager == null)
+        {
+            // get gameobject
+            GameObject go = GameObject.Find("RoundManager");
+            // if gameobject is still null return warning
+            if (go == null)
+            {
+                Debug.LogWarning("Roundmanager (Chaser Script and RoundManager Script) is disabled!");
+                return;
+            }
+            RoundManager = go.GetComponent<RoundManager>();
+        }
+#else
         if (RoundManager == null)
             RoundManager = GameObject.Find("Rundenmanager").GetComponent<RoundManager>();
+#endif
 
-        // if round is overr no damage will be applied
+        // if round is over no damage will be applied
         if (RoundManager.CurrentRoundTime <= 0)
             return;
 
         Ray ray = new Ray(_origin, _direction);
         RaycastHit hit;
-        Debug.DrawLine(ray.origin, ray.origin + ray.direction * 10, Color.black, 2f);
         if (Physics.Raycast(ray, out hit))
         {
             // check if hit object is player
@@ -804,12 +850,20 @@ public abstract class AEntity : NetworkBehaviour
                 p.GetDamage(2, p);
             }
 
-            Debug.Log(p.gameObject.name + ", " + new Vector2(p.CurrentHP, p.CurrentSP));
+            // check if player died to this damage
+            if (p.CurrentHP <= 0)
+            {
+                // Check if killed player was chaser
+                if (p.IsChaser)
+                    ChaserKillCount++;
+                else
+                    KillCount++;
+            }
         }
     }
-    #endregion
+#endregion
 
-    #endregion
+#endregion
     /// <summary>
     /// Initializes this instance
     /// </summary>
@@ -817,7 +871,6 @@ public abstract class AEntity : NetworkBehaviour
     {
         m_rigidbody = GetComponent<Rigidbody>();
         m_rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+        MyNetworkManager.AddPlayer(this.gameObject);
     }
-
-    
 }

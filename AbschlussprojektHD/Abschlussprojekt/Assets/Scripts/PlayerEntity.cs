@@ -59,11 +59,6 @@ public class PlayerEntity : AEntity
             return;
 
         TimeCounter();
-
-
-        
-
-        Debug.Log(walljumpDir);
         
 
         Debug.DrawRay(transform.position, Vector3.down, Color.green);
@@ -107,20 +102,17 @@ public class PlayerEntity : AEntity
         
         
             Dash(dir);
-        
+
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (Cursor.lockState == CursorLockMode.None)
-            {
-                Cursor.visible = false;
-                Cursor.lockState = CursorLockMode.Locked;
-            }
-            else
-            {
-                Cursor.visible = true;
-                Cursor.lockState = CursorLockMode.None;
-            }
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
         }
         
     }
@@ -288,7 +280,6 @@ public class PlayerEntity : AEntity
     private void Shoot()
     {
         Ray ray = m_playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
-        //Debug.Log(Input.mousePosition);
         CmdHit(ray.origin, ray.direction);
     }
 
@@ -308,7 +299,6 @@ public class PlayerEntity : AEntity
         m_UI.gameObject.SetActive(true);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        MyNetworkManager.AddPlayer(this);
     }
 
     private void OnDisconnectedFromServer(NetworkIdentity info)
