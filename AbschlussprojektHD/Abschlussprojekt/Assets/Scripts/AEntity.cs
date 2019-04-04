@@ -10,7 +10,7 @@ public abstract class AEntity : NetworkBehaviour
     protected Rigidbody m_rigidbody;
     public Material[] mat;
     [SerializeField]
-    private GameObject m_body;
+    protected GameObject m_body;
     ///<summary>Player Canvas</summary>
     [SerializeField]
     protected Canvas m_Canvas;
