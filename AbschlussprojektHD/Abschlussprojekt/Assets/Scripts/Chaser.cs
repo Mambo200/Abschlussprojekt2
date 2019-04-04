@@ -7,6 +7,7 @@ using UnityEngine.Networking;
 public class Chaser : NetworkBehaviour {
     
     public static float DamageMultiplier { get { return 3f; } }
+    public static GameObject CurrentChaser { get; private set; }
 
     /// <summary>
     /// Chooses the chaser randomly. Eliminate players who do not have the lowest amount of Chaser players, afterwards choose randomly from pool
