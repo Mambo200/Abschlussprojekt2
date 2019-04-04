@@ -4,8 +4,25 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-public class PlayerEntity : AEntity {
+public class PlayerEntity : AEntity
+{
+    bool isgrounded;
 
+    float distancetoground;
+ 
+    private CharacterController controller;
+
+    Vector3 _direction;
+
+    Vector3 walljumpDir;
+
+    GameObject lastwalljumped;
+
+    int jumpcount;
+
+    float timeStamp;
+    
+    
     ///<summary>Movement Speed of Player</summary>
     public float m_MovementSpeed;
     ///<summary>Speed with which the Player can rotate</summary>
@@ -26,14 +43,38 @@ public class PlayerEntity : AEntity {
 
         m_DefaultMovementSpeed = m_MovementSpeed;
 
-	}
+        distancetoground = GetComponentInChildren<Collider>().bounds.extents.y;
+        
+        
+
+        
+
+    }
 	
+
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
         if (!isLocalPlayer)
             return;
 
         TimeCounter();
+
+
+        
+
+        Debug.Log(walljumpDir);
+        
+
+        Debug.DrawRay(transform.position, Vector3.down, Color.green);
+
+        isgrounded = Physics.Raycast(transform.position, Vector3.down, distancetoground);
+
+        if (isgrounded == true)
+        {
+            lastwalljumped = null;
+            jumpcount = 0;
+        }
 
         // Jump
         if (Input.GetKeyDown(KeyCode.Space))
@@ -50,9 +91,23 @@ public class PlayerEntity : AEntity {
         // Mouse Input
         Vector3 dir = Input.GetAxisRaw("Horizontal") * transform.right +
             Input.GetAxisRaw("Vertical") * transform.forward;
+
+        if(dir.x != 0 && dir.z != 0 && isgrounded)
+        {
+            walljumpDir = dir;
+        }
+
+         
+
+
         Move(dir);
 
-        Dash(dir);
+        float timeStamp = Time.time + 2;
+
+        
+        
+            Dash(dir);
+        
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -88,14 +143,30 @@ public class PlayerEntity : AEntity {
     #region Movement
     private void Jump()
     {
-        m_rigidbody.AddForce(Vector3.up * m_JumpForce, ForceMode.VelocityChange);
+        if(!isgrounded == false)
+        {
+            m_rigidbody.AddForce(Vector3.up * m_JumpForce, ForceMode.VelocityChange);
+
+        }
     }
 
     private void Move(Vector3 _direction)
     {
+        if (isgrounded)
+        {
+            Vector3 velocity = _direction.normalized * m_MovementSpeed;
+            velocity.y = m_rigidbody.velocity.y;
+            m_rigidbody.velocity = velocity;
+        }
+          
+    }
+
+    private void WallMove(Vector3 _direction)
+    {
         Vector3 velocity = _direction.normalized * m_MovementSpeed;
         velocity.y = m_rigidbody.velocity.y;
         m_rigidbody.velocity = velocity;
+        jumpcount++;
     }
 
     
@@ -110,12 +181,42 @@ public class PlayerEntity : AEntity {
 
     private float m_DefaultMovementSpeed;
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        OnCollisionStay(collision);
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        if (!isgrounded && lastwalljumped != collision.gameObject)
+        {
+            if (Input.GetKey(KeyCode.LeftControl))
+            {
+                if(jumpcount % 2 == 0)
+                {
+                    WallMove(-walljumpDir);
+                }
+                else
+                {
+                    WallMove(walljumpDir);
+                }
+                m_rigidbody.AddForce(Vector3.up * m_JumpForce, ForceMode.VelocityChange);
+                lastwalljumped = collision.gameObject;
+            }
+               
+        }
+    }
+
     
+
+    
+
+
 
     private void Dash(Vector3 _direction)
     {
         
-
+        
         #region ---DASH RIGHT---
         if(Input.GetButtonDown("LeftShift")  && Input.GetButton("D_Key") || Input.GetButtonDown("D_Key") && Input.GetButton("LeftShift"))
         {
@@ -171,6 +272,7 @@ public class PlayerEntity : AEntity {
 
         }
         #endregion
+        
 
         
 
