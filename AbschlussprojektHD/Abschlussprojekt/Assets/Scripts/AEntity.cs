@@ -334,7 +334,7 @@ public abstract class AEntity : NetworkBehaviour
     }
     #endregion
 
-    [HideInInspector]
+    //[HideInInspector]
     public bool wannaPlay = false;
 
     /// <summary>Current round time property</summary>

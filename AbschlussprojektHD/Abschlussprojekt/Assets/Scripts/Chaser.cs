@@ -17,7 +17,7 @@ public class Chaser : NetworkBehaviour {
     public static void ChooseChaser()
     {
         // Copy of all players
-        List<PlayerEntity> chaserPool = MyNetworkManager.AllPlayerCopy();
+        List<PlayerEntity> chaserPool = new List<PlayerEntity>(MyNetworkManager.AllPlayersPlaying);
         // copy of chaser pool
         List<PlayerEntity> peCopy = new List<PlayerEntity>(chaserPool);
 
@@ -72,7 +72,7 @@ public class Chaser : NetworkBehaviour {
         if (chaserPool.Count == 0)
         {
             Debug.LogWarning("No Chaser found!");
-            MyNetworkManager.AllPlayers[0].SetChaser(true);
+            MyNetworkManager.AllPlayersPlaying[0].SetChaser(true);
         }
         else if (chaserPool.Count == 1)
         {

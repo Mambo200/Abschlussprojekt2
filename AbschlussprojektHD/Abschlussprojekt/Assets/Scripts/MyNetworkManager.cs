@@ -5,7 +5,8 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 public class MyNetworkManager : NetworkManager {
-
+    /// <summary>when true, looking for players</summary>
+    private static bool Reload { get; set; }
     /// <summary>Timer for Manager, every x seconds Server is looking for new player</summary>
     private float Timer { get; set; }
     /// <summary>Get Networkmanager Singleton</summary>
@@ -37,14 +38,19 @@ public class MyNetworkManager : NetworkManager {
 
     private void Update()
     {
+        if (Reload)
+        {
+            SearchPlayer(true);
+            Debug.Log(AllPlayers.Count);
+        }
         // reduce Timer. Every x seconds search for new player
         //Timer -= Time.deltaTime;
         //if (Timer <= 0)
         //{
-            SearchPlayer(true);
+        //    SearchPlayer(true);
         //    Timer = 30f;
         //}
-        Debug.Log(AllPlayers.Count + " / Lobby: " + allPlayersLobby.Count + " / Playing: " + allPlayersPlaying.Count);
+        //Debug.Log(AllPlayers.Count + " / Lobby: " + allPlayersLobby.Count + " / Playing: " + allPlayersPlaying.Count);
     }
 
     /// <summary>
@@ -91,6 +97,9 @@ public class MyNetworkManager : NetworkManager {
                 return;
             }
         }
+
+        // set Reload to false to the server stop looking for new players next frame
+        Reload = false;
 
         // reset list
         allPlayers.Clear();
@@ -144,12 +153,14 @@ public class MyNetworkManager : NetworkManager {
     {
         base.OnServerDisconnect(conn);
         Timer = 3f;
+        Reload = true;
     }
 
     public override void OnClientDisconnect(NetworkConnection conn)
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        Reload = true;
     }
 
     /// <summary>

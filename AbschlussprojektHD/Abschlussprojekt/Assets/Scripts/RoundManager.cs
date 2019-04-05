@@ -5,6 +5,8 @@ using UnityEngine.Networking;
 
 public class RoundManager : NetworkBehaviour {
 
+    public int minimumPlayers;
+
     /// <summary>Round count variable (USE <see cref="RoundCount"/>)</summary>
     [SyncVar]
     private int roundCount = 0;
@@ -75,7 +77,7 @@ public class RoundManager : NetworkBehaviour {
         if (!isServer)
             return;
 
-        if (MyNetworkManager.AllPlayersPlaying.Count <= 1)
+        if (MyNetworkManager.AllPlayersPlaying.Count < minimumPlayers)
         {
             // if no round has started yet return
             if (RoundCount == 0) return;
@@ -87,8 +89,21 @@ public class RoundManager : NetworkBehaviour {
                     player.RpcResetChaserColor(Chaser.CurrentChaser);
                     player.wannaPlay = false;
                 }
+                Reset();
+                return;
             }
         }
+
+        // get through playing list and check if more than 2 players are ready
+        int particitians = 0;
+        foreach (PlayerEntity player in MyNetworkManager.AllPlayersPlaying)
+        {
+            particitians++;
+            if (particitians >= minimumPlayers) break;
+        }
+
+        // if not enough particitians are there return
+        if (particitians < minimumPlayers) return;
 
         CurrentRoundTime -= Time.deltaTime;
 
@@ -138,5 +153,15 @@ public class RoundManager : NetworkBehaviour {
             // set current round time for player to save it local
             player.RpcSetRoundTime(currentRoundTime);
         }
+    }
+
+    /// <summary>
+    /// Reset Timers
+    /// </summary>
+    private void Reset()
+    {
+        RoundCount = 0;
+        CurrentRoundTime = 0;
+        TillNextRound = 7;
     }
 }
