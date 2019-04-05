@@ -8,9 +8,19 @@ using UnityEngine.UI;
 public abstract class AEntity : NetworkBehaviour
 {
     protected Rigidbody m_rigidbody;
+    ///<summary>0: red / 1: blue</summary>
     public Material[] mat;
     [SerializeField]
     protected GameObject m_body;
+
+    ///<summary>Player Camera</summary>
+    [SerializeField]
+    protected Camera m_playerCamera;
+
+    #region UI Variables
+    ///<summary>Player UI</summary>
+    [SerializeField]
+    protected GameObject m_UI;
     ///<summary>Player Canvas</summary>
     [SerializeField]
     protected Canvas m_Canvas;
@@ -23,6 +33,14 @@ public abstract class AEntity : NetworkBehaviour
     ///<summary>Player SP Text</summary>
     [SerializeField]
     protected Text m_TimeText;
+    ///<summary>Start Button</summary>
+    [SerializeField]
+    protected Button m_StartButton;
+    ///<summary>Cross Hair Image</summary>
+    [SerializeField]
+    protected Image m_CrossHair;
+    #endregion
+
     ///<summary>local time of current Round</summary>
     private float m_localRoundTime;
     ///<summary>CAREFUL!!! Will only be set when Roundmanager is active AND Player shoot at someone</summary>
@@ -315,6 +333,9 @@ public abstract class AEntity : NetworkBehaviour
         }
     }
     #endregion
+
+    [HideInInspector]
+    public bool wannaPlay = false;
 
     /// <summary>Current round time property</summary>
     public float LocalRoundTime
@@ -785,7 +806,39 @@ public abstract class AEntity : NetworkBehaviour
         // set new UI Text
         m_SPText.text = _currentValue + " / " + _maxValue;
     }
-    #endregion
+
+    /// <summary>
+    /// Change Color of current chaser and last chaser
+    /// </summary>
+    /// <param name="_chaser">current chaser</param>
+    /// <param name="_lastChaser">chaser of last round</param>
+    [ClientRpc]
+    public void RpcSetChaserColor(GameObject _chaser, GameObject _lastChaser)
+    {
+        if (_chaser != null)
+            _chaser.GetComponent<Renderer>().material.color = Color.red;
+        else
+            Debug.Log("current chaser is null");
+
+        if (_lastChaser != null)
+            _lastChaser.GetComponent<Renderer>().material.color = Color.white;
+        else
+            Debug.Log("last chaser is null");
+    }
+
+    /// <summary>
+    /// eset Color of current chaser
+    /// </summary>
+    /// <param name="_chaser">current chaser</param>
+    [ClientRpc]
+    public void RpcResetChaserColor(GameObject _chaser)
+    {
+        if (_chaser != null)
+            _chaser.GetComponent<Renderer>().material.color = Color.white;
+        else
+            Debug.Log("current chaser is null");
+    }
+
     /// <summary>
     /// Set next round time and save it local
     /// </summary>
@@ -795,6 +848,7 @@ public abstract class AEntity : NetworkBehaviour
     {
         LocalRoundTime = _time;
     }
+    #endregion
 
     #region Command
 
@@ -861,9 +915,29 @@ public abstract class AEntity : NetworkBehaviour
             }
         }
     }
-#endregion
 
-#endregion
+    /// <summary>
+    /// Tell Server if player wants to join next round or retreat
+    /// </summary>
+    /// <param name="_joinGame">true: join next round || false: do not join next round</param>
+    [Command]
+    public void CmdStartGame(bool _joinGame)
+    {
+        // If true add to player list
+        if (_joinGame)
+        {
+            MyNetworkManager.AddPlayer(this.gameObject);
+        }
+        // if false remove player from list
+        else
+        {
+            MyNetworkManager.RemovePlayer(this.gameObject);
+        }
+    }
+
+    #endregion
+
+    #endregion
     /// <summary>
     /// Initializes this instance
     /// </summary>
@@ -871,6 +945,96 @@ public abstract class AEntity : NetworkBehaviour
     {
         m_rigidbody = GetComponent<Rigidbody>();
         m_rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
-        MyNetworkManager.AddPlayer(this.gameObject);
+        MyNetworkManager.AddPlayerLobby(this.gameObject);
     }
+
+    /// <summary>
+    /// Start Button function
+    /// </summary>
+    public void StartGame()
+    {
+        if (m_StartButton.GetComponentInChildren<Text>().text == "Start!")
+        {
+            // check if server pressed button
+            if (isServer)
+            {
+                // check if other player clicked start
+                if (MyNetworkManager.AllPlayersPlaying.Count < 1) return;
+            }
+            m_StartButton.GetComponentInChildren<Text>().text = "Cancel";
+
+            // set UI active
+            LobbyUIReady();
+
+            // Tell Server to join game next round
+            CmdStartGame(true);
+        }
+        else
+        {
+            m_StartButton.GetComponentInChildren<Text>().text = "Start!";
+
+            // set ui inactive
+            LobbyUINotReady();
+
+            // Tell Server to not join game next round
+            CmdStartGame(false);
+        }
+    }
+
+    #region UI Themes
+
+    /// <summary>
+    /// UI in Lobby but not ready
+    /// </summary>
+    protected void LobbyUINotReady()
+    {
+        m_UI.gameObject.SetActive(true);
+        m_HPText.gameObject.SetActive(false);
+        m_SPText.gameObject.SetActive(false);
+        m_CrossHair.gameObject.SetActive(false);
+        m_TimeText.gameObject.SetActive(false);
+        m_StartButton.gameObject.SetActive(true);
+    }
+
+    /// <summary>
+    /// UI in Lobby and ready
+    /// </summary>
+    protected void LobbyUIReady()
+    {
+        m_UI.gameObject.SetActive(true);
+        m_HPText.gameObject.SetActive(true);
+        m_SPText.gameObject.SetActive(true);
+        m_CrossHair.gameObject.SetActive(true);
+        m_TimeText.gameObject.SetActive(true);
+        m_StartButton.gameObject.SetActive(true);
+    }
+
+    /// <summary>
+    /// UI when playing
+    /// </summary>
+    protected void GameUI()
+    {
+        m_UI.gameObject.SetActive(true);
+        m_StartButton.gameObject.SetActive(false);
+        m_HPText.gameObject.SetActive(true);
+        m_SPText.gameObject.SetActive(true);
+        m_CrossHair.gameObject.SetActive(true);
+        m_TimeText.gameObject.SetActive(true);
+    }
+
+    /// <summary>
+    /// UI when in no lobby
+    /// </summary>
+    protected void JoinUI()
+    {
+        m_UI.gameObject.SetActive(true);
+        m_StartButton.gameObject.SetActive(false);
+        m_HPText.gameObject.SetActive(false);
+        m_SPText.gameObject.SetActive(false);
+        m_CrossHair.gameObject.SetActive(false);
+        m_TimeText.gameObject.SetActive(false);
+        m_UI.gameObject.SetActive(false);
+    }
+
+    #endregion
 }

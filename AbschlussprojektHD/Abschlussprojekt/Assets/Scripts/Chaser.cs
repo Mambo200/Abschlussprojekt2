@@ -8,6 +8,7 @@ public class Chaser : NetworkBehaviour {
     
     public static float DamageMultiplier { get { return 3f; } }
     public static GameObject CurrentChaser { get; private set; }
+    public static GameObject LastRoundChaser { get; private set; }
 
     /// <summary>
     /// Chooses the chaser randomly. Eliminate players who do not have the lowest amount of Chaser players, afterwards choose randomly from pool
@@ -16,7 +17,7 @@ public class Chaser : NetworkBehaviour {
     public static void ChooseChaser()
     {
         // Copy of all players
-        List<PlayerEntity> chaserPool = MyNetworkManager.AllPlayerCopy();
+        List<PlayerEntity> chaserPool = new List<PlayerEntity>(MyNetworkManager.AllPlayersPlaying);
         // copy of chaser pool
         List<PlayerEntity> peCopy = new List<PlayerEntity>(chaserPool);
 
@@ -27,6 +28,10 @@ public class Chaser : NetworkBehaviour {
             {
                 pe.SetChaser(false);
                 chaserPool.Remove(pe);
+                if (pe.WasChaserLastRound)
+                {
+                    LastRoundChaser = pe.gameObject;
+                }
             }
         }
 
@@ -67,12 +72,13 @@ public class Chaser : NetworkBehaviour {
         if (chaserPool.Count == 0)
         {
             Debug.LogWarning("No Chaser found!");
-            MyNetworkManager.AllPlayers[0].SetChaser(true);
+            MyNetworkManager.AllPlayersPlaying[0].SetChaser(true);
         }
         else if (chaserPool.Count == 1)
         {
             PlayerEntity p = chaserPool[0];
             p.SetChaser(true);
+            CurrentChaser = p.gameObject;
             chaserPool.Remove(p);
         }
         else
@@ -85,6 +91,7 @@ public class Chaser : NetworkBehaviour {
 
             // set player to chaser
             p.SetChaser(true);
+            CurrentChaser = p.gameObject;
 
             // remove from list
             chaserPool.Remove(p);
