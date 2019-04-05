@@ -7,7 +7,7 @@ public class RoundManager : NetworkBehaviour {
 
     /// <summary>Round count variable (USE <see cref="RoundCount"/>)</summary>
     [SyncVar]
-    private int roundCount;
+    private int roundCount = 0;
     /// <summary>Round count Property</summary>
     public int RoundCount
     {
@@ -18,29 +18,6 @@ public class RoundManager : NetworkBehaviour {
                 roundCount++;
         }
     }
-    /// <summary>Chaser Singleton</summary>
-    //private static RoundManager _single;
-    //private static object _lock = new object();
-    /// <summary>Roundmanager Singleton Getter</summary>
-    //public static RoundManager Get
-    //{
-    //    get
-    //    {
-    //        if (_single == null)
-    //        {
-    //            lock (_lock)
-    //            {
-    //                if (_single == null)
-    //                {
-    //                    _single = new RoundManager();
-    //                }
-    //            }
-    //        }
-    //
-    //        return _single;
-    //    }
-    //}
-
 
     /// <summary>Time left of current round</summary>
     [SyncVar]
@@ -98,8 +75,20 @@ public class RoundManager : NetworkBehaviour {
         if (!isServer)
             return;
 
-        if (MyNetworkManager.AllPlayersGo.Count <= 1)
-            return;
+        if (MyNetworkManager.AllPlayersPlaying.Count <= 1)
+        {
+            // if no round has started yet return
+            if (RoundCount == 0) return;
+            if (RoundCount > 0)
+            {
+                foreach (PlayerEntity player in MyNetworkManager.AllPlayersPlaying)
+                {
+                    player.RpcTeleport(SpawnpointHandler.NextLobbypoint());
+                    player.RpcResetChaserColor(Chaser.CurrentChaser);
+                    player.wannaPlay = false;
+                }
+            }
+        }
 
         CurrentRoundTime -= Time.deltaTime;
 
@@ -131,7 +120,7 @@ public class RoundManager : NetworkBehaviour {
         RoundCount++;
 
         // reset hp and sp values for new round and teleport to new position.
-        foreach (PlayerEntity player in MyNetworkManager.AllPlayers)
+        foreach (PlayerEntity player in MyNetworkManager.AllPlayersPlaying)
         {
             // reset stats for player
             player.NewRoundReset();
@@ -143,7 +132,7 @@ public class RoundManager : NetworkBehaviour {
             }
             else
             {
-                player.RpcTeleport(SpawnpointHandler.NextSpawnpoint());
+                player.RpcTeleport(SpawnpointHandler.NextSpawnpointPlayer());
             }
 
             // set current round time for player to save it local

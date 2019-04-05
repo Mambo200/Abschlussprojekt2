@@ -10,33 +10,26 @@ public class MyNetworkManager : NetworkManager {
     private float Timer { get; set; }
     /// <summary>Get Networkmanager Singleton</summary>
     public static NetworkManager GetSingleton { get { return singleton; } }
+
     /// <summary>List with all players in Scene</summary>
     private static List<PlayerEntity> allPlayers = new List<PlayerEntity>();
+    /// <summary>List with all players</summary>
+    public static List<PlayerEntity> AllPlayers { get { return allPlayers; } }
+
     /// <summary>List with all players in Scene</summary>
     private static List<GameObject> allPlayersGo = new List<GameObject>();
+    /// <summary>List with all players</summary>
+    public static List<GameObject> AllPlayersGo { get { return allPlayersGo; } }
+
     /// <summary>List with all players in Game</summary>
     private static List<PlayerEntity> allPlayersPlaying = new List<PlayerEntity>();
-    /// <summary>List with all players in Game</summary>
-    private static List<GameObject> allPlayersGoPlaying = new List<GameObject>();
-    /// <summary>List with all players in Lobby</summary>
-    private static List<GameObject> allPlayersGoLobby = new List<GameObject>();
-    /// <summary>List with all players</summary>
-    public static List<PlayerEntity> AllPlayers
-    {
-        get
-        {
-            return allPlayersPlaying;
-        }
-    }
-    /// <summary>List with all players</summary>
-    public static List<GameObject> AllPlayersGo
-    {
-        get
-        {
-            return allPlayersGoPlaying;
-        }
-    }
+    /// <summary>List with all players who are playing</summary>
+    public static List<PlayerEntity> AllPlayersPlaying { get { return allPlayersPlaying; } }
 
+    /// <summary>List with all players in Lobby</summary>
+    private static List<PlayerEntity> allPlayersLobby = new List<PlayerEntity>();
+    /// <summary>List with all players in lobby</summary>
+    public static List<PlayerEntity> AllPlayersLobby { get { return allPlayersLobby; } }
     private void Start()
     {
         Timer = 30f;
@@ -51,17 +44,20 @@ public class MyNetworkManager : NetworkManager {
             SearchPlayer(true);
         //    Timer = 30f;
         //}
-        Debug.Log(AllPlayers.Count);
+        Debug.Log(AllPlayers.Count + " / Lobby: " + allPlayersLobby.Count + " / Playing: " + allPlayersPlaying.Count);
     }
 
     /// <summary>
     /// Add player to lobby
     /// </summary>
     /// <param name="_player">The player</param>
-    public static void AddPlayer(GameObject _player)
+    /// <param name="_setWannaPlay">true: Set <see cref="AEntity.wannaPlay"/> value to true</param>
+    public static void AddPlayer(GameObject _player, bool _setWannaPlay = true)
     {
-        allPlayersGoLobby.Add(_player);
-        allPlayersPlaying.Add(_player.GetComponent<PlayerEntity>());
+        PlayerEntity p = _player.GetComponent<PlayerEntity>();
+        allPlayersPlaying.Add(p);
+        allPlayersLobby.Remove(p);
+        if(_setWannaPlay) p.wannaPlay = true;
     }
 
     /// <summary>
@@ -70,7 +66,10 @@ public class MyNetworkManager : NetworkManager {
     /// <param name="_player">The player</param>
     public static void RemovePlayer(GameObject _player)
     {
-        allPlayersGoLobby.Remove(_player);
+        PlayerEntity p = _player.GetComponent<PlayerEntity>();
+        allPlayersLobby.Add(p);
+        allPlayersPlaying.Remove(p);
+        p.wannaPlay = false;
     }
 
     /// <summary>
@@ -87,7 +86,7 @@ public class MyNetworkManager : NetworkManager {
         List<GameObject> tempGO = (GameObject.FindGameObjectsWithTag("Player")).ToList();
         if (!_force)
         {
-            if (tempGO.Count == allPlayersPlaying.Count)
+            if (tempGO.Count == allPlayers.Count)
             {
                 return;
             }
@@ -97,28 +96,42 @@ public class MyNetworkManager : NetworkManager {
         allPlayers.Clear();
         allPlayersGo.Clear();
         allPlayersPlaying.Clear();
-        allPlayersGoPlaying.Clear();
-        allPlayersGoLobby.Clear();
+        allPlayersLobby.Clear();
 
         foreach (GameObject go in tempGO)
         {
             if (go.name == "Player(Clone)")
             {
-                allPlayersGoPlaying.Add(go);
-            }
-        }
+                // add to all player (go) list
+                allPlayersGo.Add(go);
+                allPlayers.Add(go.gameObject.GetComponent<PlayerEntity>());
 
-        foreach (GameObject go in allPlayersGoPlaying)
-        {
-            allPlayersPlaying.Add(go.gameObject.GetComponent<PlayerEntity>());
+                // add to playing or lobby list
+                if (go.gameObject.transform.position.y > 400)
+                {
+                    // check if player wants to play
+                    if (go.gameObject.GetComponent<PlayerEntity>().wannaPlay == true)
+                    {
+                        allPlayersPlaying.Add(go.GetComponent<PlayerEntity>());
+                    }
+                    else
+                    {
+                        allPlayersLobby.Add(go.GetComponent<PlayerEntity>());
+                    }
+                }
+                else
+                    allPlayersPlaying.Add(go.GetComponent<PlayerEntity>());
+            }
         }
     }
 
     public override void OnStopServer()
     {
         base.OnStopServer();
+        allPlayersGo.Clear();
+        allPlayers.Clear();
         allPlayersPlaying.Clear();
-        allPlayersGoPlaying.Clear();
+        allPlayersLobby.Clear();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }

@@ -100,7 +100,7 @@ public class SpawnpointHandler : NetworkBehaviour{
     /// </summary>
     /// <returns></returns>
     [Server]
-    public static Vector3 NextSpawnpoint()
+    public static Vector3 NextSpawnpointPlayer()
     {
         Vector3 toReturn = m_playerSpawn[Index].position;
         Index++;
@@ -115,6 +115,17 @@ public class SpawnpointHandler : NetworkBehaviour{
     {
         Vector3 toReturn = m_chaserSpawn[IndexChaser].position;
         IndexChaser++;
+        return toReturn;
+    }
+
+    /// <summary>
+    /// Get the next spawnposition of Lobby. set new index
+    /// </summary>
+    [Server]
+    public static Vector3 NextLobbypoint()
+    {
+        Vector3 toReturn = m_lobbySpawn[IndexLobby].position;
+        IndexLobby++;
         return toReturn;
     }
 

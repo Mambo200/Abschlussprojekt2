@@ -52,6 +52,15 @@ public class PlayerEntity : AEntity
         if (!isLocalPlayer)
             return;
 
+        // is player fell of the stage reset position
+        if (isServer)
+        {
+            if (transform.position.y <= -500)
+            {
+                RpcTeleport(new Vector3(0, 5, 0));
+            }
+        }
+
         TimeCounter();
         
 
@@ -292,6 +301,7 @@ public class PlayerEntity : AEntity
         m_playerCamera.gameObject.SetActive(true);
         // activate UI
         m_UI.gameObject.SetActive(true);
+        LobbyUINotReady();
     }
 
     private void OnDisconnectedFromServer(NetworkIdentity info)
@@ -299,10 +309,13 @@ public class PlayerEntity : AEntity
         Debug.Log(info);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
+        JoinUI();
     }
 
     private void TimeCounter()
     {
         LocalRoundTime -= Time.deltaTime;
     }
+
 }
