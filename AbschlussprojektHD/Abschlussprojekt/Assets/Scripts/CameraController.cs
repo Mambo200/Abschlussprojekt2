@@ -50,7 +50,6 @@ public class CameraController : MonoBehaviour {
         float x = Input.GetAxis("Mouse Y");
         float y = Input.GetAxis("Mouse X");
 
-        Debug.Log(Input.GetAxis("HorizontalJ") + " / " + Input.GetAxis("VerticalJ"));
         // invert if needed
         if (invertY)
             x = -x;
