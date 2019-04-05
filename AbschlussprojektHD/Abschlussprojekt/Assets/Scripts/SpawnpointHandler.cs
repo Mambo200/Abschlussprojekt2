@@ -5,6 +5,7 @@ using UnityEngine.Networking;
 
 public class SpawnpointHandler : NetworkBehaviour{
 
+    /// <summary>Index of Player Spawn in Scene</summary>
     private static int index = 0;
     private static int Index
     {
@@ -16,12 +17,13 @@ public class SpawnpointHandler : NetworkBehaviour{
         set
         {
             // if index is bigger than Spawnpoint array set index to 0
-            if (value >= m_spawnPoints.Count)
+            if (value >= m_playerSpawn.Count)
                 index = 0;
             else
                 index = value;
         }
     }
+    /// <summary>Index of Chaser Spawn in Scene</summary>
     private static int indexChaser = 0;
     private static int IndexChaser
     {
@@ -39,18 +41,38 @@ public class SpawnpointHandler : NetworkBehaviour{
                 indexChaser = value;
         }
     }
+    /// <summary>Index of Player Spawn in Lobby</summary>
+    private static int indexLobby = 0;
+    private static int IndexLobby
+    {
+        get
+        {
+            // if no spawn points can be found search them
+            return indexLobby;
+        }
+        set
+        {
+            // if index is bigger than player array set index to 0
+            if (value >= m_lobbySpawn.Count)
+                indexLobby = 0;
+            else
+                indexLobby = value;
+        }
+    }
+
 
     /// <summary>List of all Player spawnpoints</summary>
-    private static readonly List<Transform> m_spawnPoints = new List<Transform>();
-    /// <summary>List of all spawnpoints</summary>
+    private static readonly List<Transform> m_playerSpawn = new List<Transform>();
+    /// <summary>List of all chaser spawnpoints</summary>
     private static readonly List<Transform> m_chaserSpawn = new List<Transform>();
-
+    /// <summary>List of all lobby spawnpoints</summary>
+    private static readonly List<Transform> m_lobbySpawn = new List<Transform>();
 
     [Server]
     public void Start()
     {
         // clear list
-        m_spawnPoints.Clear();
+        ClearAll();
 
         // fill spawnpoint gameobjects
         Transform[] goArray = GetComponentsInChildren<Transform>();
@@ -61,13 +83,16 @@ public class SpawnpointHandler : NetworkBehaviour{
                 // If chaserspawn add to chaser spawn list
                 if (go.name == "SpawnPointChaser")
                     m_chaserSpawn.Add(go);
-                // else add to player spawn
-                else
-                    m_spawnPoints.Add(go);
+                // if playerspawn add to player spawn list
+                else if (go.name == "SpawnPointPlayer")
+                    m_playerSpawn.Add(go);
+                // if lobbyspawn add to lobby spawn list
+                else if (go.name == "SpawnPointLobby")
+                    m_lobbySpawn.Add(go);
             }
         }
 
-        Debug.Log("Spawnfield count: " + m_spawnPoints.Count);
+        Debug.Log("Spawnfield count: " + m_playerSpawn.Count);
     }
 
     /// <summary>
@@ -77,7 +102,7 @@ public class SpawnpointHandler : NetworkBehaviour{
     [Server]
     public static Vector3 NextSpawnpoint()
     {
-        Vector3 toReturn = m_spawnPoints[Index].position;
+        Vector3 toReturn = m_playerSpawn[Index].position;
         Index++;
         return toReturn;
     }
@@ -94,13 +119,13 @@ public class SpawnpointHandler : NetworkBehaviour{
     }
 
     /// <summary>
-    /// Get all Spawnpoints in game and set them to <see cref="m_spawnPoints"/> and <see cref="m_chaserSpawn"/>
+    /// Get all Spawnpoints in game and set them to <see cref="m_playerSpawn"/> and <see cref="m_chaserSpawn"/>
     /// </summary>
     [Server]
     private void GetSpawnPoints()
     {
         // clear list
-        m_spawnPoints.Clear();
+        m_playerSpawn.Clear();
 
         // fill spawnpoint gameobjects
         Transform[] goArray = GetComponentsInChildren<Transform>();
@@ -113,11 +138,20 @@ public class SpawnpointHandler : NetworkBehaviour{
                     m_chaserSpawn.Add(go);
                 // else add to player spawn
                 else
-                    m_spawnPoints.Add(go);
+                    m_playerSpawn.Add(go);
             }
         }
 
-        Debug.Log("Spawnfield count: " + m_spawnPoints.Count);
+        Debug.Log("Spawnfield count: " + m_playerSpawn.Count);
     }
 
+    /// <summary>
+    /// Clear every spawn list
+    /// </summary>
+    private static void ClearAll()
+    {
+        m_playerSpawn.Clear();
+        m_chaserSpawn.Clear();
+        m_lobbySpawn.Clear();
+    }
 }

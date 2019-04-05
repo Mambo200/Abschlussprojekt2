@@ -10,16 +10,22 @@ public class MyNetworkManager : NetworkManager {
     private float Timer { get; set; }
     /// <summary>Get Networkmanager Singleton</summary>
     public static NetworkManager GetSingleton { get { return singleton; } }
-    /// <summary>List with all players</summary>
+    /// <summary>List with all players in Scene</summary>
     private static List<PlayerEntity> allPlayers = new List<PlayerEntity>();
-    /// <summary>List with all players</summary>
+    /// <summary>List with all players in Scene</summary>
     private static List<GameObject> allPlayersGo = new List<GameObject>();
+    /// <summary>List with all players in Game</summary>
+    private static List<PlayerEntity> allPlayersPlaying = new List<PlayerEntity>();
+    /// <summary>List with all players in Game</summary>
+    private static List<GameObject> allPlayersGoPlaying = new List<GameObject>();
+    /// <summary>List with all players in Lobby</summary>
+    private static List<GameObject> allPlayersGoLobby = new List<GameObject>();
     /// <summary>List with all players</summary>
     public static List<PlayerEntity> AllPlayers
     {
         get
         {
-            return allPlayers;
+            return allPlayersPlaying;
         }
     }
     /// <summary>List with all players</summary>
@@ -27,7 +33,7 @@ public class MyNetworkManager : NetworkManager {
     {
         get
         {
-            return allPlayersGo;
+            return allPlayersGoPlaying;
         }
     }
 
@@ -49,23 +55,22 @@ public class MyNetworkManager : NetworkManager {
     }
 
     /// <summary>
-    /// Add player
+    /// Add player to lobby
     /// </summary>
     /// <param name="_player">The player</param>
     public static void AddPlayer(GameObject _player)
     {
-        allPlayersGo.Add(_player);
-        allPlayers.Add(_player.GetComponent<PlayerEntity>());
+        allPlayersGoLobby.Add(_player);
+        allPlayersPlaying.Add(_player.GetComponent<PlayerEntity>());
     }
 
     /// <summary>
-    /// Remove player
+    /// Remove player from lobby
     /// </summary>
     /// <param name="_player">The player</param>
     public static void RemovePlayer(GameObject _player)
     {
-        allPlayersGo.Remove(_player);
-        allPlayers.Remove(_player.GetComponent<PlayerEntity>());
+        allPlayersGoLobby.Remove(_player);
     }
 
     /// <summary>
@@ -82,7 +87,7 @@ public class MyNetworkManager : NetworkManager {
         List<GameObject> tempGO = (GameObject.FindGameObjectsWithTag("Player")).ToList();
         if (!_force)
         {
-            if (tempGO.Count == allPlayers.Count)
+            if (tempGO.Count == allPlayersPlaying.Count)
             {
                 return;
             }
@@ -91,26 +96,29 @@ public class MyNetworkManager : NetworkManager {
         // reset list
         allPlayers.Clear();
         allPlayersGo.Clear();
+        allPlayersPlaying.Clear();
+        allPlayersGoPlaying.Clear();
+        allPlayersGoLobby.Clear();
 
         foreach (GameObject go in tempGO)
         {
             if (go.name == "Player(Clone)")
             {
-                allPlayersGo.Add(go);
+                allPlayersGoPlaying.Add(go);
             }
         }
 
-        foreach (GameObject go in allPlayersGo)
+        foreach (GameObject go in allPlayersGoPlaying)
         {
-            allPlayers.Add(go.gameObject.GetComponent<PlayerEntity>());
+            allPlayersPlaying.Add(go.gameObject.GetComponent<PlayerEntity>());
         }
     }
 
     public override void OnStopServer()
     {
         base.OnStopServer();
-        allPlayers.Clear();
-        allPlayersGo.Clear();
+        allPlayersPlaying.Clear();
+        allPlayersGoPlaying.Clear();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }

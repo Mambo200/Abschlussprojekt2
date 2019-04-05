@@ -11,6 +11,15 @@ public abstract class AEntity : NetworkBehaviour
     public Material[] mat;
     [SerializeField]
     protected GameObject m_body;
+
+    ///<summary>Player Camera</summary>
+    [SerializeField]
+    protected Camera m_playerCamera;
+
+    #region UI Variables
+    ///<summary>Player UI</summary>
+    [SerializeField]
+    protected GameObject m_UI;
     ///<summary>Player Canvas</summary>
     [SerializeField]
     protected Canvas m_Canvas;
@@ -23,6 +32,14 @@ public abstract class AEntity : NetworkBehaviour
     ///<summary>Player SP Text</summary>
     [SerializeField]
     protected Text m_TimeText;
+    ///<summary>Start Button</summary>
+    [SerializeField]
+    protected Button m_StartButton;
+    ///<summary>Cross Hair Image</summary>
+    [SerializeField]
+    protected Image m_CrossHair;
+    #endregion
+
     ///<summary>local time of current Round</summary>
     private float m_localRoundTime;
     ///<summary>CAREFUL!!! Will only be set when Roundmanager is active AND Player shoot at someone</summary>
@@ -872,5 +889,57 @@ public abstract class AEntity : NetworkBehaviour
         m_rigidbody = GetComponent<Rigidbody>();
         m_rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
         MyNetworkManager.AddPlayer(this.gameObject);
+    }
+
+    /// <summary>
+    /// Start Button function
+    /// </summary>
+    public void StartGame()
+    {
+        if (m_StartButton.GetComponentInChildren<Text>().text == "Start!")
+        {
+            m_StartButton.GetComponentInChildren<Text>().text = "Cancel";
+
+            // set UI active
+            m_CrossHair.gameObject.SetActive(true);
+            m_HPText.gameObject.SetActive(true);
+            m_SPText.gameObject.SetActive(true);
+            m_TimeText.gameObject.SetActive(true);
+
+            // Tell Server to join game next round
+            CmdStartGame(true);
+        }
+        else
+        {
+            m_StartButton.GetComponentInChildren<Text>().text = "Start!";
+
+            // set ui inactive
+            m_CrossHair.gameObject.SetActive(false);
+            m_HPText.gameObject.SetActive(false);
+            m_SPText.gameObject.SetActive(false);
+            m_TimeText.gameObject.SetActive(false);
+
+            // Tell Server to not join game next round
+            CmdStartGame(false);
+        }
+    }
+
+    /// <summary>
+    /// Tell Server if player wants to join next round or retreat
+    /// </summary>
+    /// <param name="_joinGame">true: join next round || false: do not join next round</param>
+    [Command]
+    public void CmdStartGame(bool _joinGame)
+    {
+        // If true add to player list
+        if (_joinGame)
+        {
+            MyNetworkManager.AddPlayer(this.gameObject);
+        }
+        // if false remove player from list
+        else
+        {
+            MyNetworkManager.RemovePlayer(this.gameObject);
+        }
     }
 }
