@@ -92,7 +92,9 @@ public class SpawnpointHandler : NetworkBehaviour{
             }
         }
 
-        Debug.Log("Spawnfield count: " + m_playerSpawn.Count);
+        Debug.Log("Player Spawn count: " + m_playerSpawn.Count);
+        Debug.Log("Chaser Spawn count: " + m_chaserSpawn.Count);
+        Debug.Log("Lobby Spawn count: " + m_lobbySpawn.Count);
     }
 
     /// <summary>

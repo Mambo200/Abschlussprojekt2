@@ -334,7 +334,7 @@ public abstract class AEntity : NetworkBehaviour
     }
     #endregion
 
-    //[HideInInspector]
+    [HideInInspector]
     public bool wannaPlay = false;
 
     /// <summary>Current round time property</summary>
@@ -945,7 +945,7 @@ public abstract class AEntity : NetworkBehaviour
     {
         m_rigidbody = GetComponent<Rigidbody>();
         m_rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
-        MyNetworkManager.AddPlayer(this.gameObject, false);
+        MyNetworkManager.AddPlayerLobby(this.gameObject);
     }
 
     /// <summary>
@@ -964,10 +964,7 @@ public abstract class AEntity : NetworkBehaviour
             m_StartButton.GetComponentInChildren<Text>().text = "Cancel";
 
             // set UI active
-            m_CrossHair.gameObject.SetActive(true);
-            m_HPText.gameObject.SetActive(true);
-            m_SPText.gameObject.SetActive(true);
-            m_TimeText.gameObject.SetActive(true);
+            LobbyUIReady();
 
             // Tell Server to join game next round
             CmdStartGame(true);
@@ -977,15 +974,14 @@ public abstract class AEntity : NetworkBehaviour
             m_StartButton.GetComponentInChildren<Text>().text = "Start!";
 
             // set ui inactive
-            m_CrossHair.gameObject.SetActive(false);
-            m_HPText.gameObject.SetActive(false);
-            m_SPText.gameObject.SetActive(false);
-            m_TimeText.gameObject.SetActive(false);
+            LobbyUINotReady();
 
             // Tell Server to not join game next round
             CmdStartGame(false);
         }
     }
+
+    #region UI Themes
 
     /// <summary>
     /// UI in Lobby but not ready
@@ -1040,4 +1036,5 @@ public abstract class AEntity : NetworkBehaviour
         m_UI.gameObject.SetActive(false);
     }
 
+    #endregion
 }

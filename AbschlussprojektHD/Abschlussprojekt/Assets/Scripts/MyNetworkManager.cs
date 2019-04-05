@@ -41,7 +41,6 @@ public class MyNetworkManager : NetworkManager {
         if (Reload)
         {
             SearchPlayer(true);
-            Debug.Log(AllPlayers.Count);
         }
         // reduce Timer. Every x seconds search for new player
         //Timer -= Time.deltaTime;
@@ -54,7 +53,7 @@ public class MyNetworkManager : NetworkManager {
     }
 
     /// <summary>
-    /// Add player to lobby
+    /// Add player to game
     /// </summary>
     /// <param name="_player">The player</param>
     /// <param name="_setWannaPlay">true: Set <see cref="AEntity.wannaPlay"/> value to true</param>
@@ -67,7 +66,7 @@ public class MyNetworkManager : NetworkManager {
     }
 
     /// <summary>
-    /// Remove player from lobby
+    /// Remove player from game
     /// </summary>
     /// <param name="_player">The player</param>
     public static void RemovePlayer(GameObject _player)
@@ -76,6 +75,11 @@ public class MyNetworkManager : NetworkManager {
         allPlayersLobby.Add(p);
         allPlayersPlaying.Remove(p);
         p.wannaPlay = false;
+    }
+
+    public static void AddPlayerLobby(GameObject _player)
+    {
+        Reload = true;
     }
 
     /// <summary>

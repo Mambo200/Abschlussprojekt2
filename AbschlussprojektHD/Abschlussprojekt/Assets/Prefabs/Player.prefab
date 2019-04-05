@@ -52,7 +52,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4847410801062112}
-  - component: {fileID: 114993978144475228}
+  - component: {fileID: 114068656007611040}
   m_Layer: 0
   m_Name: CameraEmpty
   m_TagString: Untagged
@@ -541,6 +541,22 @@ MonoBehaviour:
     i15: 105
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 1
+--- !u!114 &114068656007611040
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1210879338126804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 904022433fa1f9b4085e5475bd84bacb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PlayerParent: {fileID: 1865574214244210}
+  invertX: 0
+  invertY: 1
+  rotateSpeedX: 1
+  rotateSpeedY: 1
 --- !u!114 &114235473622301880
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -773,6 +789,7 @@ MonoBehaviour:
   m_TimeText: {fileID: 114868589801751676}
   m_StartButton: {fileID: 114454457475447404}
   m_CrossHair: {fileID: 114009984754052922}
+  wannaPlay: 0
   m_MovementSpeed: 5
   m_RotationSpeed: 10
   m_JumpForce: 5
@@ -969,22 +986,6 @@ MonoBehaviour:
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
   m_AfterStackBundles: []
---- !u!114 &114993978144475228
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1210879338126804}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0303c19fd3172d54f80b1fce745c07c1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_PlayerParent: {fileID: 1865574214244210}
-  invertX: 0
-  invertY: 1
-  rotateSpeedX: 1
-  rotateSpeedY: 1
 --- !u!136 &136908496619425784
 CapsuleCollider:
   m_ObjectHideFlags: 1

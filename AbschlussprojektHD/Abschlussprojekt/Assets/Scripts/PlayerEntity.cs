@@ -32,7 +32,6 @@ public class PlayerEntity : AEntity
     // Use this for initialization
     void Start ()
     {
-
         m_currentdashtime = m_maxdashtime;
 
         m_DefaultMovementSpeed = m_MovementSpeed;

@@ -1,6 +1,6 @@
 WindowsStandalone
 PlayerPath?
-D:/Benutzerdaten/Uni/Dokumente/Github Zeug/Abschlussprojekt2/AbschlussprojektHD/Abschlussprojekt/Build/Abschlussprojekt.exe
+E:/Tobias/Dokumente/Github Zeug/AbschlussHD/AbschlussprojektHD/Abschlussprojekt/Build/Abschlussprojekt.exe
 SceneListBegin?
 Assets/Scenes/Offline.unity
 Assets/Scenes/Online.unity
@@ -138,7 +138,7 @@ da21fc3f8056b1f91c3dd09c7bf4f90a UnityEngine.Networking.dll:UnityEngine.Networki
 fc061f3ae8a876c0687e86378d4a447c UnityEngine.Networking.dll:UnityEngine.Networking.NetworkTransformChild
 7ca56e063bd071986fff4f513cc4f477 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkTransformVisualizer
 0a006f3734181ba8b26758f0866152c0 UnityEngine.SpatialTracking.dll:UnityEngine.SpatialTracking.TrackedPoseDriver
-4ed70aac38157eaf85c99efc7bf683a0 Assembly-CSharp.dll:.RoundManager
+e172bac8aa2f059bae287d330ce0ce51 Assembly-CSharp.dll:.RoundManager
 21004f82bccaced983eff02f0f6f8f92 Unity.RenderPipelines.Core.Runtime.dll:UnityEngine.Experimental.Rendering.UI.UIFoldout
 970e137a813cc65105401a5ef0432ac0 Unity.RenderPipelines.Core.Runtime.dll:UnityEngine.Experimental.Rendering.GPUCopyAsset
 382b8ef512fa8d6108723a01b57af65b UnityEngine.Analytics.dll:UnityEngine.Analytics.AnalyticsEventTracker
@@ -242,7 +242,7 @@ d1149fe5682a3ee70a726ba031f46047 Unity.RenderPipelines.HighDefinition.Runtime.dl
 fd6eb0ca6b6e50d318246ec5c83d034b Unity.RenderPipelines.Core.Runtime.dll:UnityEngine.Experimental.Rendering.FreeCamera
 c5f33cc703a2edabd3680248cc739e60 Unity.RenderPipelines.HighDefinition.Runtime.dll:UnityEngine.Experimental.Rendering.HDPipeline.HDAdditionalCameraData
 eb565135f5b2f106ea4734c3cad2730e Unity.RenderPipelines.Core.Runtime.dll:UnityEngine.Experimental.Rendering.UI.DebugUIHandlerHBox
-3ef5e87f0c07549cf48dc27aff89cdc0 Assembly-CSharp.dll:.CameraController
 613685919352bb1262878cc04e0f7506 Unity.RenderPipelines.HighDefinition.Runtime.dll:UnityEngine.Experimental.Rendering.HDPipeline.ReflectionSystemSceneDictionary
 e958cc1ee46a616a6e0cde964bfe9918 Unity.RenderPipelines.Core.Runtime.dll:UnityEngine.Experimental.Rendering.UI.DebugUIHandlerContainer
 aae9893fc05b6c8cba8317ed327be0c4 Unity.RenderPipelines.Core.Runtime.dll:UnityEngine.Experimental.Rendering.UI.DebugUIHandlerIndirectFloatField
+3ef5e87f0c07549cf48dc27aff89cdc0 Assembly-CSharp.dll:.CameraController
