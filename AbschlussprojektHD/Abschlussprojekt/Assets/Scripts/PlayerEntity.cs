@@ -56,7 +56,21 @@ public class PlayerEntity : AEntity
         {
             if (transform.position.y <= -500)
             {
-                RpcTeleport(new Vector3(0, 5, 0));
+                if (wannaPlay)
+                {
+                    if (IsChaser)
+                    {
+                        RpcTeleport(new Vector3(0, 5, 0), ETP.CHASERTP);
+                    }
+                    else
+                    {
+                        RpcTeleport(new Vector3(0, 5, 0), ETP.HUNTEDTP);
+                    }
+                }
+                else
+                {
+                    RpcTeleport(SpawnpointHandler.NextLobbypoint(), ETP.LOBBYTP);
+                }
             }
         }
 

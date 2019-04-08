@@ -86,7 +86,8 @@ public class RoundManager : NetworkBehaviour {
             {
                 foreach (PlayerEntity player in MyNetworkManager.AllPlayersPlaying)
                 {
-                    player.RpcTeleport(SpawnpointHandler.NextLobbypoint());
+                    // reset players position to a lobby position
+                    player.RpcTeleport(SpawnpointHandler.NextLobbypoint(), ETP.LOBBYTP);
                     player.RpcResetChaserColor(Chaser.CurrentChaser);
                     player.wannaPlay = false;
                 }
@@ -144,11 +145,11 @@ public class RoundManager : NetworkBehaviour {
             // teleport player to new position
             if (player.IsChaser)
             {
-                player.RpcTeleport(SpawnpointHandler.NextChaserpoint());
+                player.RpcTeleport(SpawnpointHandler.NextChaserpoint(), ETP.CHASERTP);
             }
             else
             {
-                player.RpcTeleport(SpawnpointHandler.NextSpawnpointPlayer());
+                player.RpcTeleport(SpawnpointHandler.NextSpawnpointPlayer(), ETP.HUNTEDTP);
             }
 
             // set current round time for player to save it local

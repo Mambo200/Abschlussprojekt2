@@ -211,7 +211,7 @@ public abstract class AEntity : NetworkBehaviour
     /// <summary>Default variable of Chaser armor. 
     /// If you want to change the current armor of chaser use <see cref="CurrentArmor"/> instead. (DO NOT USE! USE <see cref="ChaserArmor"/> INSTEAD)</summary>
     [SyncVar]
-    private float chaserArmor = 50f;
+    private float chaserArmor = 250f;
     /// <summary>Chaser Armor property. Please change current armor in <see cref="CurrentArmor"/>. (Everyone can get, only Server can set in <see cref="SetDefaultChaserArmor(float)"/>)</summary>
     public float ChaserArmor
     {
@@ -769,9 +769,24 @@ public abstract class AEntity : NetworkBehaviour
     /// </summary>
     /// <param name="_newPosition">The new position.</param>
     [ClientRpc]
-    public void RpcTeleport(Vector3 _newPosition)
+    public void RpcTeleport(Vector3 _newPosition, ETP _tpType)
     {
         gameObject.transform.position = _newPosition;
+
+        switch (_tpType)
+        {
+            case ETP.LOBBYTP:
+                LobbyUINotReady();
+                break;
+            case ETP.HUNTEDTP:
+                GameUI();
+                break;
+            case ETP.CHASERTP:
+                GameUI();
+                break;
+            default:
+                break;
+        }
     }
     /// <summary>
     /// Set new Position of Player (Server Only)
@@ -816,12 +831,12 @@ public abstract class AEntity : NetworkBehaviour
     public void RpcSetChaserColor(GameObject _chaser, GameObject _lastChaser)
     {
         if (_chaser != null)
-            _chaser.GetComponent<Renderer>().material.color = Color.red;
+            _chaser.GetComponent<Renderer>().material = mat[0];
         else
             Debug.Log("current chaser is null");
 
         if (_lastChaser != null)
-            _lastChaser.GetComponent<Renderer>().material.color = Color.white;
+            _lastChaser.GetComponent<Renderer>().material = mat[1];
         else
             Debug.Log("last chaser is null");
     }
@@ -834,9 +849,10 @@ public abstract class AEntity : NetworkBehaviour
     public void RpcResetChaserColor(GameObject _chaser)
     {
         if (_chaser != null)
-            _chaser.GetComponent<Renderer>().material.color = Color.white;
+            _chaser.GetComponent<PlayerEntity>().m_body.GetComponent<Renderer>().material.color = Color.white;
         else
             Debug.Log("current chaser is null");
+
     }
 
     /// <summary>
@@ -1001,6 +1017,7 @@ public abstract class AEntity : NetworkBehaviour
     /// </summary>
     protected void LobbyUIReady()
     {
+        if (!isLocalPlayer) return;
         m_UI.gameObject.SetActive(true);
         m_HPText.gameObject.SetActive(true);
         m_SPText.gameObject.SetActive(true);
@@ -1014,6 +1031,7 @@ public abstract class AEntity : NetworkBehaviour
     /// </summary>
     protected void GameUI()
     {
+        if (!isLocalPlayer) return;
         m_UI.gameObject.SetActive(true);
         m_StartButton.gameObject.SetActive(false);
         m_HPText.gameObject.SetActive(true);
@@ -1027,6 +1045,7 @@ public abstract class AEntity : NetworkBehaviour
     /// </summary>
     protected void JoinUI()
     {
+        if (!isLocalPlayer) return;
         m_UI.gameObject.SetActive(true);
         m_StartButton.gameObject.SetActive(false);
         m_HPText.gameObject.SetActive(false);
