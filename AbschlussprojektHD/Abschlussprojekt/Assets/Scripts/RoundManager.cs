@@ -17,7 +17,7 @@ public class RoundManager : NetworkBehaviour {
         set
         {
             if (isServer)
-                roundCount++;
+                roundCount = value;
         }
     }
 
@@ -77,6 +77,7 @@ public class RoundManager : NetworkBehaviour {
         if (!isServer)
             return;
 
+        // check if player playing list is more than minimum count
         if (MyNetworkManager.AllPlayersPlaying.Count < minimumPlayers)
         {
             // if no round has started yet return
