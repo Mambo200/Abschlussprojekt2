@@ -62,6 +62,9 @@ public class CameraController : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Y))
             invertY = !invertY;
 #endif
+        // Check Collision
+        CheckWall();
+
         // do rotation
         Rotate(x, y);
     }
@@ -76,5 +79,23 @@ public class CameraController : MonoBehaviour {
 
         // set rotation of parent
         m_PlayerParent.transform.eulerAngles = new Vector3(m_PlayerParent.transform.eulerAngles.x, _y, m_PlayerParent.transform.eulerAngles.z);
+    }
+
+    private void CheckWall()
+    {
+        Vector3 dir = this.GetComponentInChildren<Transform>().position - m_PlayerParent.transform.position;
+        Ray r = new Ray(m_PlayerParent.transform.position, dir);
+        RaycastHit hit;
+        Physics.Raycast(r, out hit);
+        Debug.DrawLine(m_PlayerParent.transform.position, this.transform.position, Color.black, 5f);
+        Debug.DrawRay(r.origin, r.direction);
+        //Debug.Log(
+        //    "(" + m_PlayerParent.transform.position.x + "/" +
+        //    m_PlayerParent.transform.position.y + "/" +
+        //    m_PlayerParent.transform.position.z  + ")"+ " /// " + "(" + 
+        //    (transform.position - m_PlayerParent.transform.position).x + "/" +
+        //    (transform.position - m_PlayerParent.transform.position).y + "/" +
+        //    (transform.position - m_PlayerParent.transform.position).z + ")");
+        Debug.Log(dir);
     }
 }
