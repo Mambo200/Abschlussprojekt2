@@ -95,7 +95,7 @@ public abstract class AEntity : NetworkBehaviour
 
     /// <summary>Max SP variable (DO NOT USE! USE <see cref="MaxSP"/> INSTEAD)</summary>
     [SyncVar]
-    private float maxSP = 150;
+    private float maxSP = 100;
     /// <summary>Max SP property (Everyone can get, only Server can set in <see cref="SetMaxSP(float)"/>)</summary>
     public float MaxSP
     {
@@ -115,14 +115,12 @@ public abstract class AEntity : NetworkBehaviour
             RpcChangeTextSP((int)currentSP, maxSP);
 
         }
-        /// <summary>Max HP property (Everyone can get, only Server can set)</summary>
-    /// <summary>Max HP property (Everyone can get, only Server can set)</summary>
     }
 
     /// <summary>Current SP variable (DO NOT USE! USE <see cref="CurrentSP"/> INSTEAD)</summary>
     [SyncVar]
     private float currentSP;
-    /// <summary>Current HP property (Everyone can get, only Server can set in <see cref="SetCurrentSP(float)"/>)</summary>
+    /// <summary>Current SP property (Everyone can get, only Server can set in <see cref="SetCurrentSP(float)"/>)</summary>
     public float CurrentSP
     {
         get { return currentSP; }
@@ -427,6 +425,11 @@ public abstract class AEntity : NetworkBehaviour
     public void SetCurrentSP (float _newCurrentSP)
     {
         CurrentSP = _newCurrentSP;
+    }
+
+    public void SetReducedSP (float _reduceSP)
+    {
+        CurrentSP = CurrentSP - _reduceSP;
     }
 
     /// <summary>

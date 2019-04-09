@@ -20,9 +20,24 @@ public class PlayerEntity : AEntity
 
     int jumpcount;
 
-    float timeStamp;
-    
-    
+    public float m_maxdashtime = 1.0f;
+
+    public float m_dashstopspeed = 0.25f;
+
+    public float m_currentdashtime = 0f;
+
+    public float m_resetdashtime = 2f;
+
+    private float m_DefaultMovementSpeed;
+
+    public float m_reduceSP = 10f;
+
+    public float cooldowntime = 1f;
+
+    float cooldownstart = 0f;
+
+    float timestamp;
+
     ///<summary>Movement Speed of Player</summary>
     public float m_MovementSpeed;
     ///<summary>Speed with which the Player can rotate</summary>
@@ -50,6 +65,10 @@ public class PlayerEntity : AEntity
     {
         if (!isLocalPlayer)
             return;
+
+        Debug.Log(CurrentSP);
+
+        
 
         // is player fell of the stage reset position
         if (isServer)
@@ -108,17 +127,9 @@ public class PlayerEntity : AEntity
             walljumpDir = dir;
         }
 
-         
-
-
         Move(dir);
 
-        float timeStamp = Time.time + 2;
-
-        
-        
-            Dash(dir);
-
+        Dash(dir);
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -179,15 +190,7 @@ public class PlayerEntity : AEntity
 
     
 
-    public float m_maxdashtime = 1.0f;
-
-    public float m_dashstopspeed = 0.25f;
-
-    public float m_currentdashtime = 0f;
-
-    public float m_resetdashtime = 2f;
-
-    private float m_DefaultMovementSpeed;
+    
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -223,65 +226,81 @@ public class PlayerEntity : AEntity
 
     private void Dash(Vector3 _direction)
     {
-        
-        
-        #region ---DASH RIGHT---
-        if(Input.GetButtonDown("LeftShift")  && Input.GetButton("D_Key") || Input.GetButtonDown("D_Key") && Input.GetButton("LeftShift"))
+        if (Time.time > timestamp && CurrentSP > 0)
         {
-
-            m_currentdashtime = 0.0f;
-
-            if (m_currentdashtime < m_maxdashtime)
-            {
-                m_MovementSpeed = 20f;
-            }
             
-        }
-        #endregion
 
-        #region ---DASH LEFT---
-        if (Input.GetButtonDown("LeftShift") && Input.GetButton("A_Key") || Input.GetButtonDown("A_Key") && Input.GetButton("LeftShift"))
-        {
-
-            m_currentdashtime = 0.0f;
-
-            if (m_currentdashtime < m_maxdashtime)
+            #region ---DASH RIGHT---
+            if (Input.GetButtonDown("LeftShift")  && Input.GetButton("D_Key") || Input.GetButtonDown("D_Key") && Input.GetButton("LeftShift"))
             {
-                m_MovementSpeed = 20f;
+                timestamp = Time.time + cooldowntime;
+
+                m_currentdashtime = 0.0f;
+
+                SetReducedSP(m_reduceSP);
+
+                if (m_currentdashtime < m_maxdashtime)
+                {
+                    m_MovementSpeed = 20f;
+                }
+            
             }
+            #endregion
 
-        }
-        #endregion
-
-        #region ---DASH FORWARD---
-        if (Input.GetButtonDown("LeftShift") && Input.GetButton("W_Key") || Input.GetButtonDown("W_Key") && Input.GetButton("LeftShift"))
-        {
-
-            m_currentdashtime = 0.0f;
-
-            if (m_currentdashtime < m_maxdashtime)
+            #region ---DASH LEFT---
+            if (Input.GetButtonDown("LeftShift") && Input.GetButton("A_Key") || Input.GetButtonDown("A_Key") && Input.GetButton("LeftShift"))
             {
-                m_MovementSpeed = 20f;
+                timestamp = Time.time + cooldowntime;
+
+                m_currentdashtime = 0.0f;
+
+                SetReducedSP(m_reduceSP);
+
+                if (m_currentdashtime < m_maxdashtime)
+                {
+                    m_MovementSpeed = 20f;
+                }
+
             }
+            #endregion
 
-        }
-        #endregion
-
-        #region ---DASH BACKWARDS---
-        if (Input.GetButtonDown("LeftShift") && Input.GetButton("S_Key") || Input.GetButtonDown("S_Key") && Input.GetButton("LeftShift"))
-        {
-
-            m_currentdashtime = 0.0f;
-
-            if (m_currentdashtime < m_maxdashtime)
+            #region ---DASH FORWARD---
+            if (Input.GetButtonDown("LeftShift") && Input.GetButton("W_Key") || Input.GetButtonDown("W_Key") && Input.GetButton("LeftShift"))
             {
-                m_MovementSpeed = 20f;
-            }
+                timestamp = Time.time + cooldowntime;
 
-        }
-        #endregion
+                m_currentdashtime = 0.0f;
+
+                SetReducedSP(m_reduceSP);
+
+                if (m_currentdashtime < m_maxdashtime)
+                {
+                    m_MovementSpeed = 20f;
+                }
+
+            }
+            #endregion
+
+            #region ---DASH BACKWARDS---
+            if (Input.GetButtonDown("LeftShift") && Input.GetButton("S_Key") || Input.GetButtonDown("S_Key") && Input.GetButton("LeftShift"))
+            {
+                timestamp = Time.time + cooldowntime;
+
+                m_currentdashtime = 0.0f;
+
+                SetReducedSP(m_reduceSP);
+
+                if (m_currentdashtime < m_maxdashtime)
+                {
+                    m_MovementSpeed = 20f;
+                }
+
+            }
+            #endregion
         
+        }
 
+        
         
 
         m_currentdashtime += m_dashstopspeed;
