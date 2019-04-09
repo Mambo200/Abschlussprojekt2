@@ -230,6 +230,7 @@ GameObject:
   - component: {fileID: 114981248610252630}
   - component: {fileID: 114283413908098294}
   - component: {fileID: 114039371490206434}
+  - component: {fileID: 65188165843715140}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -418,6 +419,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!65 &65188165843715140
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1932811859583234}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!81 &81254368556299704
 AudioListener:
   m_ObjectHideFlags: 1
@@ -557,6 +570,7 @@ MonoBehaviour:
   invertY: 1
   rotateSpeedX: 1
   rotateSpeedY: 1
+  m_camera: {fileID: 20600145126546602}
 --- !u!114 &114235473622301880
 MonoBehaviour:
   m_ObjectHideFlags: 1

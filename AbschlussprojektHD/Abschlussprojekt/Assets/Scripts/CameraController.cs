@@ -18,6 +18,8 @@ public class CameraController : MonoBehaviour {
     /// <summary>Rotate speed of y Axis</summary>
     [Range(0.1f, 10f)]
     public float rotateSpeedY = 1;
+    [SerializeField]
+    private Camera m_camera;
 
     [DllImport("user32.dll")]
     static extern bool SetCursorPos(int X, int Y);
@@ -83,19 +85,16 @@ public class CameraController : MonoBehaviour {
 
     private void CheckWall()
     {
-        Vector3 dir = this.GetComponentInChildren<Transform>().position - m_PlayerParent.transform.position;
+        Vector3 dir = m_camera.transform.position - m_PlayerParent.transform.position;
         Ray r = new Ray(m_PlayerParent.transform.position, dir);
         RaycastHit hit;
         Physics.Raycast(r, out hit);
-        Debug.DrawLine(m_PlayerParent.transform.position, this.transform.position, Color.black, 5f);
         Debug.DrawRay(r.origin, r.direction);
-        //Debug.Log(
-        //    "(" + m_PlayerParent.transform.position.x + "/" +
-        //    m_PlayerParent.transform.position.y + "/" +
-        //    m_PlayerParent.transform.position.z  + ")"+ " /// " + "(" + 
-        //    (transform.position - m_PlayerParent.transform.position).x + "/" +
-        //    (transform.position - m_PlayerParent.transform.position).y + "/" +
-        //    (transform.position - m_PlayerParent.transform.position).z + ")");
-        Debug.Log(dir);
+        Debug.Log(hit.collider.name);
+
+        if (hit.collider.name != "Main Camera")
+        {
+            m_camera.transform.Translate(0, 0, 1, this.transform);
+        }
     }
 }
