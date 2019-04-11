@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class PlayerEntity : AEntity
 {
+    public bool moved;
+
     bool isgrounded;
 
     float distancetoground;
@@ -73,7 +75,7 @@ public class PlayerEntity : AEntity
                 }
             }
         }
-
+        moved = false;
         TimeCounter();
         
 
@@ -91,6 +93,7 @@ public class PlayerEntity : AEntity
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Jump();
+            moved = true;
         }
 
         // Shoot
@@ -102,6 +105,8 @@ public class PlayerEntity : AEntity
         // Mouse Input
         Vector3 dir = Input.GetAxisRaw("Horizontal") * transform.right +
             Input.GetAxisRaw("Vertical") * transform.forward;
+
+        if (dir != Vector3.zero) moved = true;
 
         if(dir.x != 0 && dir.z != 0 && isgrounded)
         {

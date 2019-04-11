@@ -107,7 +107,8 @@ public class RoundManager : NetworkBehaviour {
         // if not enough particitians are there return
         if (particitians < minimumPlayers) return;
 
-        CurrentRoundTime -= Time.deltaTime;
+        if(MyNetworkManager.AllPlayersPlaying.Count > 1)
+            CurrentRoundTime -= Time.deltaTime;
 
         if (CurrentRoundTime == 0)
         {

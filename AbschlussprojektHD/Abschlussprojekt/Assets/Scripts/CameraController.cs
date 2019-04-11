@@ -6,12 +6,35 @@ using System.Runtime.InteropServices;
 
 public class CameraController : MonoBehaviour {
 
+    /// <summary>parent object</summary>
     [SerializeField]
     private GameObject m_PlayerParent;
+    /// <summary>playerentity of parent object. USE <see cref="Playerentity"/></summary>
+    private PlayerEntity m_Playerentity;
+    /// <summary>playerentity of parent object</summary>
+    private PlayerEntity Playerentity
+    {
+        get
+        {
+            if (m_Playerentity == null)
+            {
+                m_Playerentity = m_PlayerParent.GetComponent<PlayerEntity>();
+            }
+            return m_Playerentity;
+        }
+    }
+    private Vector2 currentXY = new Vector2();
+    private Vector2 sensitivity = new Vector2();
     /// <summary>Invert X mouse input</summary>
     public bool invertX = false;
     /// <summary>Invert Y mouse input</summary>
     public bool invertY = false;
+    /// <summary>allowed distance from player to camera</summary>
+    public float distanceToCamera = 2f;
+    /// <summary>allowed distance from camera to objects</summary>
+    private float distanceFromCamera = 3f;
+    /// <summary>the speed with which the camera goes back (NOT NEGATIVE)</summary>
+    public float cameraSpeed = 1f;
     /// <summary>Rotate speed of x Axis</summary>
     [Range(0.1f, 10f)]
     public float rotateSpeedX = 1;
@@ -21,6 +44,12 @@ public class CameraController : MonoBehaviour {
     [SerializeField]
     private Camera m_camera;
 
+    /// <summary>
+    /// Set mouse position (DO NOT USE!!!)
+    /// </summary>
+    /// <param name="X">x position of mouse</param>
+    /// <param name="Y">y position of mouse</param>
+    /// <returns></returns>
     [DllImport("user32.dll")]
     static extern bool SetCursorPos(int X, int Y);
     // Use this for initialization
@@ -48,6 +77,7 @@ public class CameraController : MonoBehaviour {
         //    SetCursorPos(width / 2, height / 2);
         //}
 
+
         // get mouse rotation
         float x = Input.GetAxis("Mouse Y");
         float y = Input.GetAxis("Mouse X");
@@ -57,6 +87,8 @@ public class CameraController : MonoBehaviour {
             x = -x;
         if (invertX)
             y = -y;
+
+        if (x != 0 && y != 0) Playerentity.moved = true;
 
 #if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.Z))
@@ -85,16 +117,58 @@ public class CameraController : MonoBehaviour {
 
     private void CheckWall()
     {
+        // get direction
         Vector3 dir = m_camera.transform.position - m_PlayerParent.transform.position;
-        Ray r = new Ray(m_PlayerParent.transform.position, dir);
-        RaycastHit hit;
-        Physics.Raycast(r, out hit);
-        Debug.DrawRay(r.origin, r.direction);
-        Debug.Log(hit.collider.name);
 
-        if (hit.collider.name != "Main Camera")
+        // create ray
+        Ray playerToCamera = new Ray(m_PlayerParent.transform.position, dir);
+        Ray CameraToWorld = new Ray(m_camera.transform.position, dir);
+
+        // check hit of each raycast
+        RaycastHit hitPlayerToCamera;
+        Physics.Raycast(playerToCamera, out hitPlayerToCamera);
+
+        RaycastHit hitCameraToWorld;
+        Physics.Raycast(CameraToWorld, out hitCameraToWorld);
+
+        #region debuglog
+        Debug.DrawRay(CameraToWorld.origin, CameraToWorld.direction);
+        #endregion
+
+        bool cameraContinue = true;
+
+        // reset camera if something goes wrong
+        if (hitPlayerToCamera.collider.name != "Main Camera")
         {
-            m_camera.transform.Translate(0, 0, 1, this.transform);
+            m_camera.transform.Translate(0, 0, hitPlayerToCamera.distance, Space.Self);
+            return;
+        }
+
+        // check if ray from camera hits an object
+        if (hitCameraToWorld.distance < distanceFromCamera &&
+            hitCameraToWorld.collider != null)
+        {
+            if (hitCameraToWorld.collider.tag == "Player") return;
+            
+            cameraContinue = false;
+            // get distance
+            float d = distanceFromCamera - hitCameraToWorld.distance;
+            m_camera.transform.Translate(0, 0, d, Space.Self);
+            Debug.Log("Camera to World");
+        }
+
+        // exit if camera was moved
+        if (!cameraContinue) return;
+
+        // check distance from player to camera
+        if (hitPlayerToCamera.distance < distanceToCamera)
+        {
+
+            //if (hitCameraToWorld.distance < distanceFromCamera * 1.1f)
+            //    return;
+            // move camera back
+            m_camera.transform.Translate(0, 0, -(cameraSpeed * Time.deltaTime), Space.Self);
+            Debug.Log("Player to Camera");
         }
     }
 }
