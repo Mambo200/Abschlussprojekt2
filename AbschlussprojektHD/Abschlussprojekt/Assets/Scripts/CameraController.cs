@@ -23,8 +23,6 @@ public class CameraController : MonoBehaviour {
             return m_Playerentity;
         }
     }
-    private Vector2 currentXY = new Vector2();
-    private Vector2 sensitivity = new Vector2();
     /// <summary>Invert X mouse input</summary>
     public bool invertX = false;
     /// <summary>Invert Y mouse input</summary>
@@ -33,6 +31,8 @@ public class CameraController : MonoBehaviour {
     public float distanceToCamera = 2f;
     /// <summary>allowed distance from camera to objects</summary>
     private float distanceFromCamera = 3f;
+    /// <summary>allowed min distance from player to camera</summary>
+    public float minCameraDistanceToPlayer;
     /// <summary>the speed with which the camera goes back (NOT NEGATIVE)</summary>
     public float cameraSpeed = 1f;
     /// <summary>Rotate speed of x Axis</summary>
@@ -43,6 +43,7 @@ public class CameraController : MonoBehaviour {
     public float rotateSpeedY = 1;
     [SerializeField]
     private Camera m_camera;
+    private Vector3 lastValidAxis;
 
     /// <summary>
     /// Set mouse position (DO NOT USE!!!)
@@ -101,6 +102,8 @@ public class CameraController : MonoBehaviour {
 
         // do rotation
         Rotate(x, y);
+
+        //m_camera.transform.LookAt(this.transform);
     }
 
     private void Rotate(float _x, float _y)
@@ -109,10 +112,39 @@ public class CameraController : MonoBehaviour {
         _x += gameObject.transform.eulerAngles.x;
         _y *= rotateSpeedY;
         _y += m_PlayerParent.gameObject.transform.eulerAngles.y;
+
+        // clamp x
+        if (_x >= 0 && _x <= 180)
+        {
+            if (_x >= 50)
+            {
+                _x = 50;
+            }
+        }
+        else if (_x >= 190 && _x <= 360)
+        {
+            if (_x <= 290)
+            {
+                _x = 290;
+            }
+        }
+
         gameObject.transform.eulerAngles = new Vector3(_x, gameObject.transform.eulerAngles.y, gameObject.transform.eulerAngles.z);
 
         // set rotation of parent
         m_PlayerParent.transform.eulerAngles = new Vector3(m_PlayerParent.transform.eulerAngles.x, _y, m_PlayerParent.transform.eulerAngles.z);
+
+        m_camera.transform.LookAt(this.transform);
+
+        Debug.Log(m_camera.transform.localEulerAngles);
+
+        if (m_camera.transform.localEulerAngles.y > 100)
+        {
+            //m_camera.transform.localEulerAngles.Set(lastValidAxis.x, lastValidAxis.y, lastValidAxis.z);
+            m_camera.transform.localRotation = Quaternion.Euler(lastValidAxis);
+        }
+        else
+            lastValidAxis = m_camera.transform.localEulerAngles ;
     }
 
     private void CheckWall()
@@ -126,10 +158,12 @@ public class CameraController : MonoBehaviour {
 
         // check hit of each raycast
         RaycastHit hitPlayerToCamera;
-        Physics.Raycast(playerToCamera, out hitPlayerToCamera);
+        Physics.SphereCast(playerToCamera, 1f, out hitPlayerToCamera);
+        //Physics.Raycast(playerToCamera, out hitPlayerToCamera);
 
         RaycastHit hitCameraToWorld;
-        Physics.Raycast(CameraToWorld, out hitCameraToWorld);
+        Physics.SphereCast(CameraToWorld, 1f, out hitCameraToWorld); 
+        //Physics.Raycast(CameraToWorld, out hitCameraToWorld);
 
         #region debuglog
         Debug.DrawRay(CameraToWorld.origin, CameraToWorld.direction);
@@ -140,7 +174,8 @@ public class CameraController : MonoBehaviour {
         // reset camera if something goes wrong
         if (hitPlayerToCamera.collider.name != "Main Camera")
         {
-            m_camera.transform.Translate(0, 0, hitPlayerToCamera.distance, Space.Self);
+            m_camera.transform.position = hitPlayerToCamera.point;
+            //m_camera.transform.Translate(0, 0, hitPlayerToCamera.distance, Space.Self);
             return;
         }
 
@@ -151,6 +186,7 @@ public class CameraController : MonoBehaviour {
             if (hitCameraToWorld.collider.tag == "Player") return;
             
             cameraContinue = false;
+
             // get distance
             float d = distanceFromCamera - hitCameraToWorld.distance;
             m_camera.transform.Translate(0, 0, d, Space.Self);
@@ -163,12 +199,14 @@ public class CameraController : MonoBehaviour {
         // check distance from player to camera
         if (hitPlayerToCamera.distance < distanceToCamera)
         {
-
             //if (hitCameraToWorld.distance < distanceFromCamera * 1.1f)
             //    return;
+
             // move camera back
             m_camera.transform.Translate(0, 0, -(cameraSpeed * Time.deltaTime), Space.Self);
             Debug.Log("Player to Camera");
         }
+
+        //m_camera.transform.rotation.SetLookRotation(this.transform.position);
     }
 }
