@@ -16,6 +16,9 @@ public abstract class AEntity : NetworkBehaviour
     ///<summary>Player Camera</summary>
     [SerializeField]
     protected Camera m_playerCamera;
+    ///<summary>Object which Camera needs for orientation</summary>
+    [SerializeField]
+    protected GameObject CineMachineObject;
 
     #region UI Variables
     ///<summary>Player UI</summary>
@@ -43,8 +46,24 @@ public abstract class AEntity : NetworkBehaviour
 
     ///<summary>local time of current Round</summary>
     private float m_localRoundTime;
-    ///<summary>CAREFUL!!! Will only be set when Roundmanager is active AND Player shoot at someone</summary>
-    private RoundManager RoundManager { get; set; }
+    ///<summary>Round manager in this scene</summary>
+    private RoundManager roundManager;
+    ///<summary>Round manager in this scene</summary>
+    private RoundManager RoundManager
+    {
+        get
+        {
+            if (roundManager == null)
+            {
+                // get gameobject
+                GameObject go = GameObject.Find("RoundManager");
+                // set roundmanager
+                roundManager = go.GetComponent<RoundManager>();
+            }
+            return roundManager;
+        }
+    }
+
 
     #region Game Variables
     /// <summary>Max HP variable (DO NOT USE! USE <see cref="MaxHP"/> INSTEAD)</summary>
@@ -883,25 +902,6 @@ public abstract class AEntity : NetworkBehaviour
         if (CurrentHP <= 0)
             return;
 
-        // get roundmanager
-#if UNITY_EDITOR
-        if (RoundManager == null)
-        {
-            // get gameobject
-            GameObject go = GameObject.Find("RoundManager");
-            // if gameobject is still null return warning
-            if (go == null)
-            {
-                Debug.LogWarning("Roundmanager (Chaser Script and RoundManager Script) is disabled!");
-                return;
-            }
-            RoundManager = go.GetComponent<RoundManager>();
-        }
-#else
-        if (RoundManager == null)
-            RoundManager = GameObject.Find("Rundenmanager").GetComponent<RoundManager>();
-#endif
-
         // if round is over no damage will be applied
         if (RoundManager.CurrentRoundTime <= 0)
             return;
@@ -978,7 +978,7 @@ public abstract class AEntity : NetworkBehaviour
             if (isServer)
             {
                 // check if other player clicked start
-                if (MyNetworkManager.AllPlayersPlaying.Count < 1) return;
+                if (MyNetworkManager.AllPlayersPlaying.Count + 1 < RoundManager.minimumPlayers) return;
             }
             m_StartButton.GetComponentInChildren<Text>().text = "Cancel";
 
@@ -1013,6 +1013,9 @@ public abstract class AEntity : NetworkBehaviour
         m_CrossHair.gameObject.SetActive(false);
         m_TimeText.gameObject.SetActive(false);
         m_StartButton.gameObject.SetActive(true);
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     /// <summary>
@@ -1027,6 +1030,9 @@ public abstract class AEntity : NetworkBehaviour
         m_CrossHair.gameObject.SetActive(true);
         m_TimeText.gameObject.SetActive(true);
         m_StartButton.gameObject.SetActive(true);
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     /// <summary>
@@ -1041,6 +1047,9 @@ public abstract class AEntity : NetworkBehaviour
         m_SPText.gameObject.SetActive(true);
         m_CrossHair.gameObject.SetActive(true);
         m_TimeText.gameObject.SetActive(true);
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     /// <summary>
@@ -1056,6 +1065,9 @@ public abstract class AEntity : NetworkBehaviour
         m_CrossHair.gameObject.SetActive(false);
         m_TimeText.gameObject.SetActive(false);
         m_UI.gameObject.SetActive(false);
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     #endregion

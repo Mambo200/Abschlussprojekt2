@@ -1131,7 +1131,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9e61144fd10c8f489aa3b16fb8ab8cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minimumPlayers: 2
+  minimumPlayers: 1
   currentRoundTime: 0
 --- !u!4 &771162062
 Transform:
