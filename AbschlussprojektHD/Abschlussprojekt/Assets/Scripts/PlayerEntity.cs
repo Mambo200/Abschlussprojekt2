@@ -93,9 +93,8 @@ public class PlayerEntity : AEntity
         TimeCounter();
         
 
-        Debug.DrawRay(transform.position, Vector3.down, Color.green);
-
         isgrounded = Physics.Raycast(transform.position, Vector3.down, distancetoground);
+        Debug.DrawRay(transform.position, Vector3.down, Color.cyan);
 
         if (isgrounded == true)
         {
@@ -132,7 +131,7 @@ public class PlayerEntity : AEntity
 
         Dash(dir);
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.E))
         {
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;

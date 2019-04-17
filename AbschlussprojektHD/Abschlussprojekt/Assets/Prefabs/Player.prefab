@@ -1496,6 +1496,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 5c9050dbb30d06d4ebe6c80eea79f52a, type: 2}
   m_body: {fileID: 1194594503269390}
   m_playerCamera: {fileID: 20783552312757088}
+  m_CameraEmpty: {fileID: 1210879338126804}
   CineMachineObject: {fileID: 1975998348259120}
   m_UI: {fileID: 1120907701043476}
   m_Canvas: {fileID: 223198283133102758}

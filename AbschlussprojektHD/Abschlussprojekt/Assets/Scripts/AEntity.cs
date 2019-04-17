@@ -898,6 +898,7 @@ public abstract class AEntity : NetworkBehaviour
     [Command]
     protected void CmdHit(Vector3 _origin, Vector3 _direction)
     {
+        Debug.DrawLine(_origin, _direction * 20, Color.green);
         // if player dont have HP left return
         if (CurrentHP <= 0)
             return;
@@ -910,6 +911,7 @@ public abstract class AEntity : NetworkBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {
+            Debug.Log(hit.collider.gameObject.name);
             // check if hit object is player
             if (hit.collider.gameObject.tag != "Player")
                 return;
