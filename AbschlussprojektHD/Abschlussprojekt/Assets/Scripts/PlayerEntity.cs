@@ -63,12 +63,6 @@ public class PlayerEntity : AEntity
 	// Update is called once per frame
 	void Update ()
     {
-        if (!isLocalPlayer)
-            return;
-
-        Debug.Log(CurrentSP);
-
-        
 
         // is player fell of the stage reset position
         if (isServer)
@@ -93,6 +87,9 @@ public class PlayerEntity : AEntity
             }
         }
 
+        if (!isLocalPlayer)
+            return;
+
         TimeCounter();
         
 
@@ -116,11 +113,15 @@ public class PlayerEntity : AEntity
         if (Input.GetAxisRaw("Fire1") > 0)
         {
             Shoot();
-        } 
-        
+        }
+
+        var forward = m_playerCamera.transform.forward;
+        forward.y = 0;
+        var right = m_playerCamera.transform.right;
+        right.y = 0;
         // Mouse Input
-        Vector3 dir = Input.GetAxisRaw("Horizontal") * transform.right +
-            Input.GetAxisRaw("Vertical") * transform.forward;
+        Vector3 dir = Input.GetAxisRaw("Horizontal") * right +
+            Input.GetAxisRaw("Vertical") * forward;
 
         if(dir.x != 0 && dir.z != 0 && isgrounded)
         {
@@ -171,6 +172,13 @@ public class PlayerEntity : AEntity
 
     private void Move(Vector3 _direction)
     {
+        Transform t = m_playerCamera.transform;
+        Vector3 pos = (new Vector3(t.position.x, transform.position.y, t.position.z));
+        t.position = pos;
+        //t.position.Set(t.position.x, transform.position.y, t.position.z);
+        //Debug.Log(m_playerCamera.transform.position);
+        //Debug.DrawLine(this.transform.position, t.transform.position, Color.red);
+        transform.LookAt(m_playerCamera.transform.position);
         if (isgrounded)
         {
             Vector3 velocity = _direction.normalized * m_MovementSpeed;
@@ -331,6 +339,7 @@ public class PlayerEntity : AEntity
         base.OnStartLocalPlayer();
         // activate Player Camera
         m_playerCamera.gameObject.SetActive(true);
+        CineMachineObject.gameObject.SetActive(true);
         // activate UI
         m_UI.gameObject.SetActive(true);
         LobbyUINotReady();
