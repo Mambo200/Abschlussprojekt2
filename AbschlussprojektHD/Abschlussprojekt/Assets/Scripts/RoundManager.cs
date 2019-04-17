@@ -5,42 +5,21 @@ using UnityEngine.Networking;
 
 public class RoundManager : NetworkBehaviour {
 
+    public int minimumPlayers;
+
     /// <summary>Round count variable (USE <see cref="RoundCount"/>)</summary>
     [SyncVar]
-    private int roundCount;
+    private int roundCount = 0;
     /// <summary>Round count Property</summary>
     public int RoundCount
     {
         get { return roundCount; }
-        [Server]
         set
         {
-            roundCount++;
+            if (isServer)
+                roundCount = value;
         }
     }
-    /// <summary>Chaser Singleton</summary>
-    private static RoundManager _single;
-    private static object _lock = new object();
-    /// <summary>Roundmanager Singleton Getter</summary>
-    //public static RoundManager Get
-    //{
-    //    get
-    //    {
-    //        if (_single == null)
-    //        {
-    //            lock (_lock)
-    //            {
-    //                if (_single == null)
-    //                {
-    //                    _single = new RoundManager();
-    //                }
-    //            }
-    //        }
-    //
-    //        return _single;
-    //    }
-    //}
-
 
     /// <summary>Time left of current round</summary>
     [SyncVar]
@@ -60,7 +39,7 @@ public class RoundManager : NetworkBehaviour {
         }
     }
 
-    /// <summary>Wait time for next round after round is finished</summary>
+    /// <summary>Wait time for next round to start after round is finished</summary>
     [SyncVar]
     private float tillNextRound = 7;
     public float TillNextRound
@@ -80,7 +59,6 @@ public class RoundManager : NetworkBehaviour {
     {
         get
         {
-
             float time = StartTime;
             time += MyNetworkManager.AllPlayers.Count * PlayerSeconds;
             return time;
@@ -95,12 +73,42 @@ public class RoundManager : NetworkBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        //Debug.Log(CurrentRoundTime + ", " + TillNextRound + ", " + RoundCount);
         // reduce current round time by deltatime each frame
         if (!isServer)
             return;
 
-        CurrentRoundTime -= Time.deltaTime;
+        // check if player playing list is more than minimum count
+        if (MyNetworkManager.AllPlayersPlaying.Count < minimumPlayers)
+        {
+            // if no round has started yet return
+            if (RoundCount == 0) return;
+            if (RoundCount > 0)
+            {
+                foreach (PlayerEntity player in MyNetworkManager.AllPlayersPlaying)
+                {
+                    // reset players position to a lobby position
+                    player.RpcTeleport(SpawnpointHandler.NextLobbypoint(), ETP.LOBBYTP);
+                    player.RpcResetChaserColor(Chaser.CurrentChaser);
+                    player.wannaPlay = false;
+                }
+                Reset();
+                return;
+            }
+        }
+
+        // get through playing list and check if more than 2 players are ready
+        int particitians = 0;
+        foreach (PlayerEntity player in MyNetworkManager.AllPlayersPlaying)
+        {
+            particitians++;
+            if (particitians >= minimumPlayers) break;
+        }
+
+        // if not enough particitians are there return
+        if (particitians < minimumPlayers) return;
+
+        if (MyNetworkManager.AllPlayersPlaying.Count > 1)
+            CurrentRoundTime -= Time.deltaTime;
 
         if (CurrentRoundTime == 0)
         {
@@ -113,6 +121,8 @@ public class RoundManager : NetworkBehaviour {
                 NextRound();
             }
         }
+
+        //Debug.Log(new Vector3(CurrentRoundTime, TillNextRound, RoundCount));
 	}
 
     /// <summary>
@@ -120,16 +130,41 @@ public class RoundManager : NetworkBehaviour {
     /// </summary>
     public void NextRound()
     {
-        // reset hp and sp values for new round and teleport to new position.
-        foreach (PlayerEntity player in MyNetworkManager.AllPlayers)
-        {
-            player.NewRoundReset();
-            player.RpcTeleport(SpawnpointHandler.NextSpawnpoint());
-        }
-        Chaser.Get.ChooseChaser();
+        // rotate new chaser
+        Chaser.ChooseChaser();
 
         TillNextRound = 5f;
         CurrentRoundTime = NextRoundTime;
         RoundCount++;
+
+        // reset hp and sp values for new round and teleport to new position.
+        foreach (PlayerEntity player in MyNetworkManager.AllPlayersPlaying)
+        {
+            // reset stats for player
+            player.NewRoundReset();
+
+            // teleport player to new position
+            if (player.IsChaser)
+            {
+                player.RpcTeleport(SpawnpointHandler.NextChaserpoint(), ETP.CHASERTP);
+            }
+            else
+            {
+                player.RpcTeleport(SpawnpointHandler.NextSpawnpointPlayer(), ETP.HUNTEDTP);
+            }
+
+            // set current round time for player to save it local
+            player.RpcSetRoundTime(currentRoundTime);
+        }
+    }
+
+    /// <summary>
+    /// Reset Timers
+    /// </summary>
+    private void Reset()
+    {
+        RoundCount = 0;
+        CurrentRoundTime = 0;
+        TillNextRound = 7;
     }
 }

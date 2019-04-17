@@ -2,14 +2,68 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody))]
 public abstract class AEntity : NetworkBehaviour
 {
     protected Rigidbody m_rigidbody;
+    ///<summary>0: red / 1: blue</summary>
     public Material[] mat;
     [SerializeField]
-    private GameObject m_body;
+    protected GameObject m_body;
+
+    ///<summary>Player Camera</summary>
+    [SerializeField]
+    protected Camera m_playerCamera;
+    ///<summary>Object which Camera needs for orientation</summary>
+    [SerializeField]
+    protected GameObject CineMachineObject;
+
+    #region UI Variables
+    ///<summary>Player UI</summary>
+    [SerializeField]
+    protected GameObject m_UI;
+    ///<summary>Player Canvas</summary>
+    [SerializeField]
+    protected Canvas m_Canvas;
+    ///<summary>Player HP Text</summary>
+    [SerializeField]
+    protected Text m_HPText;
+    ///<summary>Player SP Text</summary>
+    [SerializeField]
+    protected Text m_SPText;    
+    ///<summary>Player SP Text</summary>
+    [SerializeField]
+    protected Text m_TimeText;
+    ///<summary>Start Button</summary>
+    [SerializeField]
+    protected Button m_StartButton;
+    ///<summary>Cross Hair Image</summary>
+    [SerializeField]
+    protected Image m_CrossHair;
+    #endregion
+
+    ///<summary>local time of current Round</summary>
+    private float m_localRoundTime;
+    ///<summary>Round manager in this scene</summary>
+    private RoundManager roundManager;
+    ///<summary>Round manager in this scene</summary>
+    private RoundManager RoundManager
+    {
+        get
+        {
+            if (roundManager == null)
+            {
+                // get gameobject
+                GameObject go = GameObject.Find("RoundManager");
+                // set roundmanager
+                roundManager = go.GetComponent<RoundManager>();
+            }
+            return roundManager;
+        }
+    }
+
 
     #region Game Variables
     /// <summary>Max HP variable (DO NOT USE! USE <see cref="MaxHP"/> INSTEAD)</summary>
@@ -30,6 +84,8 @@ public abstract class AEntity : NetworkBehaviour
             BeforeMaxHPChanged(value);
             maxHP = value;
             AfterMaxHPChanged();
+            // change UI Text
+            RpcChangeTextHP( currentHP, maxHP);
         }
     }
 
@@ -40,7 +96,6 @@ public abstract class AEntity : NetworkBehaviour
     public float CurrentHP
     {
         get { return currentHP; }
-        [Server]
         private set
         {
             if (!isServer)
@@ -49,15 +104,17 @@ public abstract class AEntity : NetworkBehaviour
                 return;
             }
 
-            BeforeCurrentHPChanged(value);
+            value = BeforeCurrentHPChanged(value);
             currentHP = value;
             AfterCurrentHPChanged();
+            // change UI Text
+            RpcChangeTextHP((int)currentHP, maxHP);
         }
     }
 
     /// <summary>Max SP variable (DO NOT USE! USE <see cref="MaxSP"/> INSTEAD)</summary>
     [SyncVar]
-    private float maxSP = 150;
+    private float maxSP = 100;
     /// <summary>Max SP property (Everyone can get, only Server can set in <see cref="SetMaxSP(float)"/>)</summary>
     public float MaxSP
     {
@@ -73,16 +130,16 @@ public abstract class AEntity : NetworkBehaviour
             BeforeMaxSPChanged(value);
             maxSP = value;
             AfterMaxSPChanged();
+            // change UI Text
+            RpcChangeTextSP((int)currentSP, maxSP);
 
         }
-        /// <summary>Max HP property (Everyone can get, only Server can set)</summary>
-    /// <summary>Max HP property (Everyone can get, only Server can set)</summary>
     }
 
     /// <summary>Current SP variable (DO NOT USE! USE <see cref="CurrentSP"/> INSTEAD)</summary>
     [SyncVar]
     private float currentSP;
-    /// <summary>Current HP property (Everyone can get, only Server can set in <see cref="SetCurrentSP(float)"/>)</summary>
+    /// <summary>Current SP property (Everyone can get, only Server can set in <see cref="SetCurrentSP(float)"/>)</summary>
     public float CurrentSP
     {
         get { return currentSP; }
@@ -94,9 +151,11 @@ public abstract class AEntity : NetworkBehaviour
                 return;
             }
 
-            BeforeCurrentSPChanged(value);
+            value = BeforeCurrentSPChanged(value);
             currentSP = value;
             AfterCurrentSPChanged();
+            // change UI Text
+            RpcChangeTextSP(currentSP, maxSP);
         }
     }
 
@@ -115,9 +174,9 @@ public abstract class AEntity : NetworkBehaviour
                 return;
             }
 
-            BeforeKillCountChanged(value);
+            BeforeKillCountPlayerChanged(value);
             killCount = value;
-            AfterKillCountChanged();
+            AfterKillCountPlayerChanged();
         }
 
     }
@@ -147,7 +206,7 @@ public abstract class AEntity : NetworkBehaviour
     /// <summary>Default variable of Player armor. 
     /// If you want to change the current armor of player use <see cref="CurrentArmor"/> instead. (DO NOT USE! USE <see cref="PlayerArmor"/> INSTEAD)</summary>
     [SyncVar]
-    private float playerArmor = 0f;
+    private float playerArmor = 1f;
     /// <summary>Player Armor property. Please change current armor in <see cref="CurrentArmor"/>. (Everyone can get, only Server can set in <see cref="SetDefaultPlayerArmor(float)"/>)</summary>
     public float PlayerArmor
     {
@@ -169,7 +228,7 @@ public abstract class AEntity : NetworkBehaviour
     /// <summary>Default variable of Chaser armor. 
     /// If you want to change the current armor of chaser use <see cref="CurrentArmor"/> instead. (DO NOT USE! USE <see cref="ChaserArmor"/> INSTEAD)</summary>
     [SyncVar]
-    private float chaserArmor = 50f;
+    private float chaserArmor = 250f;
     /// <summary>Chaser Armor property. Please change current armor in <see cref="CurrentArmor"/>. (Everyone can get, only Server can set in <see cref="SetDefaultChaserArmor(float)"/>)</summary>
     public float ChaserArmor
     {
@@ -271,14 +330,52 @@ public abstract class AEntity : NetworkBehaviour
             AfterChaserChanged();
         }
     }
+
+    [SyncVar]
+    private int chaserKillCount = 0;
+    public int ChaserKillCount
+    {
+        get { return chaserKillCount; }
+        private set
+        {
+            if (!isServer)
+            {
+                Debug.Log("Client tried to set Chaser kill count to " + value, this.gameObject);
+                return;
+            }
+
+            BeforeKillCountChaserChanged(value);
+            chaserKillCount = value;
+            AfterKillCountChaserChanged();
+        }
+    }
     #endregion
 
-    #region Override Functions
-    public override void OnStartServer()
+    [HideInInspector]
+    public bool wannaPlay = false;
+
+    /// <summary>Current round time property</summary>
+    public float LocalRoundTime
     {
-        base.OnStartServer();
-        Initialize();
+        get { return m_localRoundTime; }
+        set
+        {
+            if (value <= 0)
+                m_localRoundTime = 0;
+            else
+                m_localRoundTime = value;
+
+            // change text
+            m_TimeText.text = ((int)m_localRoundTime).ToString();
+        }
     }
+
+    #region Override Functions
+    //public override void OnStartServer()
+    //{
+    //    base.OnStartServer();
+    //    Initialize();
+    //}
 
     public override void OnStartClient()
     {
@@ -311,6 +408,27 @@ public abstract class AEntity : NetworkBehaviour
     }
 
     /// <summary>
+    /// Set new current HP using Property (<see cref="CurrentHP"/>)
+    /// </summary>
+    /// <param name="_damage">Damage taken</param>
+    public void GetDamage(float _damage, PlayerEntity _enemy)
+    {
+        // when enemy is chaser multiply damage
+        if (_enemy.IsChaser)
+        {
+            _damage *= Chaser.DamageMultiplier;
+        }
+        CurrentHP -= _damage / CurrentArmor;
+
+        // check if dead
+        if (CurrentHP <= 0)
+        {
+            DeathCount++;
+            _enemy.KillCount++;
+        }
+    }
+
+    /// <summary>
     /// Set new max SP using Property (<see cref="MaxSP"/>).
     /// </summary>
     /// <param name="_newMaxSP">new max SP of player</param>
@@ -326,6 +444,11 @@ public abstract class AEntity : NetworkBehaviour
     public void SetCurrentSP (float _newCurrentSP)
     {
         CurrentSP = _newCurrentSP;
+    }
+
+    public void SetReducedSP (float _reduceSP)
+    {
+        CurrentSP = CurrentSP - _reduceSP;
     }
 
     /// <summary>
@@ -432,6 +555,10 @@ public abstract class AEntity : NetworkBehaviour
     #region Private Functions
     #endregion
 
+    #region Protected Functions    
+
+    #endregion
+
     #region Public static Functions
     #endregion
 
@@ -456,7 +583,13 @@ public abstract class AEntity : NetworkBehaviour
     /// Function is called before players Current HP is set
     /// </summary>
     /// <param name="_newValue">new Value of variable</param>
-    public virtual void BeforeCurrentHPChanged(float _newValue) { }
+    public virtual float BeforeCurrentHPChanged(float _newValue)
+    {
+        if (_newValue <= 0)
+            return 0;
+        else
+            return _newValue;
+    }
     /// <summary>
     /// Function is called after players Current HP was set
     /// </summary>
@@ -480,23 +613,29 @@ public abstract class AEntity : NetworkBehaviour
     /// Function is called before players Current SP is set
     /// </summary>
     /// <param name="_newValue">new Value of variable</param>
-    public virtual void BeforeCurrentSPChanged(float _newValue) { }
+    public virtual float BeforeCurrentSPChanged(float _newValue)
+    {
+        if (_newValue <= 0)
+            return 0;
+        else
+            return _newValue;
+    }
     /// <summary>
     /// Function is called after players Current SP was set
     /// </summary>
     public virtual void AfterCurrentSPChanged() { }
     #endregion
 
-    #region Kill Count Changed
+    #region Kill Count Player Changed
     /// <summary>
-    /// Function is called before players kill count is set
+    /// Function is called before players kill count is set (Chaser kills Player)
     /// </summary>
     /// <param name="_newValue">New value of Variable</param>
-    public virtual void BeforeKillCountChanged(int _newValue) { }
+    public virtual void BeforeKillCountPlayerChanged(int _newValue) { }
     /// <summary>
-    /// Function is called after players kill count was set
+    /// Function is called after players kill count was set (Chaser kills Player)
     /// </summary>
-    public virtual void AfterKillCountChanged() { }
+    public virtual void AfterKillCountPlayerChanged() { }
     #endregion
 
     #region Death Count Changed
@@ -614,7 +753,7 @@ public abstract class AEntity : NetworkBehaviour
     /// <param name="_newValue">New value of Variable</param>
     public virtual void BeforeChaserChanged(bool _newValue) { }
     /// <summary>
-    /// Function is called after players Chaser status was set.
+    /// Function is called after players Chaser status was set
     /// Set Armor
     /// </summary>
     public virtual void AfterChaserChanged()
@@ -631,20 +770,194 @@ public abstract class AEntity : NetworkBehaviour
         }
     }
     #endregion
+
+    #region Kill Count Chaser Changed
+    /// <summary>
+    /// Function is called before players Kill Count Chaser is set (Player kills Chaser)
+    /// </summary>
+    /// <param name="_newValue">New value of variable</param>
+    public virtual void BeforeKillCountChaserChanged(int _newValue) { }
+    /// <summary>
+    /// Function is called after players Kill Count Chaser was set (Player kills Chaser)
+    /// </summary>
+    public virtual void AfterKillCountChaserChanged() { }
+    #endregion
     #endregion
 
     #region Network
     #region RPC    
     /// <summary>
-    /// Set new position of player
+    /// Set new position of player (RPC Call)
     /// </summary>
     /// <param name="_newPosition">The new position.</param>
     [ClientRpc]
-    public void RpcTeleport(Vector3 _newPosition)
+    public void RpcTeleport(Vector3 _newPosition, ETP _tpType)
     {
-        this.transform.position = _newPosition;
+        gameObject.transform.position = _newPosition;
+
+        switch (_tpType)
+        {
+            case ETP.LOBBYTP:
+                LobbyUINotReady();
+                break;
+            case ETP.HUNTEDTP:
+                GameUI();
+                break;
+            case ETP.CHASERTP:
+                GameUI();
+                break;
+            default:
+                break;
+        }
+    }
+    /// <summary>
+    /// Set new Position of Player (Server Only)
+    /// </summary>
+    /// <param name="_newPosition">The new position.</param>
+    public void ServerTeleport(Vector3 _newPosition)
+    {
+        gameObject.transform.position = _newPosition;
+    }
+    /// <summary>
+    /// Changes the text.
+    /// </summary>
+    /// <param name="_text">Text UI Text to change</param>
+    /// <param name="_currentValue">Current value</param>
+    /// <param name="_maxValue">Maximum value</param>
+    [ClientRpc]
+    protected void RpcChangeTextHP(float _currentValue, float _maxValue)
+    {
+        // set new UI Text
+        m_HPText.text = _currentValue + " / " + _maxValue;
+    }
+
+    /// <summary>
+    /// Changes the text.
+    /// </summary>
+    /// <param name="_text">Text UI Text to change</param>
+    /// <param name="_currentValue">Current value</param>
+    /// <param name="_maxValue">Maximum value</param>
+    [ClientRpc]
+    protected void RpcChangeTextSP(float _currentValue, float _maxValue)
+    {
+        // set new UI Text
+        m_SPText.text = _currentValue + " / " + _maxValue;
+    }
+
+    /// <summary>
+    /// Change Color of current chaser and last chaser
+    /// </summary>
+    /// <param name="_chaser">current chaser</param>
+    /// <param name="_lastChaser">chaser of last round</param>
+    [ClientRpc]
+    public void RpcSetChaserColor(GameObject _chaser, GameObject _lastChaser)
+    {
+        if (_chaser != null)
+            _chaser.GetComponent<Renderer>().material = mat[0];
+        else
+            Debug.Log("current chaser is null");
+
+        if (_lastChaser != null)
+            _lastChaser.GetComponent<Renderer>().material = mat[1];
+        else
+            Debug.Log("last chaser is null");
+    }
+
+    /// <summary>
+    /// eset Color of current chaser
+    /// </summary>
+    /// <param name="_chaser">current chaser</param>
+    [ClientRpc]
+    public void RpcResetChaserColor(GameObject _chaser)
+    {
+        if (_chaser != null)
+            _chaser.GetComponent<PlayerEntity>().m_body.GetComponent<Renderer>().material.color = Color.white;
+        else
+            Debug.Log("current chaser is null");
+
+    }
+
+    /// <summary>
+    /// Set next round time and save it local
+    /// </summary>
+    /// <param name="_time">time for next round</param>
+    [ClientRpc]
+    public void RpcSetRoundTime(float _time)
+    {
+        LocalRoundTime = _time;
     }
     #endregion
+
+    #region Command
+
+    /// <summary>
+    /// When Player hits another Player deal damage
+    /// </summary>
+    /// <param name="_origin">Start position</param>
+    /// <param name="_direction">direction of shot</param>
+    [Command]
+    protected void CmdHit(Vector3 _origin, Vector3 _direction)
+    {
+        Debug.DrawLine(_origin, _direction * 20, Color.green);
+        // if player dont have HP left return
+        if (CurrentHP <= 0)
+            return;
+
+        // if round is over no damage will be applied
+        if (RoundManager.CurrentRoundTime <= 0)
+            return;
+
+        Ray ray = new Ray(_origin, _direction);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            Debug.Log(hit.collider.gameObject.name);
+            // check if hit object is player
+            if (hit.collider.gameObject.tag != "Player")
+                return;
+
+            // get Playerentity (GetParent because Capsule is hit and Capsules parent has playerentity)
+            PlayerEntity p = hit.collider.gameObject.GetComponentInParent<PlayerEntity>();
+
+            // check if chaserstatus is not equal
+            if (IsChaser != p.IsChaser)
+            {
+                p.GetDamage(2, p);
+            }
+
+            // check if player died to this damage
+            if (p.CurrentHP <= 0)
+            {
+                // Check if killed player was chaser
+                if (p.IsChaser)
+                    ChaserKillCount++;
+                else
+                    KillCount++;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Tell Server if player wants to join next round or retreat
+    /// </summary>
+    /// <param name="_joinGame">true: join next round || false: do not join next round</param>
+    [Command]
+    public void CmdStartGame(bool _joinGame)
+    {
+        // If true add to player list
+        if (_joinGame)
+        {
+            MyNetworkManager.AddPlayer(this.gameObject);
+        }
+        // if false remove player from list
+        else
+        {
+            MyNetworkManager.RemovePlayer(this.gameObject);
+        }
+    }
+
+    #endregion
+
     #endregion
     /// <summary>
     /// Initializes this instance
@@ -653,5 +966,111 @@ public abstract class AEntity : NetworkBehaviour
     {
         m_rigidbody = GetComponent<Rigidbody>();
         m_rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+        MyNetworkManager.AddPlayerLobby(this.gameObject);
     }
+
+    /// <summary>
+    /// Start Button function
+    /// </summary>
+    public void StartGame()
+    {
+        if (m_StartButton.GetComponentInChildren<Text>().text == "Start!")
+        {
+            // check if server pressed button
+            if (isServer)
+            {
+                // check if other player clicked start
+                if (MyNetworkManager.AllPlayersPlaying.Count + 1 < RoundManager.minimumPlayers) return;
+            }
+            m_StartButton.GetComponentInChildren<Text>().text = "Cancel";
+
+            // set UI active
+            LobbyUIReady();
+
+            // Tell Server to join game next round
+            CmdStartGame(true);
+        }
+        else
+        {
+            m_StartButton.GetComponentInChildren<Text>().text = "Start!";
+
+            // set ui inactive
+            LobbyUINotReady();
+
+            // Tell Server to not join game next round
+            CmdStartGame(false);
+        }
+    }
+
+    #region UI Themes
+
+    /// <summary>
+    /// UI in Lobby but not ready
+    /// </summary>
+    protected void LobbyUINotReady()
+    {
+        m_UI.gameObject.SetActive(true);
+        m_HPText.gameObject.SetActive(false);
+        m_SPText.gameObject.SetActive(false);
+        m_CrossHair.gameObject.SetActive(false);
+        m_TimeText.gameObject.SetActive(false);
+        m_StartButton.gameObject.SetActive(true);
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+    /// <summary>
+    /// UI in Lobby and ready
+    /// </summary>
+    protected void LobbyUIReady()
+    {
+        if (!isLocalPlayer) return;
+        m_UI.gameObject.SetActive(true);
+        m_HPText.gameObject.SetActive(true);
+        m_SPText.gameObject.SetActive(true);
+        m_CrossHair.gameObject.SetActive(true);
+        m_TimeText.gameObject.SetActive(true);
+        m_StartButton.gameObject.SetActive(true);
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+    /// <summary>
+    /// UI when playing
+    /// </summary>
+    protected void GameUI()
+    {
+        if (!isLocalPlayer) return;
+        m_UI.gameObject.SetActive(true);
+        m_StartButton.gameObject.SetActive(false);
+        m_HPText.gameObject.SetActive(true);
+        m_SPText.gameObject.SetActive(true);
+        m_CrossHair.gameObject.SetActive(true);
+        m_TimeText.gameObject.SetActive(true);
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    /// <summary>
+    /// UI when in no lobby
+    /// </summary>
+    protected void JoinUI()
+    {
+        if (!isLocalPlayer) return;
+        m_UI.gameObject.SetActive(true);
+        m_StartButton.gameObject.SetActive(false);
+        m_HPText.gameObject.SetActive(false);
+        m_SPText.gameObject.SetActive(false);
+        m_CrossHair.gameObject.SetActive(false);
+        m_TimeText.gameObject.SetActive(false);
+        m_UI.gameObject.SetActive(false);
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+    #endregion
 }
