@@ -1,23 +1,21 @@
-﻿using System;
+﻿using Assets.Scripts.Weapon;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-using DT = System.DateTime;
-using TS = System.TimeSpan;
-
-public class WeaponMachineGun : AWeapon
+public class WeaponMachineGun : AGun
 {
     public override WeaponType GetWeapon { get { return WeaponType.MACHINEGUN; } }
 
-    public override TS WaitTime { get { return new TS(0, 0, 0, 500); } }
+    public override float WaitTime { get { return 0.5f; } }
 
     public override bool HasRapidFire { get { return true; } }
 
     public override int MaxAmmo { get { return 30; } }
 
-    public override TS ReloadTime { get { return new TS(0, 0, 0, 1, 0); } }
+    public override float ReloadTime { get { return 1f; } }
 
     protected override int AmmoPerShot { get { return 1; } }
 
@@ -29,11 +27,31 @@ public class WeaponMachineGun : AWeapon
             return false;
 
         // if wait time is higher than times between last shot and this shot
-        if (DT.Now - lastShot < WaitTime)
+        if (lastShot - Time.time < WaitTime)
             return false;
 
         CurrentAmmo -= AmmoPerShot;
-        lastShot = DT.Now;
+        lastShot = Time.time;
         return true;
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+
+        if (IsReloading)
+        {
+            if (Time.time - reloadStart >= ReloadTime)
+            {
+                CurrentAmmo = MaxAmmo;
+                IsReloading = false;
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            IsReloading = true;
+            reloadStart = Time.time;
+        }
     }
 }
