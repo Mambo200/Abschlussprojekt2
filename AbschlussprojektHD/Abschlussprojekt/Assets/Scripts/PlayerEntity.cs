@@ -28,6 +28,8 @@ public class PlayerEntity : AEntity
 
     public float m_resetdashtime = 2f;
 
+    public float m_isgrounedoffset = 0.1f;
+
     private float m_DefaultMovementSpeed;
 
     public float m_reduceSP = 10f;
@@ -37,6 +39,12 @@ public class PlayerEntity : AEntity
     float cooldownstart = 0f;
 
     float timestamp;
+
+    bool isdashing;
+
+    float timesincelastcall;
+
+    
 
     ///<summary>Movement Speed of Player</summary>
     public float m_MovementSpeed;
@@ -53,10 +61,6 @@ public class PlayerEntity : AEntity
 
         distancetoground = GetComponentInChildren<Collider>().bounds.extents.y;
         
-        
-
-        
-
     }
 	
 
@@ -91,11 +95,22 @@ public class PlayerEntity : AEntity
             return;
 
         TimeCounter();
-        
 
-        Debug.DrawRay(transform.position, Vector3.down, Color.green);
+        //Debug.DrawRay(transform.position, test , Color.black);
 
-        isgrounded = Physics.Raycast(transform.position, Vector3.down, distancetoground);
+        //Debug.Log(isgrounded);
+
+        //Debug.DrawRay(transform.position, Vector3.down, Color.green);
+
+        //Debug.Log(isdashing);
+
+        Debug.Log(isgrounded);
+
+
+        timesincelastcall += Time.deltaTime;
+
+
+        isgrounded = Physics.Raycast(transform.position, Vector3.down, distancetoground + m_isgrounedoffset);
 
         if (isgrounded == true)
         {
@@ -163,7 +178,7 @@ public class PlayerEntity : AEntity
     #region Movement
     private void Jump()
     {
-        if(!isgrounded == false)
+        if(isgrounded)
         {
             m_rigidbody.AddForce(Vector3.up * m_JumpForce, ForceMode.VelocityChange);
 
@@ -227,16 +242,14 @@ public class PlayerEntity : AEntity
     }
 
     
-
     
 
 
 
     private void Dash(Vector3 _direction)
     {
-        if (Time.time > timestamp && CurrentSP > 0)
+        if (Time.time > timestamp && CurrentSP > 0 && isgrounded)
         {
-            
 
             #region ---DASH RIGHT---
             if (Input.GetButtonDown("LeftShift")  && Input.GetButton("D_Key") || Input.GetButtonDown("D_Key") && Input.GetButton("LeftShift"))
@@ -245,13 +258,23 @@ public class PlayerEntity : AEntity
 
                 m_currentdashtime = 0.0f;
 
-                SetReducedSP(m_reduceSP);
+                isdashing = true;
+
+                if (timesincelastcall >= 1)
+                {
+                    if (isdashing)
+                    {
+                        SetReducedSP(m_reduceSP);
+                    }
+                    timesincelastcall = 0;
+                }
 
                 if (m_currentdashtime < m_maxdashtime)
                 {
                     m_MovementSpeed = 20f;
                 }
-            
+                isdashing = false;
+
             }
             #endregion
 
@@ -262,13 +285,23 @@ public class PlayerEntity : AEntity
 
                 m_currentdashtime = 0.0f;
 
-                SetReducedSP(m_reduceSP);
+                isdashing = true;
+
+                if (timesincelastcall >= 1)
+                {
+                    if (isdashing)
+                    {
+                        SetReducedSP(m_reduceSP);
+                    }
+                    timesincelastcall = 0;
+                }
 
                 if (m_currentdashtime < m_maxdashtime)
                 {
                     m_MovementSpeed = 20f;
                 }
 
+                isdashing = false;
             }
             #endregion
 
@@ -279,13 +312,22 @@ public class PlayerEntity : AEntity
 
                 m_currentdashtime = 0.0f;
 
-                SetReducedSP(m_reduceSP);
+                isdashing = true;
+
+                if (timesincelastcall >= 1)
+                {
+                    if (isdashing)
+                    {
+                        SetReducedSP(m_reduceSP);
+                    }
+                    timesincelastcall = 0;
+                }
 
                 if (m_currentdashtime < m_maxdashtime)
                 {
                     m_MovementSpeed = 20f;
                 }
-
+                isdashing = false;
             }
             #endregion
 
@@ -296,20 +338,26 @@ public class PlayerEntity : AEntity
 
                 m_currentdashtime = 0.0f;
 
-                SetReducedSP(m_reduceSP);
+                isdashing = true;
+
+                if (timesincelastcall >= 1)
+                {
+                    if (isdashing)
+                    {
+                        SetReducedSP(m_reduceSP);
+                    }
+                    timesincelastcall = 0;
+                }
 
                 if (m_currentdashtime < m_maxdashtime)
                 {
                     m_MovementSpeed = 20f;
                 }
-
+                isdashing = false;
             }
             #endregion
         
         }
-
-        
-        
 
         m_currentdashtime += m_dashstopspeed;
 
