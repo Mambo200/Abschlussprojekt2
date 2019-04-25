@@ -36,6 +36,8 @@ public class PlayerEntity : AEntity
 
     public float cooldowntime = 1f;
 
+    public float _regenSP;
+
     float cooldownstart = 0f;
 
     float timestamp;
@@ -60,6 +62,7 @@ public class PlayerEntity : AEntity
         m_DefaultMovementSpeed = m_MovementSpeed;
 
         distancetoground = GetComponentInChildren<Collider>().bounds.extents.y;
+
         
     }
 	
@@ -106,9 +109,14 @@ public class PlayerEntity : AEntity
 
         Debug.Log(isgrounded);
 
-
         timesincelastcall += Time.deltaTime;
 
+        _regenSP = Time.deltaTime * 2f;
+
+        if (Time.time > timestamp)
+        {
+            SetRegenSP(_regenSP);
+        }
 
         isgrounded = Physics.Raycast(transform.position, Vector3.down, distancetoground + m_isgrounedoffset);
 
@@ -248,7 +256,7 @@ public class PlayerEntity : AEntity
 
     private void Dash(Vector3 _direction)
     {
-        if (Time.time > timestamp && CurrentSP > 0 && isgrounded)
+        if (Time.time > timestamp && CurrentSP > 10 && isgrounded)
         {
 
             #region ---DASH RIGHT---
