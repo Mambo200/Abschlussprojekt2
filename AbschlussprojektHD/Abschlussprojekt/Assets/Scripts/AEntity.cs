@@ -155,7 +155,7 @@ public abstract class AEntity : NetworkBehaviour
             currentSP = value;
             AfterCurrentSPChanged();
             // change UI Text
-            RpcChangeTextSP(currentSP, maxSP);
+            RpcChangeTextSP((int)currentSP, maxSP);
         }
     }
 
@@ -268,6 +268,26 @@ public abstract class AEntity : NetworkBehaviour
             BeforeCurrentArmorChanged(value);
             currentArmor = value;
             AfterCurrentArmorChanged();
+        }
+    }
+
+    [SyncVar]
+    private float regenSP;
+    public float RegenSP
+    {
+        get
+        {
+            return regenSP;
+        }
+        private set
+        {
+            if (!isServer)
+            {
+                Debug.Log("Client tried to set current SP regen to " + value, this.gameObject);
+                return;
+            }
+
+            regenSP = value;
         }
     }
 
@@ -451,6 +471,12 @@ public abstract class AEntity : NetworkBehaviour
         CurrentSP = CurrentSP - _reduceSP;
     }
 
+    public void SetRegenSP(float _regenSP)
+    {
+        RegenSP = _regenSP;
+        CurrentSP += RegenSP;
+    }
+
     /// <summary>
     /// Set new kill count using Property (<see cref="KillCount"/>)
     /// </summary>
@@ -617,6 +643,9 @@ public abstract class AEntity : NetworkBehaviour
     {
         if (_newValue <= 0)
             return 0;
+        else
+            if (_newValue > MaxSP)
+            return MaxSP;
         else
             return _newValue;
     }
