@@ -13,6 +13,10 @@ public abstract class AEntity : NetworkBehaviour
     [SerializeField]
     protected GameObject m_body;
 
+    ///<summary>Player look position</summary>
+    [SerializeField]
+    protected Transform m_lookAt;
+
     ///<summary>Player Camera</summary>
     [SerializeField]
     protected Camera m_playerCamera;

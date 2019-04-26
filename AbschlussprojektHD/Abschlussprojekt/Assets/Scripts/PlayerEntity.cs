@@ -219,13 +219,18 @@ public class PlayerEntity : AEntity
 
     private void Move(Vector3 _direction)
     {
+        m_lookAt.position = transform.position + m_playerCamera.transform.forward;
+
         Transform t = m_playerCamera.transform;
         Vector3 pos = (new Vector3(t.position.x, transform.position.y, t.position.z));
         t.position = pos;
+
         //t.position.Set(t.position.x, transform.position.y, t.position.z);
         //Debug.Log(m_playerCamera.transform.position);
         //Debug.DrawLine(this.transform.position, t.transform.position, Color.red);
-        transform.LookAt(m_playerCamera.transform.position);
+        transform.LookAt(m_lookAt);
+        transform.rotation = new Quaternion(0, transform.rotation.y, 0, transform.rotation.w);
+
         if (isgrounded)
         {
             Vector3 velocity = _direction.normalized * m_MovementSpeed;
