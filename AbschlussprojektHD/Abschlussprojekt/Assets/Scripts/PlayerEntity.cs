@@ -76,6 +76,7 @@ public class PlayerEntity : AEntity
         {
             if (transform.position.y <= -500)
             {
+                RpcSetVelocity(Vector3.zero);
                 if (wannaPlay)
                 {
                     if (IsChaser)
@@ -99,6 +100,31 @@ public class PlayerEntity : AEntity
 
         TimeCounter();
 
+        // change weapon via mouse scroll wheel
+        float mousescroll = Input.GetAxisRaw("Mouse ScrollWheel");
+        if (mousescroll != 0)
+        {
+            if (mousescroll < 0)
+                WeaponIndex--;
+            else if (mousescroll > 0)
+                WeaponIndex++;
+
+            Debug.Log("Weapon " + WeaponIndex + ": " + GetCurrentWeapon.GetWeapon);
+        }
+
+        // change weapon via numbers
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            WeaponIndex = 0;
+            Debug.Log("Weapon " + WeaponIndex + ": " + GetCurrentWeapon.GetWeapon);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            WeaponIndex = 1;
+            Debug.Log("Weapon " + WeaponIndex + ": " + GetCurrentWeapon.GetWeapon);
+        }
+
+
         //Debug.DrawRay(transform.position, test , Color.black);
 
         //Debug.Log(isgrounded);
@@ -106,8 +132,6 @@ public class PlayerEntity : AEntity
         //Debug.DrawRay(transform.position, Vector3.down, Color.green);
 
         //Debug.Log(isdashing);
-
-        Debug.Log(isgrounded);
 
         timesincelastcall += Time.deltaTime;
 
@@ -378,8 +402,14 @@ public class PlayerEntity : AEntity
 
     private void Shoot()
     {
-        Ray ray = m_playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
-        CmdHit(ray.origin, ray.direction);
+        if (!GetCurrentWeapon.Shoot())
+            return;
+
+        if (GetCurrentWeapon.GetWeapon == AWeapon.WeaponType.MACHINEGUN)
+        {
+            Ray ray = m_playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
+            CmdWeapon(ray.origin, ray.direction);
+        }
     }
 
     private void Rotate(Vector3 _rotation)

@@ -20,6 +20,34 @@ public abstract class AEntity : NetworkBehaviour
     [SerializeField]
     protected GameObject CineMachineObject;
 
+    ///<summary>Weapons of Player</summary>
+    [SerializeField]
+    protected AWeapon[] m_Weapons;
+
+    ///<summary>index of current weapon</summary>
+    private int weaponIndex = 0;
+    ///<summary>Set index of current weapon</summary>
+    public int WeaponIndex
+    {
+        get { return weaponIndex; }
+        set
+        {
+            if (value >= m_Weapons.Length)
+            {
+                value = m_Weapons.Length - 1;
+            }
+            else if (value <= 0)
+            {
+                value = 0;
+            }
+
+            weaponIndex = value;
+        }
+    }
+
+    ///<summary>get current weapon</summary>
+    public AWeapon GetCurrentWeapon { get { return m_Weapons[weaponIndex]; } }
+
     #region UI Variables
     ///<summary>Player UI</summary>
     [SerializeField]
@@ -582,7 +610,7 @@ public abstract class AEntity : NetworkBehaviour
     #endregion
 
     #region Protected Functions    
-
+    
     #endregion
 
     #region Public static Functions
@@ -814,7 +842,17 @@ public abstract class AEntity : NetworkBehaviour
     #endregion
 
     #region Network
-    #region RPC    
+    #region RPC
+    
+    /// <summary>
+    /// Set Velocity of player
+    /// </summary>
+    /// <param name="_velocity">new velocity</param>
+    [ClientRpc]
+    public void RpcSetVelocity(Vector3 _velocity)
+    {
+        m_rigidbody.velocity = _velocity;
+    }
     /// <summary>
     /// Set new position of player (RPC Call)
     /// </summary>
@@ -925,7 +963,7 @@ public abstract class AEntity : NetworkBehaviour
     /// <param name="_origin">Start position</param>
     /// <param name="_direction">direction of shot</param>
     [Command]
-    protected void CmdHit(Vector3 _origin, Vector3 _direction)
+    protected void CmdWeapon(Vector3 _origin, Vector3 _direction)
     {
         // if player dont have HP left return
         if (CurrentHP <= 0)
@@ -949,7 +987,7 @@ public abstract class AEntity : NetworkBehaviour
             // check if chaserstatus is not equal
             if (IsChaser != p.IsChaser)
             {
-                p.GetDamage(2, p);
+                p.GetDamage(GetCurrentWeapon.Damage, p);
             }
 
             // check if player died to this damage
