@@ -72,7 +72,16 @@
     <Compile Include="Assets\Scripts\SimpleCameraController.cs" />
     <Compile Include="Assets\Scripts\SpawnpointHandler.cs" />
     <Compile Include="Assets\Scripts\TestScripts\NewBehaviourScript.cs" />
+    <Compile Include="Assets\Scripts\Weapon\AGun.cs" />
+    <Compile Include="Assets\Scripts\Weapon\ASword.cs" />
+    <Compile Include="Assets\Scripts\Weapon\AWeapon.cs" />
+    <Compile Include="Assets\Scripts\Weapon\Katana.cs" />
+    <Compile Include="Assets\Scripts\Weapon\WeaponDamage.cs" />
+    <Compile Include="Assets\Scripts\Weapon\WeaponMachineGun.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
+    <Reference Include="Cinemachine">
+      <HintPath>E:/Tobias/Dokumente/Github Zeug/AbschlussHD/AbschlussprojektHD/Abschlussprojekt/Library/ScriptAssemblies/Cinemachine.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.RenderPipelines.Core.Editor">
       <HintPath>E:/Tobias/Dokumente/Github Zeug/AbschlussHD/AbschlussprojektHD/Abschlussprojekt/Library/ScriptAssemblies/Unity.RenderPipelines.Core.Editor.dll</HintPath>
     </Reference>
@@ -97,6 +106,9 @@
     <Reference Include="Unity.Postprocessing.Runtime">
       <HintPath>E:/Tobias/Dokumente/Github Zeug/AbschlussHD/AbschlussprojektHD/Abschlussprojekt/Library/ScriptAssemblies/Unity.Postprocessing.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="com.unity.cinemachine.editor">
+      <HintPath>E:/Tobias/Dokumente/Github Zeug/AbschlussHD/AbschlussprojektHD/Abschlussprojekt/Library/ScriptAssemblies/com.unity.cinemachine.editor.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.ShaderGraph.Editor">
       <HintPath>E:/Tobias/Dokumente/Github Zeug/AbschlussHD/AbschlussprojektHD/Abschlussprojekt/Library/ScriptAssemblies/Unity.ShaderGraph.Editor.dll</HintPath>
     </Reference>
@@ -108,12 +120,6 @@
     </Reference>
     <Reference Include="Unity.RenderPipelines.Core.IncludePaths">
       <HintPath>E:/Tobias/Dokumente/Github Zeug/AbschlussHD/AbschlussprojektHD/Abschlussprojekt/Library/ScriptAssemblies/Unity.RenderPipelines.Core.IncludePaths.dll</HintPath>
-    </Reference>
-    <Reference Include="Cinemachine">
-      <HintPath>E:/Tobias/Dokumente/Github Zeug/AbschlussHD/AbschlussprojektHD/Abschlussprojekt/Library/ScriptAssemblies/Cinemachine.dll</HintPath>
-    </Reference>
-    <Reference Include="com.unity.cinemachine.editor">
-      <HintPath>E:/Tobias/Dokumente/Github Zeug/AbschlussHD/AbschlussprojektHD/Abschlussprojekt/Library/ScriptAssemblies/com.unity.cinemachine.editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity Hub/locales/Unity 2018.2.11f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>

@@ -14,11 +14,10 @@ namespace Assets.Scripts.Weapon
 
         public override bool HasRapidFire { get { return false; } }
 
-        [UnityEngine.Networking.Client]
         public override bool Shoot()
         {
             // if wait time is higher than times between last shot and this shot
-            if (lastShot - Time.time < WaitTime)
+            if (Time.time - lastShot < WaitTime)
                 return false;
 
             lastShot = Time.time;

@@ -3,13 +3,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
 
 public class WeaponMachineGun : AGun
 {
     public override WeaponType GetWeapon { get { return WeaponType.MACHINEGUN; } }
 
-    public override float WaitTime { get { return 0.5f; } }
+    public override float WaitTime { get { return 0.1f; } }
 
     public override bool HasRapidFire { get { return true; } }
 
@@ -19,7 +18,6 @@ public class WeaponMachineGun : AGun
 
     protected override int AmmoPerShot { get { return 1; } }
 
-    [Client]
     public override bool Shoot()
     {
         // check if player is allowed to shoot
@@ -27,7 +25,7 @@ public class WeaponMachineGun : AGun
             return false;
 
         // if wait time is higher than times between last shot and this shot
-        if (lastShot - Time.time < WaitTime)
+        if (Time.time - lastShot < WaitTime)
             return false;
 
         CurrentAmmo -= AmmoPerShot;
@@ -43,6 +41,7 @@ public class WeaponMachineGun : AGun
         {
             if (Time.time - reloadStart >= ReloadTime)
             {
+                Debug.Log("Reloading");
                 CurrentAmmo = MaxAmmo;
                 IsReloading = false;
             }

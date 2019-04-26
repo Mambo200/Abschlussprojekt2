@@ -2,13 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
 using System.Threading;
 using System.Diagnostics;
 
 // (current) ammo, reload time
 
-public abstract class AWeapon : NetworkBehaviour
+public abstract class AWeapon : MonoBehaviour
 {
 
     /// <summary>Type of Weapon</summary>
@@ -38,7 +37,6 @@ public abstract class AWeapon : NetworkBehaviour
     /// <summary>Return true if you can hold down the button</summary>
     public abstract bool HasRapidFire { get; }
 
-    [Client]
     public abstract bool Shoot();
 
     protected virtual void Update()
