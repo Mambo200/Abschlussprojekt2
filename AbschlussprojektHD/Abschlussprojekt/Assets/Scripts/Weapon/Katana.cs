@@ -16,12 +16,7 @@ namespace Assets.Scripts.Weapon
 
         public override bool Shoot()
         {
-            // if wait time is higher than times between last shot and this shot
-            if (Time.time - lastShot < WaitTime)
-                return false;
-
-            lastShot = Time.time;
-            return true;
+            return base.Shoot();
         }
     }
 }
