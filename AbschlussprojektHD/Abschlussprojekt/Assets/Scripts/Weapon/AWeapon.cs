@@ -10,15 +10,19 @@ using UnityEngine.UI;
 
 public abstract class AWeapon : MonoBehaviour
 {
-
-    /// <summary>Type of Weapon</summary>
+    /// <summary>Type of weapon</summary>
     [Flags]
-    public enum WeaponType
+    public enum MainWeaponType
     {
-        //GUN = 1 << 0,
-        MACHINEGUN = 1 << 1,
+        GUN = 1 << 1,
+        SWORD = 1 << 101
+    }
 
-        //SWORD = 1 << 100,
+    /// <summary>Name of weapon</summary>
+    [Flags]
+    public enum WeaponName
+    {
+        MACHINEGUN = 1 << 1,
         KATANA = 1 << 101
     }
 
@@ -26,9 +30,12 @@ public abstract class AWeapon : MonoBehaviour
     [SerializeField]
     protected AEntity m_Player;
 
+    /// <summary>Get Main weapon type</summary>
+    public abstract MainWeaponType GetMainWeapon { get; }
+
     /// <summary>Get the weapon.</summary>
-    /// <value><see cref="WeaponType"/></value>
-    public abstract WeaponType GetWeapon { get; }
+    /// <value><see cref="WeaponName"/></value>
+    public abstract WeaponName GetWeaponName { get; }
 
     /// <summary>Time of last shot</summary>
     protected float lastShot;
@@ -38,8 +45,8 @@ public abstract class AWeapon : MonoBehaviour
     /// <summary>Time player has to wait before next shot can be fired</summary>
     public abstract float WaitTime { get; }
     
-    /// <summary>Damage of Weapon. Uses <see cref="WeaponDamage.Damage(WeaponType)"/></summary>
-    public float Damage { get { return WeaponDamage.Damage(GetWeapon); } }
+    /// <summary>Damage of Weapon. Uses <see cref="WeaponDamage.Damage(WeaponName)"/></summary>
+    public float Damage { get { return WeaponDamage.Damage(GetWeaponName); } }
 
     /// <summary>Return true if you can hold down the button</summary>
     public abstract bool HasRapidFire { get; }

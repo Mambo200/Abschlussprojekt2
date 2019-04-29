@@ -100,7 +100,7 @@ public class PlayerEntity : AEntity
             if (oldIndex != WeaponIndex)
             {
                 weaponChanged = true;
-                Debug.Log("Weapon " + WeaponIndex + ": " + GetCurrentWeapon.GetWeapon);
+                Debug.Log("Weapon " + WeaponIndex + ": " + GetCurrentWeapon.GetWeaponName);
             }
 
         }
@@ -112,7 +112,7 @@ public class PlayerEntity : AEntity
             WeaponIndex = 0;
             if (oldIndex != WeaponIndex)
             {
-                Debug.Log("Weapon " + WeaponIndex + ": " + GetCurrentWeapon.GetWeapon);
+                Debug.Log("Weapon " + WeaponIndex + ": " + GetCurrentWeapon.GetWeaponName);
                 weaponChanged = true;
             }
         }
@@ -122,7 +122,7 @@ public class PlayerEntity : AEntity
             WeaponIndex = 1;
             if (oldIndex != WeaponIndex)
             {
-                Debug.Log("Weapon " + WeaponIndex + ": " + GetCurrentWeapon.GetWeapon);
+                Debug.Log("Weapon " + WeaponIndex + ": " + GetCurrentWeapon.GetWeaponName);
                 weaponChanged = true;
             }
 
@@ -404,7 +404,7 @@ public class PlayerEntity : AEntity
         if (!GetCurrentWeapon.Shoot())
             return;
 
-        if (GetCurrentWeapon.GetWeapon == AWeapon.WeaponType.MACHINEGUN)
+        if (GetCurrentWeapon.GetWeaponName == AWeapon.WeaponName.MACHINEGUN)
         {
             Ray ray = m_playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
             CmdWeapon(ray.origin, ray.direction, WeaponIndex);

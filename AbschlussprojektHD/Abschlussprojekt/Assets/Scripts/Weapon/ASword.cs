@@ -8,6 +8,8 @@ namespace Assets.Scripts.Weapon
 {
     public abstract class ASword : AWeapon
     {
+        public override MainWeaponType GetMainWeapon { get { return MainWeaponType.SWORD; } }
+
         public override string AmmoText { get { return "∞ / ∞"; } }
 
         public override bool Shoot()

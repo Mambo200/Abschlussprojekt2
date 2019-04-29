@@ -6,14 +6,14 @@ using System.Diagnostics;
 
 public static class WeaponDamage
 {
-	public static float Damage(AWeapon.WeaponType _weaponType)
+	public static float Damage(AWeapon.WeaponName _weaponType)
     {
         switch (_weaponType)
         {
-            case AWeapon.WeaponType.MACHINEGUN:
+            case AWeapon.WeaponName.MACHINEGUN:
                 return 2.4f;
 
-            case AWeapon.WeaponType.KATANA:
+            case AWeapon.WeaponName.KATANA:
                 return 10.0f;
             // broken things
             default:
@@ -21,14 +21,14 @@ public static class WeaponDamage
         }
     }
 
-    public static float WaitTime(AWeapon.WeaponType _weaponType)
+    public static float WaitTime(AWeapon.WeaponName _weaponType)
     {
         switch (_weaponType)
         {
-            case AWeapon.WeaponType.MACHINEGUN:
+            case AWeapon.WeaponName.MACHINEGUN:
                 return 1.100f;
 
-            case AWeapon.WeaponType.KATANA:
+            case AWeapon.WeaponName.KATANA:
                 return 0f;
 
             // broken things

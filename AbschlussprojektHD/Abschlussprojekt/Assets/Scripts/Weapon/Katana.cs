@@ -8,11 +8,12 @@ namespace Assets.Scripts.Weapon
 {
     class Katana : ASword
     {
-        public override WeaponType GetWeapon { get { return WeaponType.KATANA; } }
+        public override WeaponName GetWeaponName { get { return WeaponName.KATANA; } }
 
         public override float WaitTime { get { return 0.8f; } }
 
         public override bool HasRapidFire { get { return false; } }
+
 
         public override bool Shoot()
         {
