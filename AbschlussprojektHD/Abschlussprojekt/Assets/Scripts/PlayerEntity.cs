@@ -219,10 +219,6 @@ public class PlayerEntity : AEntity
         Transform t = m_playerCamera.transform;
         Vector3 pos = (new Vector3(t.position.x, transform.position.y, t.position.z));
         t.position = pos;
-
-        //t.position.Set(t.position.x, transform.position.y, t.position.z);
-        //Debug.Log(m_playerCamera.transform.position);
-        //Debug.DrawLine(this.transform.position, t.transform.position, Color.red);
         transform.LookAt(m_lookAt);
         transform.rotation = new Quaternion(0, transform.rotation.y, 0, transform.rotation.w);
 
