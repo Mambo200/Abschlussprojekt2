@@ -10,8 +10,6 @@ public class PlayerEntity : AEntity
 
     float distancetoground;
  
-    private CharacterController controller;
-
     Vector3 _direction;
 
     Vector3 walljumpDir;
@@ -65,65 +63,74 @@ public class PlayerEntity : AEntity
 
         
     }
-	
 
-	// Update is called once per frame
-	void Update ()
+    // Update is called once per frame
+    override protected void Update ()
     {
-
-        // is player fell of the stage reset position
-        if (isServer)
-        {
-            if (transform.position.y <= -500)
-            {
-                RpcSetVelocity(Vector3.zero);
-                if (wannaPlay)
-                {
-                    if (IsChaser)
-                    {
-                        RpcTeleport(new Vector3(0, 5, 0), ETP.CHASERTP);
-                    }
-                    else
-                    {
-                        RpcTeleport(new Vector3(0, 5, 0), ETP.HUNTEDTP);
-                    }
-                }
-                else
-                {
-                    RpcTeleport(SpawnpointHandler.NextLobbypoint(), ETP.LOBBYTP);
-                }
-            }
-        }
+        base.Update();
 
         if (!isLocalPlayer)
             return;
 
         TimeCounter();
 
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+        bool weaponChanged = false;
+
         // change weapon via mouse scroll wheel
         float mousescroll = Input.GetAxisRaw("Mouse ScrollWheel");
         if (mousescroll != 0)
         {
+            int oldIndex = WeaponIndex;
+
             if (mousescroll < 0)
                 WeaponIndex--;
             else if (mousescroll > 0)
                 WeaponIndex++;
 
-            Debug.Log("Weapon " + WeaponIndex + ": " + GetCurrentWeapon.GetWeapon);
+            if (oldIndex != WeaponIndex)
+            {
+                weaponChanged = true;
+                Debug.Log("Weapon " + WeaponIndex + ": " + GetCurrentWeapon.GetWeapon);
+            }
+
         }
 
         // change weapon via numbers
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
+            int oldIndex = WeaponIndex;
             WeaponIndex = 0;
-            Debug.Log("Weapon " + WeaponIndex + ": " + GetCurrentWeapon.GetWeapon);
+            if (oldIndex != WeaponIndex)
+            {
+                Debug.Log("Weapon " + WeaponIndex + ": " + GetCurrentWeapon.GetWeapon);
+                weaponChanged = true;
+            }
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
+            int oldIndex = WeaponIndex;
             WeaponIndex = 1;
-            Debug.Log("Weapon " + WeaponIndex + ": " + GetCurrentWeapon.GetWeapon);
+            if (oldIndex != WeaponIndex)
+            {
+                Debug.Log("Weapon " + WeaponIndex + ": " + GetCurrentWeapon.GetWeapon);
+                weaponChanged = true;
+            }
+
         }
 
+        // check if weapon was changed this frame
+        if (weaponChanged)
+            AmmoTextBox.text = GetCurrentWeapon.AmmoText;
 
         //Debug.DrawRay(transform.position, test , Color.black);
 
@@ -139,7 +146,7 @@ public class PlayerEntity : AEntity
 
         if (Time.time > timestamp)
         {
-            SetRegenSP(_regenSP);
+            CmdSetRegenSP(_regenSP);
         }
 
         isgrounded = Physics.Raycast(transform.position, Vector3.down, distancetoground + m_isgrounedoffset);
@@ -177,19 +184,7 @@ public class PlayerEntity : AEntity
 
         Move(dir);
 
-        Dash(dir);
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
-        }
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
-        }
-        
+        Dash(dir);        
     }
 
 
@@ -219,13 +214,14 @@ public class PlayerEntity : AEntity
 
     private void Move(Vector3 _direction)
     {
+        m_lookAt.position = transform.position + m_playerCamera.transform.forward;
+
         Transform t = m_playerCamera.transform;
         Vector3 pos = (new Vector3(t.position.x, transform.position.y, t.position.z));
         t.position = pos;
-        //t.position.Set(t.position.x, transform.position.y, t.position.z);
-        //Debug.Log(m_playerCamera.transform.position);
-        //Debug.DrawLine(this.transform.position, t.transform.position, Color.red);
-        transform.LookAt(m_playerCamera.transform.position);
+        transform.LookAt(m_lookAt);
+        transform.rotation = new Quaternion(0, transform.rotation.y, 0, transform.rotation.w);
+
         if (isgrounded)
         {
             Vector3 velocity = _direction.normalized * m_MovementSpeed;
@@ -402,13 +398,16 @@ public class PlayerEntity : AEntity
 
     private void Shoot()
     {
+        if (!wannaPlay)
+            return;
+
         if (!GetCurrentWeapon.Shoot())
             return;
 
         if (GetCurrentWeapon.GetWeapon == AWeapon.WeaponType.MACHINEGUN)
         {
             Ray ray = m_playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
-            CmdWeapon(ray.origin, ray.direction);
+            CmdWeapon(ray.origin, ray.direction, WeaponIndex);
         }
     }
 
