@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.Scripts.Weapon;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -74,6 +75,12 @@ public abstract class AEntity : NetworkBehaviour
     ///<summary>Cross Hair Image</summary>
     [SerializeField]
     protected Image m_CrossHair;
+    /// <summary>UI Text of Ammo</summary>
+    [SerializeField]
+    protected Text m_AmmoText;
+    /// <summary>UI Text of Ammo</summary>
+    public Text AmmoTextBox { get { return m_AmmoText; } }
+
     #endregion
 
     ///<summary>local time of current Round</summary>
@@ -163,7 +170,7 @@ public abstract class AEntity : NetworkBehaviour
             maxSP = value;
             AfterMaxSPChanged();
             // change UI Text
-            RpcChangeTextSP((int)currentSP, maxSP);
+            ChangeTextSP((int)currentSP, maxSP);
 
         }
     }
@@ -187,7 +194,7 @@ public abstract class AEntity : NetworkBehaviour
             currentSP = value;
             AfterCurrentSPChanged();
             // change UI Text
-            RpcChangeTextSP((int)currentSP, maxSP);
+            ChangeTextSP((int)currentSP, maxSP);
         }
     }
 
@@ -501,12 +508,6 @@ public abstract class AEntity : NetworkBehaviour
     public void SetReducedSP (float _reduceSP)
     {
         CurrentSP = CurrentSP - _reduceSP;
-    }
-
-    public void SetRegenSP(float _regenSP)
-    {
-        RegenSP = _regenSP;
-        CurrentSP += RegenSP;
     }
 
     /// <summary>
@@ -843,11 +844,44 @@ public abstract class AEntity : NetworkBehaviour
     /// </summary>
     public virtual void AfterKillCountChaserChanged() { }
     #endregion
+
+    #region Update
+    protected virtual void Update()
+    {
+        if (!isServer) return;
+
+        // regenerate SP
+        CurrentSP += RegenSP;
+
+        // if player fell of the stage reset position
+        if (transform.position.y <= -500)
+        {
+            Debug.Log("Teleport");
+            RpcSetVelocity(Vector3.zero);
+            if (wannaPlay)
+            {
+                if (IsChaser)
+                {
+                    RpcTeleport(new Vector3(0, 5, 0), ETP.CHASERTP);
+                }
+                else
+                {
+                    RpcTeleport(new Vector3(0, 5, 0), ETP.HUNTEDTP);
+                }
+            }
+            else
+            {
+                RpcTeleport(SpawnpointHandler.NextLobbypoint(), ETP.LOBBYTP);
+            }
+        }
+
+    }
+    #endregion
     #endregion
 
     #region Network
     #region RPC
-    
+
     /// <summary>
     /// Set Velocity of player
     /// </summary>
@@ -908,8 +942,8 @@ public abstract class AEntity : NetworkBehaviour
     /// <param name="_text">Text UI Text to change</param>
     /// <param name="_currentValue">Current value</param>
     /// <param name="_maxValue">Maximum value</param>
-    [ClientRpc]
-    protected void RpcChangeTextSP(float _currentValue, float _maxValue)
+    //[ClientRpc]
+    protected void ChangeTextSP(float _currentValue, float _maxValue)
     {
         // set new UI Text
         m_SPText.text = _currentValue + " / " + _maxValue;
@@ -967,7 +1001,7 @@ public abstract class AEntity : NetworkBehaviour
     /// <param name="_origin">Start position</param>
     /// <param name="_direction">direction of shot</param>
     [Command]
-    protected void CmdWeapon(Vector3 _origin, Vector3 _direction)
+    protected void CmdWeapon(Vector3 _origin, Vector3 _direction, int _weaponIndex)
     {
         // if player dont have HP left return
         if (CurrentHP <= 0)
@@ -991,7 +1025,7 @@ public abstract class AEntity : NetworkBehaviour
             // check if chaserstatus is not equal
             if (IsChaser != p.IsChaser)
             {
-                p.GetDamage(GetCurrentWeapon.Damage, p);
+                p.GetDamage(m_Weapons[_weaponIndex].Damage, p);
             }
 
             // check if player died to this damage
@@ -1024,6 +1058,17 @@ public abstract class AEntity : NetworkBehaviour
             MyNetworkManager.RemovePlayer(this.gameObject);
         }
     }
+
+    /// <summary>
+    /// Set Sp regeneration
+    /// </summary>
+    /// <param name="_regenSP">new SP regeneration value</param>
+    [Command]
+    public void CmdSetRegenSP(float _regenSP)
+    {
+        RegenSP = _regenSP;
+    }
+
 
     #endregion
 
@@ -1083,6 +1128,7 @@ public abstract class AEntity : NetworkBehaviour
         m_SPText.gameObject.SetActive(false);
         m_CrossHair.gameObject.SetActive(false);
         m_TimeText.gameObject.SetActive(false);
+        m_AmmoText.gameObject.SetActive(false);
         m_StartButton.gameObject.SetActive(true);
 
         Cursor.lockState = CursorLockMode.None;
@@ -1100,7 +1146,12 @@ public abstract class AEntity : NetworkBehaviour
         m_SPText.gameObject.SetActive(true);
         m_CrossHair.gameObject.SetActive(true);
         m_TimeText.gameObject.SetActive(true);
+        m_AmmoText.gameObject.SetActive(true);
         m_StartButton.gameObject.SetActive(true);
+
+        // set ammo text
+        m_AmmoText.GetComponentInChildren<Text>().text = GetCurrentWeapon.AmmoText;
+
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -1113,10 +1164,12 @@ public abstract class AEntity : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
         m_UI.gameObject.SetActive(true);
+        m_StartButton.GetComponentInChildren<Text>().text = "Cancel";
         m_StartButton.gameObject.SetActive(false);
         m_HPText.gameObject.SetActive(true);
         m_SPText.gameObject.SetActive(true);
         m_CrossHair.gameObject.SetActive(true);
+        m_AmmoText.gameObject.SetActive(true);
         m_TimeText.gameObject.SetActive(true);
 
         Cursor.lockState = CursorLockMode.Locked;
@@ -1135,6 +1188,7 @@ public abstract class AEntity : NetworkBehaviour
         m_SPText.gameObject.SetActive(false);
         m_CrossHair.gameObject.SetActive(false);
         m_TimeText.gameObject.SetActive(false);
+        m_AmmoText.gameObject.SetActive(false);
         m_UI.gameObject.SetActive(false);
 
         Cursor.lockState = CursorLockMode.None;
