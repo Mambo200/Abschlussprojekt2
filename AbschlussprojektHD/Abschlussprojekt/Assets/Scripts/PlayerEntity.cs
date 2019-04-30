@@ -18,6 +18,7 @@ public class PlayerEntity : AEntity
 
     int jumpcount;
 
+    [Header("Player Specified")]
     public float m_maxdashtime = 1.0f;
 
     public float m_dashstopspeed = 0.25f;
@@ -43,6 +44,9 @@ public class PlayerEntity : AEntity
     bool isdashing;
 
     float timesincelastcall;
+
+    private bool m_PausePressed = false;
+    private bool m_ResumePressed = false;
 
     
 
@@ -74,6 +78,36 @@ public class PlayerEntity : AEntity
 
         TimeCounter();
 
+        if (Input.GetAxisRaw("Pause") != 0)
+        {
+            if (!m_PausePressed && !m_ResumePressed)
+            {
+                if (!m_Pause.activeSelf)
+                {
+                    m_Pause.GetComponent<Pause>().CallPauseEnter();
+                    Cursor.visible = true;
+                    Cursor.lockState = CursorLockMode.None;
+                    m_PausePressed = true;
+                    m_Pause.SetActive(true);
+                }
+                else
+                {
+                    PlayerResuming();
+                    m_ResumePressed = true;
+                }
+            }
+        }
+        else
+        {
+            m_PausePressed = false;
+            m_ResumePressed = false;
+        }
+
+        if (m_Pause.activeSelf)
+        {
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.Q))
         {
             Cursor.visible = true;
@@ -100,7 +134,7 @@ public class PlayerEntity : AEntity
             if (oldIndex != WeaponIndex)
             {
                 weaponChanged = true;
-                Debug.Log("Weapon " + WeaponIndex + ": " + GetCurrentWeapon.GetWeapon);
+                Debug.Log("Weapon " + WeaponIndex + ": " + GetCurrentWeapon.GetWeaponName);
             }
 
         }
@@ -112,7 +146,7 @@ public class PlayerEntity : AEntity
             WeaponIndex = 0;
             if (oldIndex != WeaponIndex)
             {
-                Debug.Log("Weapon " + WeaponIndex + ": " + GetCurrentWeapon.GetWeapon);
+                Debug.Log("Weapon " + WeaponIndex + ": " + GetCurrentWeapon.GetWeaponName);
                 weaponChanged = true;
             }
         }
@@ -122,7 +156,7 @@ public class PlayerEntity : AEntity
             WeaponIndex = 1;
             if (oldIndex != WeaponIndex)
             {
-                Debug.Log("Weapon " + WeaponIndex + ": " + GetCurrentWeapon.GetWeapon);
+                Debug.Log("Weapon " + WeaponIndex + ": " + GetCurrentWeapon.GetWeaponName);
                 weaponChanged = true;
             }
 
@@ -404,7 +438,7 @@ public class PlayerEntity : AEntity
         if (!GetCurrentWeapon.Shoot())
             return;
 
-        if (GetCurrentWeapon.GetWeapon == AWeapon.WeaponType.MACHINEGUN)
+        if (GetCurrentWeapon.GetWeaponName == AWeapon.WeaponName.MACHINEGUN)
         {
             Ray ray = m_playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
             CmdWeapon(ray.origin, ray.direction, WeaponIndex);
@@ -444,4 +478,20 @@ public class PlayerEntity : AEntity
         LocalRoundTime -= Time.deltaTime;
     }
 
+    /// <summary>
+    /// Player resuming
+    /// </summary>
+    public void PlayerResuming()
+    {
+        Pause p = m_Pause.GetComponent<Pause>();
+        p.Options.SetActive(false);
+        p.PauseEnter.SetActive(true);
+        m_Pause.SetActive(false);
+
+        if (transform.position.y <= 200f)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+    }
 }

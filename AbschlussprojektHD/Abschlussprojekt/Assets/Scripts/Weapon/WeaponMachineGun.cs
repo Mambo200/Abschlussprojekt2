@@ -6,7 +6,8 @@ using UnityEngine;
 
 public class WeaponMachineGun : AGun
 {
-    public override WeaponType GetWeapon { get { return WeaponType.MACHINEGUN; } }
+
+    public override WeaponName GetWeaponName { get { return WeaponName.MACHINEGUN; } }
 
     public override float WaitTime { get { return 0.3f; } }
 

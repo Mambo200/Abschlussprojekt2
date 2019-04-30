@@ -86,7 +86,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4847410801062112}
-  - component: {fileID: 114068656007611040}
   m_Layer: 0
   m_Name: CameraEmpty
   m_TagString: Untagged
@@ -1100,22 +1099,6 @@ MonoBehaviour:
   - {fileID: 114575910363378308}
   - {fileID: 114633341950900888}
   - {fileID: 114959584838520006}
---- !u!114 &114068656007611040
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1210879338126804}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 904022433fa1f9b4085e5475bd84bacb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_PlayerParent: {fileID: 1865574214244210}
-  invertX: 0
-  invertY: 1
-  rotateSpeedX: 1
-  rotateSpeedY: 1
 --- !u!114 &114074241795293564
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1504,6 +1487,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0bce66b6d4a73b4d9e2f4847e61f5e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Player: {fileID: 0}
 --- !u!114 &114633341950900888
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1647,6 +1631,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a4b76076323dd74e986c684a32d1b11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Player: {fileID: 0}
 --- !u!114 &114820580547922922
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1683,6 +1668,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 311a6509474dd61458493fb2bd216014, type: 2}
   - {fileID: 2100000, guid: 5c9050dbb30d06d4ebe6c80eea79f52a, type: 2}
   m_body: {fileID: 1194594503269390}
+  m_lookAt: {fileID: 0}
   m_playerCamera: {fileID: 20783552312757088}
   CineMachineObject: {fileID: 1975998348259120}
   m_Weapons:
@@ -1695,6 +1681,7 @@ MonoBehaviour:
   m_TimeText: {fileID: 114868589801751676}
   m_StartButton: {fileID: 114454457475447404}
   m_CrossHair: {fileID: 114009984754052922}
+  m_AmmoText: {fileID: 0}
   wannaPlay: 0
   m_maxdashtime: 1
   m_dashstopspeed: 0.25

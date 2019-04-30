@@ -8,6 +8,8 @@ namespace Assets.Scripts.Weapon
 {
     public abstract class AGun : AWeapon
     {
+        public override MainWeaponType GetMainWeapon { get { return MainWeaponType.GUN; } }
+
         public bool IsReloading { get; protected set; }
 
         /// <summary>amount of max Ammo the player can have</summary>
