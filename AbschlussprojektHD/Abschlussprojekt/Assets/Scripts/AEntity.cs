@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using Cinemachine;
 
 [RequireComponent(typeof(Rigidbody))]
 public abstract class AEntity : NetworkBehaviour
 {
     protected Rigidbody m_rigidbody;
+
+    [Header("Player and Camera and Audio")]
     ///<summary>0: red / 1: blue</summary>
     public Material[] mat;
     [SerializeField]
@@ -25,6 +28,11 @@ public abstract class AEntity : NetworkBehaviour
     [SerializeField]
     protected GameObject CineMachineObject;
 
+    protected CinemachineFreeLook CineFreeLook;
+
+    public AudioSource m_Audio;
+
+    [Header("Weapons")]
     ///<summary>Weapons of Player</summary>
     [SerializeField]
     protected AWeapon[] m_Weapons;
@@ -54,6 +62,7 @@ public abstract class AEntity : NetworkBehaviour
     public AWeapon GetCurrentWeapon { get { return m_Weapons[weaponIndex]; } }
 
     #region UI Variables
+    [Header("UI")]
     ///<summary>Player UI</summary>
     [SerializeField]
     protected GameObject m_UI;
@@ -80,7 +89,9 @@ public abstract class AEntity : NetworkBehaviour
     protected Text m_AmmoText;
     /// <summary>UI Text of Ammo</summary>
     public Text AmmoTextBox { get { return m_AmmoText; } }
-
+    /// <summary>Pause Script</summary>
+    [SerializeField]
+    protected GameObject m_Pause;
     #endregion
 
     ///<summary>local time of current Round</summary>
@@ -848,6 +859,7 @@ public abstract class AEntity : NetworkBehaviour
     #region Update
     protected virtual void Update()
     {
+
         if (!isServer) return;
 
         // regenerate SP
@@ -1081,6 +1093,8 @@ public abstract class AEntity : NetworkBehaviour
         m_rigidbody = GetComponent<Rigidbody>();
         m_rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
         MyNetworkManager.AddPlayerLobby(this.gameObject);
+        NetworkManagerHUD hud = GameObject.Find("Network Manager").GetComponent<NetworkManagerHUD>();
+        hud.showGUI = false;
     }
 
     /// <summary>

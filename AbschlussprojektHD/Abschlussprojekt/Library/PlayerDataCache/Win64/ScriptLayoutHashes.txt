@@ -1,6 +1,6 @@
 WindowsStandalone
 PlayerPath?
-E:/Tobias/Dokumente/Github Zeug/AbschlussHD/AbschlussprojektHD/Abschlussprojekt/Build/Abschlussprojekt.exe
+D:/Benutzerdaten/Uni/Dokumente/Github Zeug/Abschlussprojekt2/AbschlussprojektHD/Abschlussprojekt/Build/Abschlussprojekt.exe
 SceneListBegin?
 Assets/Scenes/Offline.unity
 Assets/Scenes/Online.unity
@@ -108,6 +108,7 @@ e90403eeda069970e0b9de1533de13a6 UnityEngine.UI.dll:UnityEngine.UI.ToggleGroup
 16da51d1b62ef6d4ee1849350434023b UnityEngine.UI.dll:UnityEngine.UI.VerticalLayoutGroup
 0300b2708aa7d8638a9715d76dcf863a Cinemachine.dll:Cinemachine.CinemachineExternalCamera
 cf99db52079f7d454b61c657b8715ec0 Unity.Postprocessing.Runtime.dll:UnityEngine.Rendering.PostProcessing.ScreenSpaceReflections
+8cedb7b3aa99dc83d79e27a1675841af Assembly-CSharp.dll:.Pause
 3119ca65a0fd21459b807b4b54f78bc4 Cinemachine.dll:Cinemachine.CinemachineStoryboard
 fc61432802d627e9bad32dbeb93f774e Unity.Postprocessing.Runtime.dll:UnityEngine.Rendering.PostProcessing.PostProcessProfile
 7beff22f8649fd7ef1e57422a24930a2 Cinemachine.dll:.CinemachineCameraOffset
@@ -116,7 +117,6 @@ daea386c9a9028e042e71a041ad7639a Unity.RenderPipelines.HighDefinition.Runtime.dl
 22047f3c3fbb715550f61eddb26e9cd3 Unity.Postprocessing.Runtime.dll:UnityEngine.Rendering.PostProcessing.Vignette
 956d1983289fee5aad6a13b219647a19 Unity.RenderPipelines.HighDefinition.Runtime.dll:UnityEngine.Experimental.Rendering.HDPipeline.ScreenSpaceReflection
 081b4a163beb26aa2b18313e6d81df49 Unity.RenderPipelines.HighDefinition.Runtime.dll:UnityEngine.Experimental.Rendering.HDPipeline.DecalProjectorComponent
-3ef5e87f0c07549cf48dc27aff89cdc0 Assembly-CSharp.dll:.CameraController
 486cd95c82d8305219c352c06b776e1f UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationPlayableAsset
 9e61f3535f3c55760a1cedfbd114f4af UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationTrack
 754551afe4f2531f58476bf14c510657 UnityEngine.Timeline.dll:UnityEngine.Timeline.AnimationPlayableAsset
@@ -182,7 +182,7 @@ dc9a99eeeabe1f4e7fb3af8ba2ab392b Unity.RenderPipelines.HighDefinition.Runtime.dl
 964188dcc9c94a32ddc7bbabd36a44c1 Cinemachine.dll:Cinemachine.CinemachineDollyCart
 dc1f1de66aabe556944f95f4926904d7 Unity.Postprocessing.Runtime.dll:UnityEngine.Rendering.PostProcessing.PostProcessResources
 486cd95c82d8305219c352c06b776e1f Unity.TextMeshPro.dll:TMPro.TMP_SpriteAnimator
-3f6433490ba91d7d3ad96adc345e4319 Assembly-CSharp.dll:.PlayerEntity
+daf2fe368222bccf4bc73c610475dda6 Assembly-CSharp.dll:.PlayerEntity
 3c52dfd725fd8c2522c5fcd1d99d0b1b Cinemachine.dll:Cinemachine.CinemachineTrackedDolly
 486cd95c82d8305219c352c06b776e1f Cinemachine.dll:Cinemachine.CinemachinePipeline
 108398666b870c8be31bd666b465e311 Unity.Postprocessing.Runtime.dll:UnityEngine.Rendering.PostProcessing.AutoExposure
@@ -285,6 +285,11 @@ c5f33cc703a2edabd3680248cc739e60 Unity.RenderPipelines.HighDefinition.Runtime.dl
 0076ec15dda030330bfcebd65a836408 Cinemachine.dll:Cinemachine.CinemachineBasicMultiChannelPerlin
 eb565135f5b2f106ea4734c3cad2730e Unity.RenderPipelines.Core.Runtime.dll:UnityEngine.Experimental.Rendering.UI.DebugUIHandlerHBox
 5f6f9b1bdbfe6ed5ee40451bad77f5ea Cinemachine.dll:Cinemachine.CinemachineClearShot
+3ef5e87f0c07549cf48dc27aff89cdc0 Assembly-CSharp.dll:.CameraController
 613685919352bb1262878cc04e0f7506 Unity.RenderPipelines.HighDefinition.Runtime.dll:UnityEngine.Experimental.Rendering.HDPipeline.ReflectionSystemSceneDictionary
 e958cc1ee46a616a6e0cde964bfe9918 Unity.RenderPipelines.Core.Runtime.dll:UnityEngine.Experimental.Rendering.UI.DebugUIHandlerContainer
 aae9893fc05b6c8cba8317ed327be0c4 Unity.RenderPipelines.Core.Runtime.dll:UnityEngine.Experimental.Rendering.UI.DebugUIHandlerIndirectFloatField
+8411a2173da8489d5577435f6c1a6d86 Assembly-CSharp.dll:.Sound
+0e765a76c55e83fd3131ecd22f807f24 Assembly-CSharp.dll:.CameraSpeedX
+0e765a76c55e83fd3131ecd22f807f24 Assembly-CSharp.dll:.CameraSpeedY
+92469a0e041f2782998a134820947d4d Assembly-CSharp.dll:.CameraInvert

@@ -176,5 +176,16 @@ public class MyNetworkManager : NetworkManager {
         return new List<PlayerEntity>(AllPlayers);
     }
 
-    
+    public void CloseConnection(PlayerEntity _player)
+    {
+        NetworkManagerHUD hud = GameObject.Find("Network Manager").GetComponent<NetworkManagerHUD>();
+        hud.showGUI = true;
+
+        if (_player.isServer)
+            MyNetworkManager.singleton.StopHost();
+        else
+            MyNetworkManager.singleton.StopClient();
+
+        //client.Disconnect();
+    }
 }
