@@ -36,6 +36,8 @@ public abstract class AEntity : NetworkBehaviour
     ///<summary>Weapons of Player</summary>
     [SerializeField]
     protected AWeapon[] m_Weapons;
+    
+    protected GameObject[] m_WeaponsGO;
 
     ///<summary>index of current weapon</summary>
     private int weaponIndex = 0;
@@ -54,9 +56,13 @@ public abstract class AEntity : NetworkBehaviour
                 value = 0;
             }
 
+            PreviousWeaponIndex = weaponIndex;
+
             weaponIndex = value;
         }
     }
+
+    public int PreviousWeaponIndex { get; protected set; }
 
     ///<summary>get current weapon</summary>
     public AWeapon GetCurrentWeapon { get { return m_Weapons[weaponIndex]; } }
@@ -421,8 +427,8 @@ public abstract class AEntity : NetworkBehaviour
     }
     #endregion
 
-    [HideInInspector]
-    public bool wannaPlay = false;
+    [SyncVar]
+    public bool wannaPlay;
 
     /// <summary>Current round time property</summary>
     public float LocalRoundTime
@@ -481,7 +487,8 @@ public abstract class AEntity : NetworkBehaviour
     /// Set new current HP using Property (<see cref="CurrentHP"/>)
     /// </summary>
     /// <param name="_damage">Damage taken</param>
-    public void GetDamage(float _damage, PlayerEntity _enemy)
+    /// <param name="_enemy">Player who dealt damage</param>
+    public void GetDamage(float _damage, AEntity _enemy)
     {
         // when enemy is chaser multiply damage
         if (_enemy.IsChaser)
@@ -969,15 +976,15 @@ public abstract class AEntity : NetworkBehaviour
     [ClientRpc]
     public void RpcSetChaserColor(GameObject _chaser, GameObject _lastChaser)
     {
-        if (_chaser != null)
-            _chaser.GetComponent<Renderer>().material = mat[0];
-        else
-            Debug.Log("current chaser is null");
-
         if (_lastChaser != null)
-            _lastChaser.GetComponent<Renderer>().material = mat[1];
+            _lastChaser.GetComponent<PlayerEntity>().m_body.GetComponent<Renderer>().material = mat[1];
         else
             Debug.Log("last chaser is null");
+
+        if (_chaser != null)
+            _chaser.GetComponent<PlayerEntity>().m_body.GetComponent<Renderer>().material = mat[0];
+        else
+            Debug.Log("current chaser is null");
     }
 
     /// <summary>
@@ -1003,6 +1010,13 @@ public abstract class AEntity : NetworkBehaviour
     {
         LocalRoundTime = _time;
     }
+
+    [ClientRpc]
+    public void RpcSetGOActiveState(GameObject _player, bool _setActive, int _index)
+    {
+        PlayerEntity pe = _player.GetComponent<PlayerEntity>();
+        pe.m_WeaponsGO[_index].SetActive(_setActive);
+    }
     #endregion
 
     #region Command
@@ -1013,7 +1027,7 @@ public abstract class AEntity : NetworkBehaviour
     /// <param name="_origin">Start position</param>
     /// <param name="_direction">direction of shot</param>
     [Command]
-    protected void CmdWeapon(Vector3 _origin, Vector3 _direction, int _weaponIndex)
+    public void CmdWeapon(Vector3 _origin, Vector3 _direction, AWeapon.WeaponName _weaponName)
     {
         // if player dont have HP left return
         if (CurrentHP <= 0)
@@ -1037,20 +1051,29 @@ public abstract class AEntity : NetworkBehaviour
             // check if chaserstatus is not equal
             if (IsChaser != p.IsChaser)
             {
-                p.GetDamage(m_Weapons[_weaponIndex].Damage, p);
-            }
-
-            // check if player died to this damage
-            if (p.CurrentHP <= 0)
-            {
-                // Check if killed player was chaser
-                if (p.IsChaser)
-                    ChaserKillCount++;
-                else
-                    KillCount++;
+                p.GetDamage(WeaponDamage.Damage(_weaponName), p);
             }
         }
     }
+
+    [Command]
+    public void CmdSword(AWeapon.WeaponName _weaponName, GameObject _hit)
+    {
+        // if player dont have HP left return
+        if (CurrentHP <= 0)
+            return;
+
+        // if round is over no damage will be applied
+        if (RoundManager.CurrentRoundTime <= 0)
+            return;
+
+        if (_hit == null) return;
+        PlayerEntity pHit = _hit.GetComponent<PlayerEntity>();
+        if (pHit == null) return;
+
+        pHit.GetDamage(WeaponDamage.Damage(_weaponName), this);
+    }
+
 
     /// <summary>
     /// Tell Server if player wants to join next round or retreat
@@ -1063,11 +1086,13 @@ public abstract class AEntity : NetworkBehaviour
         if (_joinGame)
         {
             MyNetworkManager.AddPlayer(this.gameObject);
+            wannaPlay = true;
         }
         // if false remove player from list
         else
         {
             MyNetworkManager.RemovePlayer(this.gameObject);
+            wannaPlay = false;
         }
     }
 
@@ -1081,10 +1106,33 @@ public abstract class AEntity : NetworkBehaviour
         RegenSP = _regenSP;
     }
 
+    /// <summary>
+    /// Set WannaPlay variable (see <see cref="wannaPlay"/>)
+    /// </summary>
+    /// <param name="_wannaplay">new value</param>
+    [Command]
+    public void CmdSetWannaPlay(bool _wannaplay)
+    {
+        wannaPlay = _wannaplay;
+    }
 
+    /// <summary>
+    /// Set Gameobject isactive state
+    /// </summary>
+    /// <param name="_setActive">active state</param>
+    /// <param name="_go">all gameobjects that have to change</param>
+    [Command]
+    public void CmdSetGOActiveState(bool _setActive, int _index)
+    {
+        foreach (PlayerEntity pe in MyNetworkManager.AllPlayers)
+        {
+            pe.RpcSetGOActiveState(this.gameObject, _setActive, _index);
+        }
+    }
     #endregion
 
     #endregion
+
     /// <summary>
     /// Initializes this instance
     /// </summary>
@@ -1095,6 +1143,13 @@ public abstract class AEntity : NetworkBehaviour
         MyNetworkManager.AddPlayerLobby(this.gameObject);
         NetworkManagerHUD hud = GameObject.Find("Network Manager").GetComponent<NetworkManagerHUD>();
         hud.showGUI = false;
+
+        // get weapon gameobjects
+        m_WeaponsGO = new GameObject[m_Weapons.Length];
+        for (int i = 0; i < m_Weapons.Length; i++)
+        {
+            m_WeaponsGO[i] = m_Weapons[i].gameObject;
+        }
     }
 
     /// <summary>
@@ -1147,6 +1202,8 @@ public abstract class AEntity : NetworkBehaviour
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
+        CmdSetWannaPlay(false);
     }
 
     /// <summary>
@@ -1169,6 +1226,8 @@ public abstract class AEntity : NetworkBehaviour
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
+        CmdSetWannaPlay(true);
     }
 
     /// <summary>
@@ -1188,6 +1247,8 @@ public abstract class AEntity : NetworkBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        CmdSetWannaPlay(true);
     }
 
     /// <summary>
@@ -1207,6 +1268,8 @@ public abstract class AEntity : NetworkBehaviour
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
+        CmdSetWannaPlay(false);
     }
 
     #endregion

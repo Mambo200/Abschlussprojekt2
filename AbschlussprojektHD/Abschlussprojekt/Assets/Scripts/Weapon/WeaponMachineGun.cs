@@ -9,7 +9,7 @@ public class WeaponMachineGun : AGun
 
     public override WeaponName GetWeaponName { get { return WeaponName.MACHINEGUN; } }
 
-    public override float WaitTime { get { return 0.3f; } }
+    public override float WaitTime { get { return 0.1f; } }
 
     public override bool HasRapidFire { get { return true; } }
 

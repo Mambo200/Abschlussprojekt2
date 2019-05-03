@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.Scripts.Weapon;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -164,7 +165,19 @@ public class PlayerEntity : AEntity
 
         // check if weapon was changed this frame
         if (weaponChanged)
+        {
+            // change Ammo Text
             AmmoTextBox.text = GetCurrentWeapon.AmmoText;
+
+            // change active state of gameobject
+            for (int i = 0; i < m_Weapons.Length; i++)
+            {
+                if (m_WeaponsGO[i].GetComponent<AWeapon>() == GetCurrentWeapon)
+                    CmdSetGOActiveState(true, WeaponIndex);
+                else
+                    CmdSetGOActiveState(false, PreviousWeaponIndex);
+            }
+        }
 
         //Debug.DrawRay(transform.position, test , Color.black);
 
@@ -441,7 +454,7 @@ public class PlayerEntity : AEntity
         if (GetCurrentWeapon.GetWeaponName == AWeapon.WeaponName.MACHINEGUN)
         {
             Ray ray = m_playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
-            CmdWeapon(ray.origin, ray.direction, WeaponIndex);
+            CmdWeapon(ray.origin, ray.direction, AWeapon.WeaponName.MACHINEGUN);
         }
     }
 

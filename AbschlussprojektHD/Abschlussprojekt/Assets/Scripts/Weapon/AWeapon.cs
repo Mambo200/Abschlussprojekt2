@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Threading;
 using System.Diagnostics;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 
 // (current) ammo, reload time
 
@@ -28,7 +29,7 @@ public abstract class AWeapon : MonoBehaviour
 
     /// <summary>Player of weapon</summary>
     [SerializeField]
-    protected AEntity m_Player;
+    protected PlayerEntity m_Player;
 
     /// <summary>Get Main weapon type</summary>
     public abstract MainWeaponType GetMainWeapon { get; }

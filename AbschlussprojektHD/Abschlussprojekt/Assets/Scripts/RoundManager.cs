@@ -51,9 +51,27 @@ public class RoundManager : NetworkBehaviour {
         }
     }
     /// <summary>When round starts, this value if the default time to start (0 players)</summary>
-    private float StartTime { get { return 10f; } }
+    private float StartTime
+    {
+        get
+        {
+#if UNITY_EDITOR
+            return 10f;
+#endif
+            return 30f;
+        }
+    }
     /// <summary>for each player add this to the round time (0 player -> 60 + (this * playercount) seconds)</summary>
-    private float PlayerSeconds { get { return 5f; } }
+    private float PlayerSeconds
+    {
+        get
+        {
+#if UNITY_EDITOR
+            return 5f;
+#endif
+            return 10f;
+        }
+    }
     /// <summary>calculates the time for the next round</summary>
     private float NextRoundTime
     {

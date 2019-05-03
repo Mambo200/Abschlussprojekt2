@@ -39,6 +39,7 @@ namespace Assets.Scripts.Weapon
 
         public override bool Shoot()
         {
+            if (!base.Shoot()) return false;
             // return if player is reloading
             if (IsReloading)
                 return false;
