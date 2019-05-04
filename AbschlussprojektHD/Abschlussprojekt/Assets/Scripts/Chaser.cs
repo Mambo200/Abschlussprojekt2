@@ -73,6 +73,7 @@ public class Chaser : NetworkBehaviour {
         {
             Debug.LogWarning("No Chaser found!");
             MyNetworkManager.AllPlayersPlaying[0].SetChaser(true);
+            CurrentChaser = MyNetworkManager.AllPlayersPlaying[0].gameObject;
         }
         else if (chaserPool.Count == 1)
         {
@@ -100,6 +101,12 @@ public class Chaser : NetworkBehaviour {
         foreach (PlayerEntity pe in chaserPool)
         {
             pe.SetChaser(false);
+        }
+
+        // Set Color
+        foreach (PlayerEntity pe in MyNetworkManager.AllPlayersPlaying)
+        {
+            pe.RpcSetChaserColor(CurrentChaser, LastRoundChaser);
         }
     }
 }

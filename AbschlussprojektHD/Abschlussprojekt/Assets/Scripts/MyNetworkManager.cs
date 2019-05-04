@@ -34,6 +34,7 @@ public class MyNetworkManager : NetworkManager {
     private void Start()
     {
         Timer = 30f;
+        Reload = true;
     }
 
     private void Update()
@@ -42,14 +43,6 @@ public class MyNetworkManager : NetworkManager {
         {
             SearchPlayer(true);
         }
-        // reduce Timer. Every x seconds search for new player
-        //Timer -= Time.deltaTime;
-        //if (Timer <= 0)
-        //{
-        //    SearchPlayer(true);
-        //    Timer = 30f;
-        //}
-        //Debug.Log(AllPlayers.Count + " / Lobby: " + allPlayersLobby.Count + " / Playing: " + allPlayersPlaying.Count);
     }
 
     /// <summary>
@@ -57,12 +50,11 @@ public class MyNetworkManager : NetworkManager {
     /// </summary>
     /// <param name="_player">The player</param>
     /// <param name="_setWannaPlay">true: Set <see cref="AEntity.wannaPlay"/> value to true</param>
-    public static void AddPlayer(GameObject _player, bool _setWannaPlay = true)
+    public static void AddPlayer(GameObject _player)
     {
         PlayerEntity p = _player.GetComponent<PlayerEntity>();
         allPlayersPlaying.Add(p);
         allPlayersLobby.Remove(p);
-        if(_setWannaPlay) p.wannaPlay = true;
     }
 
     /// <summary>
@@ -74,7 +66,6 @@ public class MyNetworkManager : NetworkManager {
         PlayerEntity p = _player.GetComponent<PlayerEntity>();
         allPlayersLobby.Add(p);
         allPlayersPlaying.Remove(p);
-        p.wannaPlay = false;
     }
 
     public static void AddPlayerLobby(GameObject _player)
@@ -113,7 +104,7 @@ public class MyNetworkManager : NetworkManager {
 
         foreach (GameObject go in tempGO)
         {
-            if (go.name == "Player(Clone)")
+            if (go.name == "PlayerNew(Clone)")
             {
                 // add to all player (go) list
                 allPlayersGo.Add(go);
@@ -158,6 +149,9 @@ public class MyNetworkManager : NetworkManager {
         base.OnServerDisconnect(conn);
         Timer = 3f;
         Reload = true;
+
+        NetworkManagerHUD hud = GameObject.Find("Network Manager").GetComponent<NetworkManagerHUD>();
+        hud.showGUI = true;
     }
 
     public override void OnClientDisconnect(NetworkConnection conn)
@@ -165,6 +159,9 @@ public class MyNetworkManager : NetworkManager {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         Reload = true;
+
+        NetworkManagerHUD hud = GameObject.Find("Network Manager").GetComponent<NetworkManagerHUD>();
+        hud.showGUI = true;
     }
 
     /// <summary>
