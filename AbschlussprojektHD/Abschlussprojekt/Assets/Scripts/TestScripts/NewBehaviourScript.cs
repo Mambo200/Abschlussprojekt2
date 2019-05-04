@@ -3,9 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class NewBehaviourScript : MonoBehaviour {
+    Animator animator;
+    Animation animation;
 
+    private void Start()
+    {
+        animator = GetComponent<Animator>();
+        animation = GetComponent<Animation>();
+    }
     // Update is called once per frame
-    void Update() {
-        Debug.Log(Time.time);
-            }
+    void Update()
+    {
+        
+    }
 }
