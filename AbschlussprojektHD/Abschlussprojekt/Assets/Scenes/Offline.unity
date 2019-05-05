@@ -20,7 +20,7 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
+  m_AmbientSkyColor: {r: 0.1, g: 0.1, b: 0.1, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
@@ -3600,6 +3600,18 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &980276515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 980276511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3e13cb4ad0f7894eae7cc037c345c95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  aT: {fileID: 0}
 --- !u!1 &1001683686
 GameObject:
   m_ObjectHideFlags: 0
@@ -4706,6 +4718,14 @@ Prefab:
     - target: {fileID: 400094, guid: f72dfc8045cee7449a648e3222b11003, type: 3}
       propertyPath: m_LocalRotation.z
       value: -0.032720655
+      objectReference: {fileID: 0}
+    - target: {fileID: 11100000, guid: f72dfc8045cee7449a648e3222b11003, type: 3}
+      propertyPath: m_Animation
+      value: 
+      objectReference: {fileID: 7400000, guid: 71ffd0626014a0b41860a2d429bf7ecb, type: 3}
+    - target: {fileID: 11100000, guid: f72dfc8045cee7449a648e3222b11003, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f72dfc8045cee7449a648e3222b11003, type: 3}
