@@ -481,15 +481,18 @@ public class PlayerEntity : AEntity
                 hitdistance = hit.distance;
                 Vector3 endPos = ray.origin + ray.direction * hitdistance;
                 renderer.SetPosition(0, GetCurrentWeapon.transform.position);
-                renderer.SetPosition(1, hit.point);
+                renderer.SetPosition(1, endPos);
                 renderer.enabled = true;
 
                 m_TracerCounter++;
+
+                CmdShowTracer(endPos);
             }
             
         }
         isShooting = true;
         WaitTimer = WaitTimerDefault;
+
         
     }
 
