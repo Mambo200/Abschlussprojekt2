@@ -39,11 +39,9 @@ public class NewBehaviourScript : MonoBehaviour {
         set { animator.SetBool("Dying", value); }
     }
 
-    bool[] setFalse;
     private void Start()
     {
         animator = GetComponent<Animator>();
-        setFalse = new bool[animator.parameters.Length];
     }
     // Update is called once per frame
     void Update()
@@ -61,6 +59,13 @@ public class NewBehaviourScript : MonoBehaviour {
                 }
             }
         }
+
+        aT = new AnimatorTransition
+        {
+            mute = true
+        };
+        
+        
 
         if (Input.GetKey(KeyCode.W))
         {

@@ -372,7 +372,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 455921619}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &101770640
 GameObject:
@@ -1726,6 +1726,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 980276512}
+  - {fileID: 550346643}
   - {fileID: 75470133}
   - {fileID: 1031242667}
   - {fileID: 798502494}
@@ -2000,6 +2001,11 @@ RectTransform:
   m_AnchoredPosition: {x: 204, y: 0.5}
   m_SizeDelta: {x: -409, y: 39}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!4 &550346643 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400008, guid: fcc9932dbaca33f469cb386455ab54ca,
+    type: 3}
+  m_PrefabInternal: {fileID: 1039873915}
 --- !u!1 &569010601
 GameObject:
   m_ObjectHideFlags: 0
@@ -2843,7 +2849,7 @@ Transform:
   - {fileID: 816918529}
   - {fileID: 1242562163}
   m_Father: {fileID: 455921619}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &802748284
 GameObject:
@@ -3489,7 +3495,7 @@ Transform:
   - {fileID: 1705644690}
   - {fileID: 226844415}
   m_Father: {fileID: 455921619}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &944577892
 GameObject:
@@ -3757,7 +3763,7 @@ Transform:
   - {fileID: 1090675597}
   - {fileID: 108086014}
   m_Father: {fileID: 455921619}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1037306049
 GameObject:
@@ -3838,6 +3844,52 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1037306049}
   m_CullTransparentMesh: 0
+--- !u!1001 &1039873915
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 455921619}
+    m_Modifications:
+    - target: {fileID: 400008, guid: fcc9932dbaca33f469cb386455ab54ca, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400008, guid: fcc9932dbaca33f469cb386455ab54ca, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400008, guid: fcc9932dbaca33f469cb386455ab54ca, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400008, guid: fcc9932dbaca33f469cb386455ab54ca, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400008, guid: fcc9932dbaca33f469cb386455ab54ca, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400008, guid: fcc9932dbaca33f469cb386455ab54ca, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400008, guid: fcc9932dbaca33f469cb386455ab54ca, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400008, guid: fcc9932dbaca33f469cb386455ab54ca, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9500000, guid: fcc9932dbaca33f469cb386455ab54ca, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 3f2641546bf9db942803306a3625e870, type: 2}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: fcc9932dbaca33f469cb386455ab54ca, type: 3}
+  m_IsPrefabAsset: 0
 --- !u!1 &1041631483
 GameObject:
   m_ObjectHideFlags: 0
@@ -4725,6 +4777,10 @@ Prefab:
       objectReference: {fileID: 7400000, guid: 71ffd0626014a0b41860a2d429bf7ecb, type: 3}
     - target: {fileID: 11100000, guid: f72dfc8045cee7449a648e3222b11003, type: 3}
       propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100008, guid: f72dfc8045cee7449a648e3222b11003, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
