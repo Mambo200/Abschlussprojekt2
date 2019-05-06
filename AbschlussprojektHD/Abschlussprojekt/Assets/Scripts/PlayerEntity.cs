@@ -46,10 +46,14 @@ public class PlayerEntity : AEntity
 
     float timesincelastcall;
 
+    private bool isShooting;
+
+    private IEnumerator corountine;
+
     private bool m_PausePressed = false;
     private bool m_ResumePressed = false;
 
-    
+    private LineRenderer renderer;
 
     ///<summary>Movement Speed of Player</summary>
     public float m_MovementSpeed;
@@ -57,6 +61,9 @@ public class PlayerEntity : AEntity
     public float m_RotationSpeed;
     ///<summary>The force with which the Player can Jump</summary>
     public float m_JumpForce;
+    private float hitdistance;
+    private int m_TracerCounter;
+
     // Use this for initialization
     void Start ()
     {
@@ -66,7 +73,8 @@ public class PlayerEntity : AEntity
 
         distancetoground = GetComponentInChildren<Collider>().bounds.extents.y;
 
-        
+        renderer = GetComponent<LineRenderer>();
+
     }
 
     // Update is called once per frame
@@ -78,6 +86,9 @@ public class PlayerEntity : AEntity
             return;
 
         TimeCounter();
+
+        isShooting = false;
+
 
         if (Input.GetAxisRaw("Pause") != 0)
         {
@@ -179,14 +190,6 @@ public class PlayerEntity : AEntity
             }
         }
 
-        //Debug.DrawRay(transform.position, test , Color.black);
-
-        //Debug.Log(isgrounded);
-
-        //Debug.DrawRay(transform.position, Vector3.down, Color.green);
-
-        //Debug.Log(isdashing);
-
         timesincelastcall += Time.deltaTime;
 
         _regenSP = Time.deltaTime * 2f;
@@ -231,7 +234,26 @@ public class PlayerEntity : AEntity
 
         Move(dir);
 
-        Dash(dir);        
+        Dash(dir);
+
+        StartCoroutine(DeleteTracers(1));
+
+    }
+
+    private IEnumerator DeleteTracers(float TracerDeleteTime)
+    {
+        if (!isShooting)
+        {
+            if (renderer.enabled == true)
+            {
+                if (m_TracerCounter > 0)
+                {
+                    renderer.enabled = false;
+                }
+            }
+        }
+        yield return new WaitForSeconds(TracerDeleteTime);
+
     }
 
 
@@ -455,7 +477,23 @@ public class PlayerEntity : AEntity
         {
             Ray ray = m_playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
             CmdWeapon(ray.origin, ray.direction, AWeapon.WeaponName.MACHINEGUN);
+
+            renderer.positionCount = 2;
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                hitdistance = hit.distance;
+                Vector3 endPos = ray.origin + ray.direction * hitdistance;
+                renderer.SetPosition(0, GetCurrentWeapon.transform.position);
+                renderer.SetPosition(1, hit.point);
+                renderer.enabled = true;
+
+                m_TracerCounter++;
+            }
+            
         }
+        isShooting = true;
+        
     }
 
     private void Rotate(Vector3 _rotation)
