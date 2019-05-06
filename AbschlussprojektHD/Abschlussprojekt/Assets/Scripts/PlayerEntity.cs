@@ -63,6 +63,8 @@ public class PlayerEntity : AEntity
     public float m_JumpForce;
     private float hitdistance;
     private int m_TracerCounter;
+    private float WaitTimer;
+    public float WaitTimerDefault;
 
     // Use this for initialization
     void Start ()
@@ -236,25 +238,37 @@ public class PlayerEntity : AEntity
 
         Dash(dir);
 
-        StartCoroutine(DeleteTracers(1));
+        //StartCoroutine(DeleteTracers(1));
 
-    }
-
-    private IEnumerator DeleteTracers(float TracerDeleteTime)
-    {
         if (!isShooting)
         {
             if (renderer.enabled == true)
             {
-                if (m_TracerCounter > 0)
+                WaitTimer -= Time.deltaTime;
+                if (m_TracerCounter > 0 && WaitTimer < 0)
                 {
                     renderer.enabled = false;
                 }
             }
         }
-        yield return new WaitForSeconds(TracerDeleteTime);
 
     }
+
+    //rivate IEnumerator DeleteTracers(float TracerDeleteTime)
+    //
+    //   if (!isShooting)
+    //   {
+    //       if (renderer.enabled == true)
+    //       {
+    //           if (m_TracerCounter > 0)
+    //           {
+    //               renderer.enabled = false;
+    //           }
+    //       }
+    //   }
+    //   yield return new WaitForSeconds(TracerDeleteTime);
+    //
+    //
 
 
     #region Override Functions
@@ -493,6 +507,7 @@ public class PlayerEntity : AEntity
             
         }
         isShooting = true;
+        WaitTimer = WaitTimerDefault;
         
     }
 
