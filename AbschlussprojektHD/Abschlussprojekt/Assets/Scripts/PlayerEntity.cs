@@ -85,6 +85,17 @@ public class PlayerEntity : AEntity
         base.Update();
 
         if (!isLocalPlayer)
+        {
+            WaitTimer -= Time.deltaTime;
+
+            if (WaitTimer <= 0)
+            {
+                renderer.enabled = false;
+            }
+        }
+
+        //Only execute code benath this if, code unten nur von dem lokalen player
+        if (!isLocalPlayer)
             return;
 
         TimeCounter();
@@ -555,6 +566,8 @@ public class PlayerEntity : AEntity
             renderer.SetPosition(1, _endPos);
             renderer.enabled = true;
             WaitTimer = WaitTimerDefault;
+
+            
             
         }
     }
