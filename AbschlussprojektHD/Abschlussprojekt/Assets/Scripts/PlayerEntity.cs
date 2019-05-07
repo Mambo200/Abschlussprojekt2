@@ -85,6 +85,17 @@ public class PlayerEntity : AEntity
         base.Update();
 
         if (!isLocalPlayer)
+        {
+            WaitTimer -= Time.deltaTime;
+
+            if (WaitTimer <= 0)
+            {
+                renderer.enabled = false;
+            }
+        }
+
+        //Only execute code benath this if, code unten nur von dem lokalen player
+        if (!isLocalPlayer)
             return;
 
         TimeCounter();
@@ -238,8 +249,6 @@ public class PlayerEntity : AEntity
 
         Dash(dir);
 
-        //StartCoroutine(DeleteTracers(1));
-
         if (!isShooting)
         {
             if (renderer.enabled == true)
@@ -253,22 +262,6 @@ public class PlayerEntity : AEntity
         }
 
     }
-
-    //rivate IEnumerator DeleteTracers(float TracerDeleteTime)
-    //
-    //   if (!isShooting)
-    //   {
-    //       if (renderer.enabled == true)
-    //       {
-    //           if (m_TracerCounter > 0)
-    //           {
-    //               renderer.enabled = false;
-    //           }
-    //       }
-    //   }
-    //   yield return new WaitForSeconds(TracerDeleteTime);
-    //
-    //
 
 
     #region Override Functions
@@ -499,15 +492,18 @@ public class PlayerEntity : AEntity
                 hitdistance = hit.distance;
                 Vector3 endPos = ray.origin + ray.direction * hitdistance;
                 renderer.SetPosition(0, GetCurrentWeapon.transform.position);
-                renderer.SetPosition(1, hit.point);
+                renderer.SetPosition(1, endPos);
                 renderer.enabled = true;
 
                 m_TracerCounter++;
+
+                CmdShowTracer(endPos);
             }
             
         }
         isShooting = true;
         WaitTimer = WaitTimerDefault;
+
         
     }
 
@@ -559,5 +555,30 @@ public class PlayerEntity : AEntity
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
+    }
+
+    [ClientRpc]
+    public void RpcShowTracer(Vector3 _startPos, Vector3 _endPos)
+    {
+        if (!isLocalPlayer)
+        {
+            renderer.SetPosition(0, _startPos);
+            renderer.SetPosition(1, _endPos);
+            renderer.enabled = true;
+            WaitTimer = WaitTimerDefault;
+
+            
+            
+        }
+    }
+
+    /// <summary>
+    /// Give server endPos of the Shooting Ray to calculate Tracer
+    /// </summary>
+    /// <param name="_endPos"></param>
+    [Command]
+    public void CmdShowTracer(Vector3 _endPos)
+    {
+        RpcShowTracer(GetCurrentWeapon.transform.position, _endPos);
     }
 }
