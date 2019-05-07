@@ -3491,7 +3491,6 @@ MonoBehaviour:
   m_currentdashtime: 0
   m_resetdashtime: 2
   m_isgrounedoffset: 0.1
-  m_reduceSP: 10
   cooldowntime: 1
   _regenSP: 0
   m_MovementSpeed: 5
@@ -4905,7 +4904,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 150 / 150
+  m_Text: Kill
 --- !u!114 &114980315365275594
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -32,8 +32,6 @@ public class PlayerEntity : AEntity
 
     private float m_DefaultMovementSpeed;
 
-    public float m_reduceSP = 10f;
-
     public float cooldowntime = 1f;
 
     public float _regenSP;
@@ -53,7 +51,7 @@ public class PlayerEntity : AEntity
     private bool m_PausePressed = false;
     private bool m_ResumePressed = false;
 
-    private LineRenderer renderer;
+    private LineRenderer m_lineRenderer;
 
     ///<summary>Movement Speed of Player</summary>
     public float m_MovementSpeed;
@@ -75,7 +73,7 @@ public class PlayerEntity : AEntity
 
         distancetoground = GetComponentInChildren<Collider>().bounds.extents.y;
 
-        renderer = GetComponent<LineRenderer>();
+        m_lineRenderer = GetComponent<LineRenderer>();
 
     }
 
@@ -90,7 +88,7 @@ public class PlayerEntity : AEntity
 
             if (WaitTimer <= 0)
             {
-                renderer.enabled = false;
+                m_lineRenderer.enabled = false;
             }
         }
 
@@ -251,12 +249,12 @@ public class PlayerEntity : AEntity
 
         if (!isShooting)
         {
-            if (renderer.enabled == true)
+            if (m_lineRenderer.enabled == true)
             {
                 WaitTimer -= Time.deltaTime;
                 if (m_TracerCounter > 0 && WaitTimer < 0)
                 {
-                    renderer.enabled = false;
+                    m_lineRenderer.enabled = false;
                 }
             }
         }
@@ -368,7 +366,7 @@ public class PlayerEntity : AEntity
                 {
                     if (isdashing)
                     {
-                        SetReducedSP(m_reduceSP);
+                        CmdDash();
                     }
                     timesincelastcall = 0;
                 }
@@ -395,7 +393,7 @@ public class PlayerEntity : AEntity
                 {
                     if (isdashing)
                     {
-                        SetReducedSP(m_reduceSP);
+                        CmdDash();
                     }
                     timesincelastcall = 0;
                 }
@@ -422,7 +420,7 @@ public class PlayerEntity : AEntity
                 {
                     if (isdashing)
                     {
-                        SetReducedSP(m_reduceSP);
+                        CmdDash();
                     }
                     timesincelastcall = 0;
                 }
@@ -448,7 +446,7 @@ public class PlayerEntity : AEntity
                 {
                     if (isdashing)
                     {
-                        SetReducedSP(m_reduceSP);
+                        CmdDash();
                     }
                     timesincelastcall = 0;
                 }
@@ -485,15 +483,15 @@ public class PlayerEntity : AEntity
             Ray ray = m_playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
             CmdWeapon(ray.origin, ray.direction, AWeapon.WeaponName.MACHINEGUN);
 
-            renderer.positionCount = 2;
+            m_lineRenderer.positionCount = 2;
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))
             {
                 hitdistance = hit.distance;
                 Vector3 endPos = ray.origin + ray.direction * hitdistance;
-                renderer.SetPosition(0, GetCurrentWeapon.transform.position);
-                renderer.SetPosition(1, endPos);
-                renderer.enabled = true;
+                m_lineRenderer.SetPosition(0, GetCurrentWeapon.transform.position);
+                m_lineRenderer.SetPosition(1, endPos);
+                m_lineRenderer.enabled = true;
 
                 m_TracerCounter++;
 
@@ -562,9 +560,9 @@ public class PlayerEntity : AEntity
     {
         if (!isLocalPlayer)
         {
-            renderer.SetPosition(0, _startPos);
-            renderer.SetPosition(1, _endPos);
-            renderer.enabled = true;
+            m_lineRenderer.SetPosition(0, _startPos);
+            m_lineRenderer.SetPosition(1, _endPos);
+            m_lineRenderer.enabled = true;
             WaitTimer = WaitTimerDefault;
 
             

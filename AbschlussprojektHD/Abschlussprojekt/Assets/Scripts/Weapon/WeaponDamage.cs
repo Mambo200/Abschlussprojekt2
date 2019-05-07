@@ -11,29 +11,13 @@ public static class WeaponDamage
         switch (_weaponType)
         {
             case AWeapon.WeaponName.MACHINEGUN:
-                return 2.4f;
+                return 4.5f;
 
             case AWeapon.WeaponName.KATANA:
-                return 20.0f;
+                return 32.4f;
             // broken things
             default:
                 throw new System.NotImplementedException(_weaponType + " is not valid");
         }
     }
-
-    //public static float WaitTime(AWeapon.WeaponName _weaponType)
-    //{
-    //    switch (_weaponType)
-    //    {
-    //        case AWeapon.WeaponName.MACHINEGUN:
-    //            return 1.100f;
-    //
-    //        case AWeapon.WeaponName.KATANA:
-    //            return 0f;
-    //
-    //        // broken things
-    //        default:
-    //            throw new System.NotImplementedException(_weaponType + " is not valid");
-    //    }
-    //}
 }
