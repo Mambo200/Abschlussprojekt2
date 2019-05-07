@@ -20,7 +20,7 @@ public class PlayerEntity : AEntity
     int jumpcount;
 
     [Header("Player Specified")]
-    public float m_maxdashtime = 1.0f;
+    public float m_maxdashtime = 1.5f;
 
     public float m_dashstopspeed = 0.25f;
 
@@ -33,8 +33,6 @@ public class PlayerEntity : AEntity
     private float m_DefaultMovementSpeed;
 
     public float cooldowntime = 1f;
-
-    public float _regenSP;
 
     float cooldownstart = 0f;
 
@@ -202,13 +200,6 @@ public class PlayerEntity : AEntity
         }
 
         timesincelastcall += Time.deltaTime;
-
-        _regenSP = Time.deltaTime * 2f;
-
-        if (Time.time > timestamp)
-        {
-            CmdSetRegenSP(_regenSP);
-        }
 
         isgrounded = Physics.Raycast(transform.position, Vector3.down, distancetoground + m_isgrounedoffset);
 

@@ -3473,6 +3473,7 @@ MonoBehaviour:
   m_playerCamera: {fileID: 20601657395467966}
   CineMachineObject: {fileID: 1455896240845922}
   m_Audio: {fileID: 82681271480848178}
+  m_Cooldown: 1
   m_Weapons:
   - {fileID: 114512360140073832}
   - {fileID: 114050042393283032}
