@@ -119,6 +119,7 @@ public class Chaser : NetworkBehaviour {
         }
 
         CurrentChaser.GetComponent<PlayerEntity>().CmdSetRegenSP(AEntity.SpRegenDefault * m_chaser.ChaserSPRegenMultiplier);
-        LastRoundChaser.GetComponent<PlayerEntity>().CmdSetRegenSP(AEntity.SpRegenDefault);
+        if (LastRoundChaser != null)
+            LastRoundChaser.GetComponent<PlayerEntity>().CmdSetRegenSP(AEntity.SpRegenDefault);
     }
 }
