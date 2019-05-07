@@ -31,7 +31,7 @@ namespace Assets.Scripts.Weapon
             lastShot = Time.time;
             Activated = true;
             ActivationTime = Time.time;
-            gameObject.GetComponent<Renderer>().material = m_Player.mat[1];
+            gameObject.GetComponent<Renderer>().material = m_Player.ChaserMaterial;
             return true;
 
         }
@@ -46,7 +46,7 @@ namespace Assets.Scripts.Weapon
                 {
                     Activated = false;
                     alreadyhit.Clear();
-                    gameObject.GetComponent<Renderer>().material = m_Player.mat[0];
+                    gameObject.GetComponent<Renderer>().material = m_Player.DefaultMaterial;
                 }
             }
         }

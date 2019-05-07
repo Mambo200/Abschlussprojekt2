@@ -91,35 +91,54 @@ public class RoundManager : NetworkBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        // reduce current round time by deltatime each frame
         if (!isServer)
             return;
 
+
         // check if player playing list is more than minimum count
-        if (MyNetworkManager.AllPlayersPlaying.Count < minimumPlayers)
+        if (MyNetworkManager.AllPlayersPlaying.Count < minimumPlayers && MyNetworkManager.gameRunning)
         {
             // if no round has started yet return
             if (RoundCount == 0) return;
             if (RoundCount > 0)
             {
+                // if player left in round
                 foreach (PlayerEntity player in MyNetworkManager.AllPlayersPlaying)
                 {
                     // reset players position to a lobby position
+                    player.RpcChangeStartButtonTextToStart();
                     player.RpcTeleport(SpawnpointHandler.NextLobbypoint(), ETP.LOBBYTP);
-                    player.RpcResetChaserColor(Chaser.CurrentChaser);
+                    player.RpcChangeToDefaultColor(Chaser.CurrentChaser);
                     player.wannaPlay = false;
+                    MyNetworkManager.gameRunning = false;
+                    MyNetworkManager.ReloadPlayers();
                 }
+                // reset stats
                 Reset();
+                // reset player positions and lists
+                MyNetworkManager.ResetGame();
+
                 return;
             }
         }
 
         // get through playing list and check if more than 2 players are ready
         int particitians = 0;
-        foreach (PlayerEntity player in MyNetworkManager.AllPlayersPlaying)
+        if (MyNetworkManager.gameRunning)
         {
-            particitians++;
-            if (particitians >= minimumPlayers) break;
+            foreach (PlayerEntity player in MyNetworkManager.AllPlayersPlaying)
+            {
+                particitians++;
+                if (particitians >= minimumPlayers) break;
+            }
+        }
+        else
+        {
+            foreach (PlayerEntity player in MyNetworkManager.AllPlayersWannaPlay)
+            {
+                particitians++;
+                if (particitians >= minimumPlayers) break;
+            }
         }
 
         // if not enough particitians are there return
@@ -135,12 +154,12 @@ public class RoundManager : NetworkBehaviour {
 
             if (TillNextRound <= 0)
             {
-                // if time is up start new round
+                // if time is up transfer lists and start new round
+                MyNetworkManager.NewRound();
                 NextRound();
+                MyNetworkManager.gameRunning = true;
             }
         }
-
-        //Debug.Log(new Vector3(CurrentRoundTime, TillNextRound, RoundCount));
 	}
 
     /// <summary>

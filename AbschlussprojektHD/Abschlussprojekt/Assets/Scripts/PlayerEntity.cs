@@ -526,7 +526,7 @@ public class PlayerEntity : AEntity
 
     private void TimeCounter()
     {
-        LocalRoundTime -= Time.deltaTime;
+        LocalRoundTime -= Time.deltaTime; 
     }
 
     /// <summary>

@@ -3465,9 +3465,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bac29b71e2da444c9d1a356414b78e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mat:
-  - {fileID: 2100000, guid: 311a6509474dd61458493fb2bd216014, type: 2}
-  - {fileID: 2100000, guid: 5c9050dbb30d06d4ebe6c80eea79f52a, type: 2}
+  matRed: {fileID: 2100000, guid: 311a6509474dd61458493fb2bd216014, type: 2}
+  matBlue: {fileID: 2100000, guid: 5c9050dbb30d06d4ebe6c80eea79f52a, type: 2}
+  matWhite: {fileID: 2100000, guid: 8d2418eac1f0a044bb512a529be3f09e, type: 2}
   m_body: {fileID: 1082640177860558}
   m_lookAt: {fileID: 4669643075216350}
   m_playerCamera: {fileID: 20601657395467966}
@@ -3493,7 +3493,6 @@ MonoBehaviour:
   m_resetdashtime: 2
   m_isgrounedoffset: 0.1
   cooldowntime: 1
-  _regenSP: 0
   m_MovementSpeed: 5
   m_RotationSpeed: 10
   m_JumpForce: 5

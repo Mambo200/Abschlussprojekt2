@@ -14,9 +14,22 @@ public abstract class AEntity : NetworkBehaviour
 
     protected Rigidbody m_rigidbody;
 
+    [Header("Materials")]
+    [Tooltip("Primary color for Chaser")]
+    ///<summary>Red material</summary>
+    public Material matRed;
+    ///<summary>Blue material</summary>
+    [Tooltip("Primary color for Player in Game")]
+    public Material matBlue;
+    ///<summary>White material</summary>
+    [Tooltip("Primary color for Player in Lobby")]
+    public Material matWhite;
+
+    public Material ChaserMaterial { get { return matRed; } }
+    public Material PlayerMaterial { get { return matBlue; } }
+    public Material DefaultMaterial { get { return matWhite; } }
+
     [Header("Player and Camera and Audio")]
-    ///<summary>0: red / 1: blue</summary>
-    public Material[] mat;
     [SerializeField]
     protected GameObject m_body;
 
@@ -116,7 +129,7 @@ public abstract class AEntity : NetworkBehaviour
     ///<summary>Round manager in this scene</summary>
     private RoundManager roundManager;
     ///<summary>Round manager in this scene (Lazy loading)</summary>
-    private RoundManager RoundManager
+    protected RoundManager RoundManager
     {
         get
         {
@@ -853,12 +866,12 @@ public abstract class AEntity : NetworkBehaviour
         if (IsChaser)
         {
             CurrentArmor = ChaserArmor;
-            m_body.GetComponent<Renderer>().material = mat[0]; 
+            m_body.GetComponent<Renderer>().material = ChaserMaterial; 
         }
         else
         {
             CurrentArmor = PlayerArmor;
-            m_body.GetComponent<Renderer>().material = mat[1];
+            m_body.GetComponent<Renderer>().material = PlayerMaterial;
         }
     }
     #endregion
@@ -989,12 +1002,12 @@ public abstract class AEntity : NetworkBehaviour
     public void RpcSetChaserColor(GameObject _chaser, GameObject _lastChaser)
     {
         if (_lastChaser != null)
-            _lastChaser.GetComponent<PlayerEntity>().m_body.GetComponent<Renderer>().material = mat[1];
+            _lastChaser.GetComponent<PlayerEntity>().m_body.GetComponent<Renderer>().material = PlayerMaterial;
         else
             Debug.Log("last chaser is null");
 
         if (_chaser != null)
-            _chaser.GetComponent<PlayerEntity>().m_body.GetComponent<Renderer>().material = mat[0];
+            _chaser.GetComponent<PlayerEntity>().m_body.GetComponent<Renderer>().material = ChaserMaterial;
         else
             Debug.Log("current chaser is null");
     }
@@ -1004,12 +1017,17 @@ public abstract class AEntity : NetworkBehaviour
     /// </summary>
     /// <param name="_chaser">current chaser</param>
     [ClientRpc]
-    public void RpcResetChaserColor(GameObject _chaser)
+    public void RpcChangeToDefaultColor(params GameObject[] _players)
     {
-        if (_chaser != null)
-            _chaser.GetComponent<PlayerEntity>().m_body.GetComponent<Renderer>().material.color = Color.white;
-        else
-            Debug.Log("current chaser is null");
+        foreach (GameObject go in _players)
+        {
+            if (go == null) continue;
+            PlayerEntity pe = go.GetComponent<PlayerEntity>();
+            if (pe == null) continue;
+
+            //pe.m_body.GetComponent<Renderer>().material = Material.
+
+        }
 
     }
 
@@ -1028,6 +1046,16 @@ public abstract class AEntity : NetworkBehaviour
     {
         PlayerEntity pe = _player.GetComponent<PlayerEntity>();
         pe.m_WeaponsGO[_index].SetActive(_setActive);
+    }
+
+    /// <summary>
+    /// Change Start Button Text
+    /// </summary>
+    /// <param name="_text">new Text of Button</param>
+    [ClientRpc]
+    public void RpcChangeStartButtonTextToStart()
+    {
+        m_StartButton.GetComponentInChildren<Text>().text = "Start!";
     }
     #endregion
 
@@ -1186,7 +1214,7 @@ public abstract class AEntity : NetworkBehaviour
             if (isServer)
             {
                 // check if other player clicked start
-                if (MyNetworkManager.AllPlayersPlaying.Count + 1 < RoundManager.minimumPlayers) return;
+                if (MyNetworkManager.AllPlayersWannaPlay.Count + 1 < RoundManager.minimumPlayers) return;
             }
             m_StartButton.GetComponentInChildren<Text>().text = "Cancel";
 

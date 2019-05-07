@@ -5,6 +5,9 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 public class MyNetworkManager : NetworkManager {
+
+    /// <summary>True when game is running</summary>
+    public static bool gameRunning = false;
     /// <summary>when true, looking for players</summary>
     private static bool Reload { get; set; }
     /// <summary>Timer for Manager, every x seconds Server is looking for new player</summary>
@@ -27,6 +30,11 @@ public class MyNetworkManager : NetworkManager {
     /// <summary>List with all players who are playing</summary>
     public static List<PlayerEntity> AllPlayersPlaying { get { return allPlayersPlaying; } }
 
+    /// <summary>List with all players in lobby who wanna play</summary>
+    private static List<PlayerEntity> allPlayersWannaPlay = new List<PlayerEntity>();
+    /// <summary>List with all players in lobby who wanna play</summary>
+    public static List<PlayerEntity> AllPlayersWannaPlay { get { return allPlayersWannaPlay; } }
+
     /// <summary>List with all players in Lobby</summary>
     private static List<PlayerEntity> allPlayersLobby = new List<PlayerEntity>();
     /// <summary>List with all players in lobby</summary>
@@ -43,6 +51,8 @@ public class MyNetworkManager : NetworkManager {
         {
             SearchPlayer(true);
         }
+
+        Debug.Log("All: " + AllPlayers.Count + " / Lobby: " + AllPlayersLobby.Count + " / WannaPlay: " + AllPlayersWannaPlay.Count + " / Playing: " + AllPlayersPlaying.Count);
     }
 
     /// <summary>
@@ -53,7 +63,7 @@ public class MyNetworkManager : NetworkManager {
     public static void AddPlayer(GameObject _player)
     {
         PlayerEntity p = _player.GetComponent<PlayerEntity>();
-        allPlayersPlaying.Add(p);
+        AllPlayersWannaPlay.Add(p);
         allPlayersLobby.Remove(p);
     }
 
@@ -65,7 +75,7 @@ public class MyNetworkManager : NetworkManager {
     {
         PlayerEntity p = _player.GetComponent<PlayerEntity>();
         allPlayersLobby.Add(p);
-        allPlayersPlaying.Remove(p);
+        AllPlayersWannaPlay.Remove(p);
     }
 
     public static void AddPlayerLobby(GameObject _player)
@@ -100,6 +110,7 @@ public class MyNetworkManager : NetworkManager {
         allPlayers.Clear();
         allPlayersGo.Clear();
         allPlayersPlaying.Clear();
+        AllPlayersWannaPlay.Clear();
         allPlayersLobby.Clear();
 
         foreach (GameObject go in tempGO)
@@ -107,8 +118,8 @@ public class MyNetworkManager : NetworkManager {
             if (go.name == "PlayerNew(Clone)")
             {
                 // add to all player (go) list
-                allPlayersGo.Add(go);
-                allPlayers.Add(go.gameObject.GetComponent<PlayerEntity>());
+                AllPlayersGo.Add(go);
+                AllPlayers.Add(go.gameObject.GetComponent<PlayerEntity>());
 
                 // add to playing or lobby list
                 if (go.gameObject.transform.position.y > 400)
@@ -116,15 +127,15 @@ public class MyNetworkManager : NetworkManager {
                     // check if player wants to play
                     if (go.gameObject.GetComponent<PlayerEntity>().wannaPlay == true)
                     {
-                        allPlayersPlaying.Add(go.GetComponent<PlayerEntity>());
+                        AllPlayersWannaPlay.Add(go.GetComponent<PlayerEntity>());
                     }
                     else
                     {
-                        allPlayersLobby.Add(go.GetComponent<PlayerEntity>());
+                        AllPlayersLobby.Add(go.GetComponent<PlayerEntity>());
                     }
                 }
                 else
-                    allPlayersPlaying.Add(go.GetComponent<PlayerEntity>());
+                    AllPlayersPlaying.Add(go.GetComponent<PlayerEntity>());
             }
         }
     }
@@ -182,7 +193,40 @@ public class MyNetworkManager : NetworkManager {
             MyNetworkManager.singleton.StopHost();
         else
             MyNetworkManager.singleton.StopClient();
+    }
 
-        //client.Disconnect();
+    public static void ResetGame()
+    {
+        // save playing list
+        List<PlayerEntity> temp = new List<PlayerEntity>(AllPlayersPlaying);
+
+        // for each player who was playing transfer to lobby list
+        foreach (PlayerEntity pe in temp)
+        {
+            AllPlayersLobby.Add(pe);
+        }
+        // clear list
+        AllPlayersPlaying.Clear();
+        temp = null;
+    }
+
+    public static void NewRound()
+    {
+        // copy all PEs to Playing list
+        foreach (PlayerEntity pe in AllPlayersWannaPlay)
+        {
+            // set wannaplay to false
+            pe.wannaPlay = false;
+            // add PE to list
+            AllPlayersPlaying.Add(pe);
+        }
+
+        // clear wanna play list
+        AllPlayersWannaPlay.Clear();
+    }
+
+    public static void ReloadPlayers()
+    {
+        Reload = true;
     }
 }
