@@ -9,6 +9,8 @@ using Cinemachine;
 [RequireComponent(typeof(Rigidbody))]
 public abstract class AEntity : NetworkBehaviour
 {
+    public static float DashConsumption { get { return 10.0f; } }
+
     protected Rigidbody m_rigidbody;
 
     [Header("Player and Camera and Audio")]
@@ -104,7 +106,7 @@ public abstract class AEntity : NetworkBehaviour
     private float m_localRoundTime;
     ///<summary>Round manager in this scene</summary>
     private RoundManager roundManager;
-    ///<summary>Round manager in this scene</summary>
+    ///<summary>Round manager in this scene (Lazy loading)</summary>
     private RoundManager RoundManager
     {
         get
@@ -187,7 +189,7 @@ public abstract class AEntity : NetworkBehaviour
             maxSP = value;
             AfterMaxSPChanged();
             // change UI Text
-            ChangeTextSP((int)currentSP, maxSP);
+            RpcChangeTextSP((int)currentSP, maxSP);
 
         }
     }
@@ -211,7 +213,7 @@ public abstract class AEntity : NetworkBehaviour
             currentSP = value;
             AfterCurrentSPChanged();
             // change UI Text
-            ChangeTextSP((int)currentSP, maxSP);
+            RpcChangeTextSP((int)currentSP, maxSP);
         }
     }
 
@@ -284,7 +286,7 @@ public abstract class AEntity : NetworkBehaviour
     /// <summary>Default variable of Chaser armor. 
     /// If you want to change the current armor of chaser use <see cref="CurrentArmor"/> instead. (DO NOT USE! USE <see cref="ChaserArmor"/> INSTEAD)</summary>
     [SyncVar]
-    private float chaserArmor = 250f;
+    private float chaserArmor = 100f;
     /// <summary>Chaser Armor property. Please change current armor in <see cref="CurrentArmor"/>. (Everyone can get, only Server can set in <see cref="SetDefaultChaserArmor(float)"/>)</summary>
     public float ChaserArmor
     {
@@ -961,8 +963,8 @@ public abstract class AEntity : NetworkBehaviour
     /// <param name="_text">Text UI Text to change</param>
     /// <param name="_currentValue">Current value</param>
     /// <param name="_maxValue">Maximum value</param>
-    //[ClientRpc]
-    protected void ChangeTextSP(float _currentValue, float _maxValue)
+    [ClientRpc]
+    protected void RpcChangeTextSP(float _currentValue, float _maxValue)
     {
         // set new UI Text
         m_SPText.text = _currentValue + " / " + _maxValue;
@@ -1129,6 +1131,12 @@ public abstract class AEntity : NetworkBehaviour
         {
             pe.RpcSetGOActiveState(this.gameObject, _setActive, _index);
         }
+    }
+
+    [Command]
+    public void CmdDash()
+    {
+        CurrentSP -= DashConsumption;
     }
     #endregion
 

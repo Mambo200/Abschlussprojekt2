@@ -70,7 +70,7 @@ namespace Assets.Scripts.Weapon
         public void DealDamage(PlayerEntity _hit)
         {
             // return if is not player
-            if (!m_Player.isServer) return;
+            if (!m_Player.isLocalPlayer) return;
 
             // check if weapon is activated
             if (Activated)
