@@ -10,6 +10,7 @@ using Cinemachine;
 public abstract class AEntity : NetworkBehaviour
 {
     public static float DashConsumption { get { return 10.0f; } }
+    public static float SpRegenDefault { get { return 5f; } }
 
     protected Rigidbody m_rigidbody;
 
@@ -33,6 +34,14 @@ public abstract class AEntity : NetworkBehaviour
     protected CinemachineFreeLook CineFreeLook;
 
     public AudioSource m_Audio;
+
+
+    [Header("Dash")]
+    [SerializeField]
+    private float m_Cooldown;
+
+    private float m_TimeStamp;
+
 
     [Header("Weapons")]
     ///<summary>Weapons of Player</summary>
@@ -330,7 +339,7 @@ public abstract class AEntity : NetworkBehaviour
     }
 
     [SyncVar]
-    private float regenSP;
+    private float regenSP = SpRegenDefault;
     public float RegenSP
     {
         get
@@ -348,6 +357,7 @@ public abstract class AEntity : NetworkBehaviour
             regenSP = value;
         }
     }
+    private float SPRegenMultiplier { get { return Time.deltaTime * 1.1f; } }
 
     /// <summary>How often was player Chaser</summary>
     [SyncVar]
@@ -872,7 +882,7 @@ public abstract class AEntity : NetworkBehaviour
         if (!isServer) return;
 
         // regenerate SP
-        CurrentSP += RegenSP;
+        if (Time.time > m_TimeStamp) CurrentSP += RegenSP * SPRegenMultiplier;
 
         // if player fell of the stage reset position
         if (transform.position.y <= -500)
@@ -1133,10 +1143,14 @@ public abstract class AEntity : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Reduces SP when character dashes
+    /// </summary>
     [Command]
     public void CmdDash()
     {
         CurrentSP -= DashConsumption;
+        m_TimeStamp = Time.time + m_Cooldown;
     }
     #endregion
 

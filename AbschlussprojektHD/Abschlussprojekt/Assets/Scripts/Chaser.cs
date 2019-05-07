@@ -5,10 +5,19 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 public class Chaser : NetworkBehaviour {
-    
+
+    private static Chaser m_chaser;
+
+    [SerializeField]
+    private float ChaserSPRegenMultiplier;
     public static float DamageMultiplier { get { return 3f; } }
     public static GameObject CurrentChaser { get; private set; }
     public static GameObject LastRoundChaser { get; private set; }
+
+    private void Start()
+    {
+        m_chaser = GameObject.Find("RoundManager").GetComponent<Chaser>();
+    }
 
     /// <summary>
     /// Chooses the chaser randomly. Eliminate players who do not have the lowest amount of Chaser players, afterwards choose randomly from pool
@@ -108,5 +117,8 @@ public class Chaser : NetworkBehaviour {
         {
             pe.RpcSetChaserColor(CurrentChaser, LastRoundChaser);
         }
+
+        CurrentChaser.GetComponent<PlayerEntity>().CmdSetRegenSP(AEntity.SpRegenDefault * m_chaser.ChaserSPRegenMultiplier);
+        LastRoundChaser.GetComponent<PlayerEntity>().CmdSetRegenSP(AEntity.SpRegenDefault);
     }
 }
