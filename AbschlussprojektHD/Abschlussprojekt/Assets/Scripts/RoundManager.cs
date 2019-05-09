@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class RoundManager : NetworkBehaviour {
+public class RoundManager : MonoBehaviour {
 
     public int minimumPlayers;
 
     /// <summary>Round count variable (USE <see cref="RoundCount"/>)</summary>
-    [SyncVar]
     private int roundCount = 0;
     /// <summary>Round count Property</summary>
     public int RoundCount
@@ -16,19 +15,16 @@ public class RoundManager : NetworkBehaviour {
         get { return roundCount; }
         set
         {
-            if (isServer)
-                roundCount = value;
+            roundCount = value;
         }
     }
 
     /// <summary>Time left of current round</summary>
-    [SyncVar]
     public float currentRoundTime = 0;
     /// <summary>Current Time property. only server can set time</summary>
     public float CurrentRoundTime
     {
         get { return currentRoundTime; }
-        [Server]
         set
         {
             // if value is lower than 0 set variable to 0, else to value
@@ -40,7 +36,6 @@ public class RoundManager : NetworkBehaviour {
     }
 
     /// <summary>Wait time for next round to start after round is finished</summary>
-    [SyncVar]
     private float tillNextRound = 7;
     public float TillNextRound
     {
@@ -58,7 +53,9 @@ public class RoundManager : NetworkBehaviour {
 #if UNITY_EDITOR
             return 10f;
 #endif
+#pragma warning disable 0162
             return 30f;
+#pragma warning restore
         }
     }
     /// <summary>for each player add this to the round time (0 player -> 60 + (this * playercount) seconds)</summary>
@@ -69,7 +66,9 @@ public class RoundManager : NetworkBehaviour {
 #if UNITY_EDITOR
             return 5f;
 #endif
+#pragma warning disable 0162
             return 10f;
+#pragma warning restore
         }
     }
     /// <summary>calculates the time for the next round</summary>
@@ -91,10 +90,6 @@ public class RoundManager : NetworkBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        if (!isServer)
-            return;
-
-
         // check if player playing list is more than minimum count
         if (MyNetworkManager.AllPlayersPlaying.Count < minimumPlayers && MyNetworkManager.gameRunning)
         {

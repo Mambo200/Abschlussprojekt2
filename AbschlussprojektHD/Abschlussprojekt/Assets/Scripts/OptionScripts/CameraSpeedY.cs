@@ -4,18 +4,21 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class CameraSpeedY : MonoBehaviour {
-
+#pragma warning disable 0649
     [SerializeField]
     private Slider m_Slider;
+#pragma warning restore
 
     [SerializeField]
     private Text m_Text;
-
+#pragma warning disable 0649
     [SerializeField]
     private InputField m_Input;
-
+#pragma warning restore
+#pragma warning disable 0649
     [SerializeField]
     private Cinemachine.CinemachineFreeLook m_FreeLook;
+#pragma warning restore
 
     private RectTransform m_rect;
     private RectTransform Rect

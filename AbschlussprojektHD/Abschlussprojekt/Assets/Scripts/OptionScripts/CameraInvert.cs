@@ -17,14 +17,17 @@ public class CameraInvert : MonoBehaviour {
     [SerializeField]
     private Text[] m_Texts;
 
+#pragma warning disable 0649
     /// <summary>
     /// Invert Checker (0 = x, 1 = y)
     /// </summary>
     [SerializeField]
     private Toggle[] m_Toggles;
-
+#pragma warning restore
+#pragma warning disable 0649
     [SerializeField]
     private Cinemachine.CinemachineFreeLook m_FreeLook;
+#pragma warning restore
 
     /// <summary>
     /// Set Mouse X Axis Speed

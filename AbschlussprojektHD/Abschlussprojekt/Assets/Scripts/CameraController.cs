@@ -6,8 +6,10 @@ using System.Runtime.InteropServices;
 
 public class CameraController : MonoBehaviour {
 
+#pragma warning disable 0649
     [SerializeField]
     private GameObject m_PlayerParent;
+#pragma warning restore
     /// <summary>Invert X mouse input</summary>
     public bool invertX = false;
     /// <summary>Invert Y mouse input</summary>

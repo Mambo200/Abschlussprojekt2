@@ -10,10 +10,11 @@ public class MyNetworkManager : NetworkManager {
     public static bool gameRunning = false;
     /// <summary>when true, looking for players</summary>
     private static bool Reload { get; set; }
-    /// <summary>Timer for Manager, every x seconds Server is looking for new player</summary>
-    private float Timer { get; set; }
     /// <summary>Get Networkmanager Singleton</summary>
     public static NetworkManager GetSingleton { get { return singleton; } }
+
+    /// <summary>Set while initialize, if true player has access to Update</summary>
+    public static bool CurrentlyServer = false;
 
     /// <summary>List with all players in Scene</summary>
     private static List<PlayerEntity> allPlayers = new List<PlayerEntity>();
@@ -41,12 +42,17 @@ public class MyNetworkManager : NetworkManager {
     public static List<PlayerEntity> AllPlayersLobby { get { return allPlayersLobby; } }
     private void Start()
     {
-        Timer = 30f;
+        if (!CurrentlyServer) return;
+
         Reload = true;
     }
 
     private void Update()
     {
+        if (!IsClientConnected()) return;
+
+        if (!CurrentlyServer) return;
+
         if (Reload)
         {
             SearchPlayer(true);
@@ -117,6 +123,7 @@ public class MyNetworkManager : NetworkManager {
                 AllPlayers.Add(go.gameObject.GetComponent<PlayerEntity>());
 
                 // add to playing or lobby list
+#warning If Lobby is set new reconfiguring is required!!!
                 if (go.gameObject.transform.position.y > 400)
                 {
                     // check if player wants to play
@@ -138,12 +145,19 @@ public class MyNetworkManager : NetworkManager {
     public override void OnStopServer()
     {
         base.OnStopServer();
+        CurrentlyServer = false;
         allPlayersGo.Clear();
         allPlayers.Clear();
         allPlayersPlaying.Clear();
         allPlayersLobby.Clear();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+    }
+
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+        CurrentlyServer = true;
     }
 
     /// <summary>
@@ -153,11 +167,9 @@ public class MyNetworkManager : NetworkManager {
     public override void OnServerDisconnect(NetworkConnection conn)
     {
         base.OnServerDisconnect(conn);
-        Timer = 3f;
         Reload = true;
 
-        NetworkManagerHUD hud = GameObject.Find("Network Manager").GetComponent<NetworkManagerHUD>();
-        hud.showGUI = true;
+        conn.Disconnect();
     }
 
     public override void OnClientDisconnect(NetworkConnection conn)
@@ -225,4 +237,5 @@ public class MyNetworkManager : NetworkManager {
     {
         Reload = true;
     }
+
 }
