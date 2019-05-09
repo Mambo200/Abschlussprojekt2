@@ -78,11 +78,6 @@ public class MyNetworkManager : NetworkManager {
         AllPlayersWannaPlay.Remove(p);
     }
 
-    public static void AddPlayerLobby(GameObject _player)
-    {
-        Reload = true;
-    }
-
     /// <summary>
     /// Searching player in this Scene
     /// </summary>
@@ -208,6 +203,7 @@ public class MyNetworkManager : NetworkManager {
         // clear list
         AllPlayersPlaying.Clear();
         temp = null;
+        gameRunning = false;
     }
 
     public static void NewRound()

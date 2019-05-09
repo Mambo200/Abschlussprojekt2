@@ -1191,7 +1191,7 @@ public abstract class AEntity : NetworkBehaviour
     {
         m_rigidbody = GetComponent<Rigidbody>();
         m_rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
-        MyNetworkManager.AddPlayerLobby(this.gameObject);
+        MyNetworkManager.ReloadPlayers();
         NetworkManagerHUD hud = GameObject.Find("Network Manager").GetComponent<NetworkManagerHUD>();
         hud.showGUI = false;
 
