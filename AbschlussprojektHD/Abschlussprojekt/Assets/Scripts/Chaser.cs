@@ -7,9 +7,10 @@ using UnityEngine.Networking;
 public class Chaser : NetworkBehaviour {
 
     private static Chaser m_chaser;
-
+#pragma warning disable 0649
     [SerializeField]
     private float ChaserSPRegenMultiplier;
+#pragma warning restore
     public static float DamageMultiplier { get { return 3f; } }
     public static GameObject CurrentChaser { get; private set; }
     public static GameObject LastRoundChaser { get; private set; }

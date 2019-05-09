@@ -34,8 +34,6 @@ public class PlayerEntity : AEntity
 
     public float cooldowntime = 1f;
 
-    float cooldownstart = 0f;
-
     float timestamp;
 
     bool isdashing;
@@ -48,6 +46,8 @@ public class PlayerEntity : AEntity
 
     private bool m_PausePressed = false;
     private bool m_ResumePressed = false;
+
+    private bool m_firePressed = false;
 
     private LineRenderer m_lineRenderer;
 
@@ -216,9 +216,21 @@ public class PlayerEntity : AEntity
         }
 
         // Shoot
-        if (Input.GetAxisRaw("Fire1") > 0)
+        // if Weapon has rapid fire
+        if (GetCurrentWeapon.HasRapidFire)
+            if (Input.GetAxisRaw("Fire1") > 0)
+                Shoot();
+        // if weapon has not rapid fire
+        else
         {
-            Shoot();
+            if (Input.GetAxisRaw("Fire1") > 0 &&
+                !m_firePressed)
+            {
+                m_firePressed = true;
+                Shoot();
+            }
+            else
+                m_firePressed = false;
         }
 
         var forward = m_playerCamera.transform.forward;

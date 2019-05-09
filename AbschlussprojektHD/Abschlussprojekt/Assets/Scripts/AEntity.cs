@@ -9,6 +9,8 @@ using Cinemachine;
 [RequireComponent(typeof(Rigidbody))]
 public abstract class AEntity : NetworkBehaviour
 {
+    public const string PLAYERDAMAGETAG = "Hitable";
+
     public static float DashConsumption { get { return 10.0f; } }
     public static float SpRegenDefault { get { return 5f; } }
 
@@ -29,7 +31,10 @@ public abstract class AEntity : NetworkBehaviour
     public Material PlayerMaterial { get { return matBlue; } }
     public Material DefaultMaterial { get { return matWhite; } }
 
-    [Header("Player and Camera and Audio")]
+    [Header("Player")]
+    [SerializeField]
+    protected GameObject m_riggedPlayer;
+
     [SerializeField]
     protected GameObject m_body;
 
@@ -37,6 +42,7 @@ public abstract class AEntity : NetworkBehaviour
     [SerializeField]
     protected Transform m_lookAt;
 
+    [Header("Camera")]
     ///<summary>Player Camera</summary>
     [SerializeField]
     protected Camera m_playerCamera;
@@ -46,12 +52,15 @@ public abstract class AEntity : NetworkBehaviour
 
     protected CinemachineFreeLook CineFreeLook;
 
+    [Header("Audio")]
     public AudioSource m_Audio;
 
 
+#pragma warning disable 0649
     [Header("Dash")]
     [SerializeField]
     private float m_Cooldown;
+#pragma warning restore
 
     private float m_TimeStamp;
 
@@ -1082,7 +1091,7 @@ public abstract class AEntity : NetworkBehaviour
         if (Physics.Raycast(ray, out hit))
         {
             // check if hit object is player
-            if (hit.collider.gameObject.tag != "Player")
+            if (hit.collider.gameObject.tag != PLAYERDAMAGETAG)
                 return;
 
             // get Playerentity (GetParent because Capsule is hit and Capsules parent has playerentity)
@@ -1191,7 +1200,7 @@ public abstract class AEntity : NetworkBehaviour
     {
         m_rigidbody = GetComponent<Rigidbody>();
         m_rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
-        MyNetworkManager.AddPlayerLobby(this.gameObject);
+        MyNetworkManager.ReloadPlayers();
         NetworkManagerHUD hud = GameObject.Find("Network Manager").GetComponent<NetworkManagerHUD>();
         hud.showGUI = false;
 
