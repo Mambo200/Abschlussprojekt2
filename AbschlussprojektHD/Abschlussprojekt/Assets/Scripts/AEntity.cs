@@ -9,6 +9,10 @@ using Cinemachine;
 [RequireComponent(typeof(Rigidbody))]
 public abstract class AEntity : NetworkBehaviour
 {
+    protected bool wasHit;
+    protected float hitTimer;
+    public float HitTimer { get { return 0.2f; } }
+
     ///<summary>Tag of anything where player can get damage</summary>
 #if UNITY_EDITOR
     [TagSelector]
@@ -1086,6 +1090,8 @@ public abstract class AEntity : NetworkBehaviour
     [ClientRpc]
     public void RpcAddForce(Vector3 _directionFromHit)
     {
+        wasHit = true;
+        hitTimer = HitTimer;
         _directionFromHit.x *= m_swordHitVelocityMultiplier.x;
         _directionFromHit.y = m_swordHitVelocityMultiplier.y;
         _directionFromHit.z *= m_swordHitVelocityMultiplier.z;
@@ -1129,6 +1135,9 @@ public abstract class AEntity : NetworkBehaviour
         if (RoundManager.CurrentRoundTime <= 0)
             return;
 
+        // return if only 1 second passed in Round
+        if (RoundManager.NextRoundTime - RoundManager.CurrentRoundTime <= 1) return;
+
         Ray ray = new Ray(_origin, _direction);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
@@ -1158,6 +1167,9 @@ public abstract class AEntity : NetworkBehaviour
         // if round is over no damage will be applied
         if (RoundManager.CurrentRoundTime <= 0)
             return;
+
+        // return if only 1 second passed in Round
+        if (RoundManager.NextRoundTime - RoundManager.CurrentRoundTime <= 1) return;
 
         if (_hit == null) return;
         PlayerEntity pHit = _hit.GetComponent<PlayerEntity>();

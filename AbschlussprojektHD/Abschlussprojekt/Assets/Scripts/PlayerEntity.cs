@@ -266,6 +266,17 @@ public class PlayerEntity : AEntity
             }
         }
 
+        if (wasHit)
+        {
+            if (hitTimer <= 0)
+            {
+                hitTimer = 0;
+                wasHit = false;
+            }
+            else
+                hitTimer -= Time.deltaTime;
+        }
+
     }
 
 
@@ -303,7 +314,7 @@ public class PlayerEntity : AEntity
         transform.LookAt(m_lookAt);
         transform.rotation = new Quaternion(0, transform.rotation.y, 0, transform.rotation.w);
 
-        if (isgrounded)
+        if (isgrounded && !wasHit)
         {
             Vector3 velocity = _direction.normalized * m_MovementSpeed;
             velocity.y = m_rigidbody.velocity.y;

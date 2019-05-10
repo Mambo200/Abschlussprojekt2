@@ -72,7 +72,7 @@ public class RoundManager : MonoBehaviour {
         }
     }
     /// <summary>calculates the time for the next round</summary>
-    private float NextRoundTime
+    public float NextRoundTime
     {
         get
         {
