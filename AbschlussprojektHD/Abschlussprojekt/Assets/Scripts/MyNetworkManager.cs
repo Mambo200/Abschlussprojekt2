@@ -43,13 +43,16 @@ public class MyNetworkManager : NetworkManager {
     private void Start()
     {
         if (!CurrentlyServer) return;
-
         Reload = true;
     }
 
     private void Update()
     {
-        if (!IsClientConnected()) return;
+        if (!IsClientConnected())
+        {
+            CurrentlyServer = false;
+            return;
+        }
 
         if (!CurrentlyServer) return;
 
@@ -58,7 +61,7 @@ public class MyNetworkManager : NetworkManager {
             SearchPlayer(true);
         }
 
-        Debug.Log("All: " + AllPlayers.Count + " / Lobby: " + AllPlayersLobby.Count + " / WannaPlay: " + AllPlayersWannaPlay.Count + " / Playing: " + AllPlayersPlaying.Count);
+        //Debug.Log("All: " + AllPlayers.Count + " / Lobby: " + AllPlayersLobby.Count + " / WannaPlay: " + AllPlayersWannaPlay.Count + " / Playing: " + AllPlayersPlaying.Count);
     }
 
     /// <summary>
