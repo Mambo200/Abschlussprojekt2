@@ -229,7 +229,6 @@ public class PlayerEntity : AEntity
             {
                 if (!m_firePressed)
                 {
-                    Debug.Log("Sword Shoot");
                     m_firePressed = true;
                     Shoot();
                 }
@@ -319,6 +318,7 @@ public class PlayerEntity : AEntity
         velocity.y = m_rigidbody.velocity.y;
         m_rigidbody.velocity = velocity;
         jumpcount++;
+        CmdWalljump();
     }
 
     
