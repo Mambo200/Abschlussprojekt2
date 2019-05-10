@@ -20,7 +20,8 @@ namespace Assets.Scripts.Weapon
         public int CurrentAmmo
         {
             get { { return currentAmmo; } }
-            set { { currentAmmo = (value < 0) ? 0 : value; } }
+            set { { currentAmmo = (value < 0) ? 0 : value; m_Player.AmmoTextBox.text = AmmoText; }
+            }
         }
 
         protected abstract int AmmoPerShot { get; }
@@ -28,6 +29,8 @@ namespace Assets.Scripts.Weapon
         /// <summary>The time when player start reload</summary>
         protected float reloadStart;
 
+        /// <summary>This value gets divided with <see cref="ReloadTime"/> when player is chaser (1 is normal)</summary>
+        public abstract float ChaserReloadTime { get; }
         /// <summary>The time need to reload the weapon</summary>
         public abstract float ReloadTime { get; }
 
@@ -54,18 +57,23 @@ namespace Assets.Scripts.Weapon
 
             CurrentAmmo -= AmmoPerShot;
             lastShot = Time.time;
-            m_Player.AmmoTextBox.text = AmmoText;
             return true;
         }
         protected override void Update()
         {
+            if (!m_Player.isLocalPlayer) return;
             base.Update();
+
+            float newReloadTime = -1f;
+            if (m_Player.IsChaser)
+                newReloadTime = ChaserReloadTime;
+            else
+                newReloadTime = ReloadTime;
 
             if (IsReloading)
             {
-                if (Time.time - reloadStart >= ReloadTime)
+                if (Time.time - reloadStart >= newReloadTime)
                 {
-                    Debug.Log("Reloading");
                     CurrentAmmo = MaxAmmo;
                     IsReloading = false;
                     ReloadEnd();
@@ -87,12 +95,29 @@ namespace Assets.Scripts.Weapon
 
         protected void ReloadEnd()
         {
-            m_Player.AmmoTextBox.text = AmmoText;
+            SetAmmoText();
         }
 
         private void Start()
         {
             CurrentAmmo = MaxAmmo;
+        }
+
+        /// <summary>
+        /// Reset Ammo
+        /// </summary>
+        public override void ResetAmmo()
+        {
+            if (!m_Player.isLocalPlayer) return;
+            if (IsReloading)
+                reloadStart = 0;
+            else
+                CurrentAmmo = MaxAmmo;
+        }
+
+        public override void SetAmmoText()
+        {
+            m_Player.AmmoTextBox.text = AmmoText;
         }
     }
 }

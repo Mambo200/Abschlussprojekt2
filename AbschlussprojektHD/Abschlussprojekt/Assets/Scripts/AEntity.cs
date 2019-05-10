@@ -21,6 +21,7 @@ public abstract class AEntity : NetworkBehaviour
     public string DamageTag { get { return m_DamageTag; } }
 
     public static float DashConsumption { get { return 10.0f; } }
+    public static float WalljumpConsumption { get { return 15.0f; } }
     public static float SpRegenDefault { get { return 5f; } }
 
     protected Rigidbody m_rigidbody;
@@ -73,13 +74,18 @@ public abstract class AEntity : NetworkBehaviour
 
     private float m_TimeStamp;
 
-
     [Header("Weapons")]
-    ///<summary>Weapons of Player</summary>
+    ///<summary>Weapon gameobject of Player</summary>
     [SerializeField]
-    protected AWeapon[] m_Weapons;
-    
     protected GameObject[] m_WeaponsGO;
+
+    ///<summary>Weapon Classes of Player</summary>
+    protected AWeapon[] m_Weapons;
+
+    [Header("Network")]
+    [Tooltip("X and Z Coordinates will be multiplied with hit position. Y Coordinate will be set instead.")]
+    public Vector3 m_swordHitVelocityMultiplier;
+
 
     ///<summary>index of current weapon</summary>
     private int weaponIndex = 0;
@@ -657,6 +663,7 @@ public abstract class AEntity : NetworkBehaviour
     {
         CurrentHP = MaxHP;
         CurrentSP = MaxSP;
+        RpcResetWeapons();
     }
 
     /// <summary>
@@ -1043,7 +1050,7 @@ public abstract class AEntity : NetworkBehaviour
             PlayerEntity pe = go.GetComponent<PlayerEntity>();
             if (pe == null) continue;
 
-            //pe.m_body.GetComponent<Renderer>().material = Material.
+            pe.m_body.GetComponent<Renderer>().material = DefaultMaterial;
 
         }
 
@@ -1074,6 +1081,33 @@ public abstract class AEntity : NetworkBehaviour
     public void RpcChangeStartButtonTextToStart()
     {
         m_StartButton.GetComponentInChildren<Text>().text = "Start!";
+    }
+
+    [ClientRpc]
+    public void RpcAddForce(Vector3 _directionFromHit)
+    {
+        _directionFromHit.x *= m_swordHitVelocityMultiplier.x;
+        _directionFromHit.y = m_swordHitVelocityMultiplier.y;
+        _directionFromHit.z *= m_swordHitVelocityMultiplier.z;
+        m_rigidbody.velocity = Vector3.zero;
+        m_rigidbody.AddForce(_directionFromHit, ForceMode.VelocityChange);
+    }
+
+    /// <summary>
+    /// Reset Ammo
+    /// </summary>
+    [ClientRpc]
+
+    public void RpcResetWeapons()
+    {
+        foreach (AWeapon weapon in m_Weapons)
+        {
+            if (weapon.GetMainWeapon == AWeapon.MainWeaponType.GUN)
+            {
+                weapon.ResetAmmo();
+            }
+        }
+        GetCurrentWeapon.SetAmmoText();
     }
     #endregion
 
@@ -1115,7 +1149,7 @@ public abstract class AEntity : NetworkBehaviour
     }
 
     [Command]
-    public void CmdSword(AWeapon.WeaponName _weaponName, GameObject _hit)
+    public void CmdSword(AWeapon.WeaponName _weaponName, GameObject _hit, Vector3 _forward)
     {
         // if player dont have HP left return
         if (CurrentHP <= 0)
@@ -1130,6 +1164,7 @@ public abstract class AEntity : NetworkBehaviour
         if (pHit == null) return;
 
         pHit.GetDamage(WeaponDamage.Damage(_weaponName), this);
+        pHit.RpcAddForce(_forward);
     }
     
 
@@ -1198,6 +1233,15 @@ public abstract class AEntity : NetworkBehaviour
         CurrentSP -= DashConsumption;
         m_TimeStamp = Time.time + m_Cooldown;
     }
+
+    /// <summary>
+    /// Reduces SP when character do a walljump
+    /// </summary>
+    [Command]
+    public void CmdWalljump()
+    {
+        CurrentSP -= WalljumpConsumption;
+    }
     #endregion
 
     #endregion
@@ -1213,11 +1257,15 @@ public abstract class AEntity : NetworkBehaviour
         NetworkManagerHUD hud = GameObject.Find("Network Manager").GetComponent<NetworkManagerHUD>();
         hud.showGUI = false;
 
-        // get weapon gameobjects
-        m_WeaponsGO = new GameObject[m_Weapons.Length];
+        // get Weapon Class
+        m_Weapons = new AWeapon[m_WeaponsGO.Length];
+
         for (int i = 0; i < m_Weapons.Length; i++)
         {
-            m_WeaponsGO[i] = m_Weapons[i].gameObject;
+            m_WeaponsGO[i].SetActive(true);
+            m_Weapons[i] = m_WeaponsGO[i].GetComponent<AWeapon>();
+
+            if (i != 0) m_WeaponsGO[i].SetActive(false);
         }
     }
 

@@ -2672,7 +2672,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1746406962158774
 GameObject:
   m_ObjectHideFlags: 1
@@ -4111,7 +4111,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1958475563828696}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1, y: 1.33, z: 1.2823777}
+  m_LocalPosition: {x: 0.5, y: 1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4174100724833566}
@@ -7810,9 +7810,10 @@ MonoBehaviour:
   CineMachineObject: {fileID: 1455896240845922}
   m_Audio: {fileID: 82681271480848178}
   m_Cooldown: 1
-  m_Weapons:
-  - {fileID: 114512360140073832}
-  - {fileID: 114050042393283032}
+  m_WeaponsGO:
+  - {fileID: 1989279724340852}
+  - {fileID: 1746266579847262}
+  m_swordHitVelocityMultiplier: {x: 200, y: 5, z: 200}
   m_UI: {fileID: 1445867473586260}
   m_Canvas: {fileID: 223857516953031700}
   m_HPText: {fileID: 114625043784608790}
