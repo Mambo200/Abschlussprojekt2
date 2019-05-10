@@ -218,16 +218,21 @@ public class PlayerEntity : AEntity
         // Shoot
         // if Weapon has rapid fire
         if (GetCurrentWeapon.HasRapidFire)
+        {
             if (Input.GetAxisRaw("Fire1") > 0)
                 Shoot();
+        }
         // if weapon has not rapid fire
         else
         {
-            if (Input.GetAxisRaw("Fire1") > 0 &&
-                !m_firePressed)
+            if (Input.GetAxisRaw("Fire1") > 0)
             {
-                m_firePressed = true;
-                Shoot();
+                if (!m_firePressed)
+                {
+                    Debug.Log("Sword Shoot");
+                    m_firePressed = true;
+                    Shoot();
+                }
             }
             else
                 m_firePressed = false;

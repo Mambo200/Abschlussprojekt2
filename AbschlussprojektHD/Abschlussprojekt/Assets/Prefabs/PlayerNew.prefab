@@ -7799,6 +7799,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bac29b71e2da444c9d1a356414b78e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_DamageTag: Hitable
   matRed: {fileID: 2100000, guid: 311a6509474dd61458493fb2bd216014, type: 2}
   matBlue: {fileID: 2100000, guid: 5c9050dbb30d06d4ebe6c80eea79f52a, type: 2}
   matWhite: {fileID: 2100000, guid: 8d2418eac1f0a044bb512a529be3f09e, type: 2}

@@ -53,13 +53,13 @@ namespace Assets.Scripts.Weapon
 
         protected virtual void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject.tag != AEntity.PLAYERDAMAGETAG) return;
+            if (other.gameObject.tag != m_Player.DamageTag) return;
             DealDamage(other.gameObject.GetComponentInParent<PlayerEntity>());
         }
 
         protected virtual void OnTriggerStay(Collider other)
         {
-            if (other.gameObject.tag != AEntity.PLAYERDAMAGETAG) return;
+            if (other.gameObject.tag != m_Player.DamageTag) return;
             DealDamage(other.gameObject.GetComponentInParent<PlayerEntity>());
         }
 
@@ -76,7 +76,7 @@ namespace Assets.Scripts.Weapon
             if (Activated)
             {
                 // check if player was hit
-                if (_hit.gameObject.tag != AEntity.PLAYERDAMAGETAG) return;
+                if (_hit.gameObject.tag != m_Player.DamageTag) return;
 
                 // check if hit player was already hit
                 if (alreadyhit.Contains(_hit.gameObject)) return;

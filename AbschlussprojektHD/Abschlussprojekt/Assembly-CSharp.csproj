@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\AEntity.cs" />
+    <Compile Include="Assets\Scripts\Attributes\TagSelector.cs" />
     <Compile Include="Assets\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\Chaser.cs" />
     <Compile Include="Assets\Scripts\ETP.cs" />

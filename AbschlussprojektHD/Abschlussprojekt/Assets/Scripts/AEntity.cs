@@ -9,7 +9,16 @@ using Cinemachine;
 [RequireComponent(typeof(Rigidbody))]
 public abstract class AEntity : NetworkBehaviour
 {
-    public const string PLAYERDAMAGETAG = "Hitable";
+    ///<summary>Tag of anything where player can get damage</summary>
+#if UNITY_EDITOR
+    [TagSelector]
+#endif
+    [SerializeField]
+#pragma warning disable 0649
+    private string m_DamageTag;
+#pragma warning restore
+
+    public string DamageTag { get { return m_DamageTag; } }
 
     public static float DashConsumption { get { return 10.0f; } }
     public static float SpRegenDefault { get { return 5f; } }
@@ -1091,7 +1100,7 @@ public abstract class AEntity : NetworkBehaviour
         if (Physics.Raycast(ray, out hit))
         {
             // check if hit object is player
-            if (hit.collider.gameObject.tag != PLAYERDAMAGETAG)
+            if (hit.collider.gameObject.tag != DamageTag)
                 return;
 
             // get Playerentity (GetParent because Capsule is hit and Capsules parent has playerentity)
