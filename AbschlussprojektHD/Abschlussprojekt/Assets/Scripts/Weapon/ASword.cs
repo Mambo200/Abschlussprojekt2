@@ -36,6 +36,11 @@ namespace Assets.Scripts.Weapon
 
         }
 
+        protected override void Start()
+        {
+            base.Start();
+            HitSound = GetComponent<AudioSource>();
+        }
         protected override void Update()
         {
             base.Update();
@@ -82,6 +87,9 @@ namespace Assets.Scripts.Weapon
                 // check if hit player was already hit
                 if (alreadyhit.Contains(_hit.gameObject)) return;
 
+                // play hit sound
+                HitSound.Play();
+
                 // player gets damage
                 m_Player.CmdSword(GetWeaponName, _hit.gameObject, m_Player.transform.forward);
                 alreadyhit.Add(_hit.gameObject);
@@ -101,5 +109,7 @@ namespace Assets.Scripts.Weapon
         {
             m_Player.AmmoTextBox.text = AmmoText;
         }
+
+        public AudioSource HitSound { get; private set; }
     }
 }

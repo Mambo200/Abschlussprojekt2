@@ -57,6 +57,8 @@ namespace Assets.Scripts.Weapon
 
             CurrentAmmo -= AmmoPerShot;
             lastShot = Time.time;
+            ShootSound.Play();
+
             return true;
         }
         protected override void Update()
@@ -98,9 +100,11 @@ namespace Assets.Scripts.Weapon
             SetAmmoText();
         }
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             CurrentAmmo = MaxAmmo;
+            ShootSound = GetComponent<AudioSource>();
         }
 
         /// <summary>
@@ -119,5 +123,9 @@ namespace Assets.Scripts.Weapon
         {
             m_Player.AmmoTextBox.text = AmmoText;
         }
+
+        public AudioSource ShootSound { get; private set; }
+
+        
     }
 }
