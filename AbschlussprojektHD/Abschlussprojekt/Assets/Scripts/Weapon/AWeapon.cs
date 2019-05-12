@@ -83,4 +83,6 @@ public abstract class AWeapon : MonoBehaviour
     }
 
     public abstract void SetAmmoText();
+
+    protected virtual void Start() { }
 }

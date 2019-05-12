@@ -20,7 +20,6 @@ public class WeaponMachineGun : AGun
 
     public override float ChaserReloadTime { get { return ReloadTime / 3; } }
 
-
     protected override int AmmoPerShot { get { return 1; } }
 
     public override bool Shoot()
@@ -31,7 +30,5 @@ public class WeaponMachineGun : AGun
     protected override void Update()
     {
         base.Update();
-
-        
     }
 }

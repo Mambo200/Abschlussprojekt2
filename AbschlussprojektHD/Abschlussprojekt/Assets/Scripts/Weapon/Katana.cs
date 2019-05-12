@@ -16,7 +16,6 @@ namespace Assets.Scripts.Weapon
 
         public override bool HasRapidFire { get { return false; } }
 
-
         public override bool Shoot()
         {
             return base.Shoot();
