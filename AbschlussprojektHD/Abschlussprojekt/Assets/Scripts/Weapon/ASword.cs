@@ -88,7 +88,7 @@ namespace Assets.Scripts.Weapon
                 if (alreadyhit.Contains(_hit.gameObject)) return;
 
                 // play hit sound
-                HitSound.Play();
+                HitSound.PlayOneShot(HitSound.clip);
 
                 // player gets damage
                 m_Player.CmdSword(GetWeaponName, _hit.gameObject, m_Player.transform.forward);

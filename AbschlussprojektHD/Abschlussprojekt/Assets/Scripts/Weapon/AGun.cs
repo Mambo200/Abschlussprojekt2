@@ -57,7 +57,7 @@ namespace Assets.Scripts.Weapon
 
             CurrentAmmo -= AmmoPerShot;
             lastShot = Time.time;
-            ShootSound.Play();
+            ShootSound.PlayOneShot(ShootSound.clip);
 
             return true;
         }
