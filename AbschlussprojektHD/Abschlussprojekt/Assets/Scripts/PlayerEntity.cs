@@ -15,6 +15,8 @@ public class PlayerEntity : AEntity
 
     Vector3 walljumpDir;
 
+    Animator Anim;
+    
     GameObject lastwalljumped;
 
     int jumpcount;
@@ -40,7 +42,7 @@ public class PlayerEntity : AEntity
 
     float timesincelastcall;
 
-    private bool isShooting;
+    private bool isShooting; 
 
     private IEnumerator corountine;
 
@@ -73,6 +75,10 @@ public class PlayerEntity : AEntity
 
         m_lineRenderer = GetComponent<LineRenderer>();
 
+        Anim = GetComponent<Animator>();
+
+        Anim.enabled = true;
+
     }
 
     // Update is called once per frame
@@ -97,7 +103,6 @@ public class PlayerEntity : AEntity
         TimeCounter();
 
         isShooting = false;
-
 
         if (Input.GetAxisRaw("Pause") != 0)
         {
@@ -246,9 +251,58 @@ public class PlayerEntity : AEntity
         Vector3 dir = Input.GetAxisRaw("Horizontal") * right +
             Input.GetAxisRaw("Vertical") * forward;
 
+        
+
         if(dir.x != 0 && dir.z != 0 && isgrounded)
         {
             walljumpDir = dir;
+        }
+
+        Vector2 animationDir;
+
+        animationDir.x = Input.GetAxisRaw("Horizontal");
+        animationDir.y = Input.GetAxisRaw("Vertical");
+
+        Debug.Log(animationDir);
+
+        //Walking Straight, forward
+        if (animationDir.y > 0)
+        {
+            Anim.SetBool("isWalking", true);
+        }
+        else
+        {
+            Anim.SetBool("isWalking", false);
+        }
+
+        //Walking Left, Sidewards
+        if (animationDir.x < 0)
+        {
+            Anim.SetBool("walkingLeft", true);
+        }
+        else
+        {
+            Anim.SetBool("walkingLeft", false);
+        }
+
+        //Walking Right, Sidewards
+        if (animationDir.x > 0)
+        {
+            Anim.SetBool("walkingRight", true);
+        }
+        else
+        {
+            Anim.SetBool("walkingRight", false);
+        }
+
+        //Walking Back, Backwards
+        if (animationDir.y < 0)
+        {
+            Anim.SetBool("walkingBack", true);
+        }
+        else
+        {
+            Anim.SetBool("walkingBack", false);
         }
 
         Move(dir);
@@ -266,6 +320,10 @@ public class PlayerEntity : AEntity
                 }
             }
         }
+
+
+
+
 
     }
 
@@ -309,8 +367,8 @@ public class PlayerEntity : AEntity
             Vector3 velocity = _direction.normalized * m_MovementSpeed;
             velocity.y = m_rigidbody.velocity.y;
             m_rigidbody.velocity = velocity;
+            
         }
-          
     }
 
     private void WallMove(Vector3 _direction)
