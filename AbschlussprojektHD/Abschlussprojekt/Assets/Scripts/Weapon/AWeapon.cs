@@ -43,8 +43,11 @@ public abstract class AWeapon : MonoBehaviour
 
     public abstract string AmmoText { get; }
 
-    /// <summary>Time player has to wait before next shot can be fired</summary>
-    public abstract float WaitTime { get; }
+    /// <summary>Time player has to wait before next shot can be fired when player is chaser</summary>
+    public abstract float ChaserWaitTime { get; }
+
+    /// <summary>Time player has to wait before next shot can be fired when player is not chaser</summary>
+    public abstract float ShootWaitTime { get; }
     
     /// <summary>Damage of Weapon. Uses <see cref="WeaponDamage.Damage(WeaponName)"/></summary>
     public float Damage { get { return WeaponDamage.Damage(GetWeaponName); } }
@@ -54,8 +57,14 @@ public abstract class AWeapon : MonoBehaviour
 
     public virtual bool Shoot()
     {
+        float f = -1;
+        if (m_Player.IsChaser)
+            f = ChaserWaitTime;
+        else
+            f = ShootWaitTime;
+
         // if wait time is higher than times between last shot and this shot
-        if (Time.time - lastShot < WaitTime)
+        if (Time.time - lastShot < f)
             return false;
         else
             return true;
@@ -65,4 +74,15 @@ public abstract class AWeapon : MonoBehaviour
     {
 
     }
+
+    /// <summary>
+    /// Reset Ammo for Guns. 
+    /// </summary>
+    public virtual void ResetAmmo()
+    {
+    }
+
+    public abstract void SetAmmoText();
+
+    protected virtual void Start() { }
 }

@@ -25,7 +25,7 @@ namespace Assets.Scripts.Weapon
             if (!base.Shoot()) return false;
 
             // if wait time is higher than times between last shot and this shot
-            if (Time.time - lastShot < WaitTime + ActiveDuration)
+            if (Time.time - lastShot < ShootWaitTime + ActiveDuration)
                 return false;
 
             lastShot = Time.time;
@@ -36,6 +36,11 @@ namespace Assets.Scripts.Weapon
 
         }
 
+        protected override void Start()
+        {
+            base.Start();
+            HitSound = GetComponent<AudioSource>();
+        }
         protected override void Update()
         {
             base.Update();
@@ -76,16 +81,35 @@ namespace Assets.Scripts.Weapon
             if (Activated)
             {
                 // check if player was hit
-                if (_hit.gameObject.tag != m_Player.DamageTag) return;
+                if (_hit.gameObject.tag != m_Player.DamageTag &&
+                    _hit.gameObject.tag != "Player") return;
 
                 // check if hit player was already hit
                 if (alreadyhit.Contains(_hit.gameObject)) return;
 
+                // play hit sound
+                HitSound.PlayOneShot(HitSound.clip);
+
                 // player gets damage
-                m_Player.CmdSword(GetWeaponName, _hit.gameObject);
+                m_Player.CmdSword(GetWeaponName, _hit.gameObject, m_Player.transform.forward);
                 alreadyhit.Add(_hit.gameObject);
             }
 
+         }
+
+        /// <summary>
+        /// Does Nothing
+        /// </summary>
+        public override void ResetAmmo()
+        {
+            base.ResetAmmo();
         }
+
+        public override void SetAmmoText()
+        {
+            m_Player.AmmoTextBox.text = AmmoText;
+        }
+
+        public AudioSource HitSound { get; private set; }
     }
 }

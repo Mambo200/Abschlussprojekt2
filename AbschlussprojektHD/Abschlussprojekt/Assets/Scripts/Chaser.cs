@@ -11,7 +11,7 @@ public class Chaser : NetworkBehaviour {
     [SerializeField]
     private float ChaserSPRegenMultiplier;
 #pragma warning restore
-    public static float DamageMultiplier { get { return 3f; } }
+    public static float DamageMultiplier { get { return 4f; } }
     public static GameObject CurrentChaser { get; private set; }
     public static GameObject LastRoundChaser { get; private set; }
 
@@ -81,7 +81,7 @@ public class Chaser : NetworkBehaviour {
         // if pool bigger that 1 choose randomly
         if (chaserPool.Count == 0)
         {
-            Debug.LogWarning("No Chaser found!");
+            Debug.LogWarning("No Chaser found! Server will be set as chaser", MyNetworkManager.AllPlayersPlaying[0].gameObject);
             MyNetworkManager.AllPlayersPlaying[0].SetChaser(true);
             CurrentChaser = MyNetworkManager.AllPlayersPlaying[0].gameObject;
         }

@@ -72,7 +72,7 @@ public class RoundManager : MonoBehaviour {
         }
     }
     /// <summary>calculates the time for the next round</summary>
-    private float NextRoundTime
+    public float NextRoundTime
     {
         get
         {
@@ -155,7 +155,39 @@ public class RoundManager : MonoBehaviour {
                 MyNetworkManager.gameRunning = true;
             }
         }
-	}
+
+        // check if all players or chaser are dead, but only when round has begun
+        // check if chaser is dead
+        if (RoundCount != 0)
+        {
+            if (Chaser.CurrentChaser.gameObject.GetComponent<PlayerEntity>().CurrentHP <= 0)
+                RoundOver();
+
+            // check if all players are dead
+            bool alldead = true;
+            foreach (PlayerEntity pe in MyNetworkManager.AllPlayersPlaying)
+            {
+                // continue if player is chaser
+                if (pe.IsChaser) continue;
+
+                // check if player has more than 0 hp
+                if (pe.CurrentHP > 0) alldead = false;
+            }
+
+            if (alldead)
+                RoundOver();
+        }
+    }
+
+    /// <summary>
+    /// Function is called when round is over earlier
+    /// </summary>
+    public void RoundOver()
+    {
+        CurrentRoundTime = 0;
+        foreach (PlayerEntity pe in MyNetworkManager.AllPlayersPlaying)
+            pe.RpcSetRoundTime(0);
+    }
 
     /// <summary>
     /// New Round
