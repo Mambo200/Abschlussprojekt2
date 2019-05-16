@@ -165,7 +165,7 @@ public class RoundManager : MonoBehaviour {
         // check if chaser is dead
         if (RoundCount != 0)
         {
-            if (Chaser.CurrentChaser.gameObject.GetComponent<PlayerEntity>().CurrentHP <= 0)
+            if (Chaser.CurrentChaser != null && Chaser.CurrentChaser.gameObject.GetComponent<PlayerEntity>().CurrentHP <= 0)
                 RoundOver();
 
             // check if all players are dead
