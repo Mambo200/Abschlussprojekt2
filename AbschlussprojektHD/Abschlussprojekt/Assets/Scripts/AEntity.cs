@@ -161,6 +161,11 @@ public abstract class AEntity : NetworkBehaviour
     {
         get
         {
+            if (!isServer)
+            {
+                Debug.LogWarning("Round Manager is only available for Server!!!", this.gameObject);
+                return null;
+            }
             if (roundManager == null)
             {
                 // get gameobject
@@ -716,6 +721,11 @@ public abstract class AEntity : NetworkBehaviour
     /// <param name="_newValue">new Value of variable</param>
     public virtual float BeforeCurrentHPChanged(float _newValue)
     {
+        // check if player is dead next frame
+        if (CurrentHP > 0 && _newValue <= 0)
+        {
+            RpcTeleport(SpawnpointHandler.NextDeadPoint(), ETP.DEADTP);
+        }
         if (_newValue <= 0)
             return 0;
         else
@@ -935,11 +945,15 @@ public abstract class AEntity : NetworkBehaviour
             {
                 if (IsChaser)
                 {
-                    RpcTeleport(new Vector3(0, 5, 0), ETP.CHASERTP);
+                    RpcTeleport(SpawnpointHandler.NextChaserpoint(), ETP.CHASERTP);
+                }
+                else if (CurrentHP <= 0)
+                {
+                    RpcTeleport(SpawnpointHandler.NextDeadPoint(), ETP.DEADTP);
                 }
                 else
                 {
-                    RpcTeleport(new Vector3(0, 5, 0), ETP.HUNTEDTP);
+                    RpcTeleport(SpawnpointHandler.NextSpawnpointPlayer(), ETP.HUNTEDTP);
                 }
             }
             else
@@ -982,6 +996,9 @@ public abstract class AEntity : NetworkBehaviour
                 GameUI();
                 break;
             case ETP.CHASERTP:
+                GameUI();
+                break;
+            case ETP.DEADTP:
                 GameUI();
                 break;
             default:
