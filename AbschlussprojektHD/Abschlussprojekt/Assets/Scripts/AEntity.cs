@@ -918,12 +918,10 @@ public abstract class AEntity : NetworkBehaviour
         if (IsChaser)
         {
             CurrentArmor = ChaserArmor;
-            m_body.GetComponent<Renderer>().material = ChaserMaterial; 
         }
         else
         {
             CurrentArmor = PlayerArmor;
-            m_body.GetComponent<Renderer>().material = PlayerMaterial;
         }
     }
     #endregion
@@ -1071,8 +1069,22 @@ public abstract class AEntity : NetworkBehaviour
             Debug.Log("current chaser is null");
     }
 
+    [ClientRpc]
+    public void RpcDeActivateValkyrie(GameObject _chaser, GameObject _lastChaser)
+    {
+        if (_lastChaser != null)
+            _lastChaser.GetComponent<PlayerEntity>().m_Valkyrie.SetActive(false);
+        else
+            Debug.Log("last chaser is null");
+
+        if (_chaser != null)
+            _chaser.GetComponent<PlayerEntity>().m_Valkyrie.SetActive(true);
+        else
+            Debug.Log("current chaser is null");
+    }
+
     /// <summary>
-    /// eset Color of current chaser
+    /// Reset Color of current chaser
     /// </summary>
     /// <param name="_chaser">current chaser</param>
     [ClientRpc]
@@ -1101,10 +1113,17 @@ public abstract class AEntity : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void RpcSetGOActiveState(GameObject _player, bool _setActive, int _index)
+    public void RpcSetWeaponActiveState(GameObject _player, bool _setActive, int _index)
     {
         PlayerEntity pe = _player.GetComponent<PlayerEntity>();
         pe.m_WeaponsGO[_index].SetActive(_setActive);
+    }
+
+    [ClientRpc]
+    public void RpcSetGOActiveState(GameObject _gameObject, bool _setActive)
+    {
+        if (_gameObject != null)
+            _gameObject.SetActive(_setActive);
     }
 
     /// <summary>
@@ -1210,7 +1229,14 @@ public abstract class AEntity : NetworkBehaviour
         if (RoundManager.NextRoundTime - RoundManager.CurrentRoundTime <= 1) return;
 
         if (_hit == null) return;
-        PlayerEntity pHit = _hit.GetComponent<PlayerEntity>();
+
+        PlayerEntity pHit = null;
+        Debug.Log(_hit.tag, _hit);
+        if (_hit.tag == DamageTag)
+            pHit = _hit.GetComponentInParent<Rig>().GetComponentInParent<PlayerEntity>();
+        else
+            pHit = _hit.GetComponentInParent<PlayerEntity>();
+
         if (pHit == null) return;
 
         pHit.GetDamage(WeaponDamage.Damage(_weaponName), this);
@@ -1270,7 +1296,7 @@ public abstract class AEntity : NetworkBehaviour
     {
         foreach (PlayerEntity pe in MyNetworkManager.AllPlayers)
         {
-            pe.RpcSetGOActiveState(this.gameObject, _setActive, _index);
+            pe.RpcSetWeaponActiveState(this.gameObject, _setActive, _index);
         }
     }
 

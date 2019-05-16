@@ -116,7 +116,8 @@ public class Chaser : NetworkBehaviour {
         // Set Color
         foreach (PlayerEntity pe in MyNetworkManager.AllPlayersPlaying)
         {
-            pe.RpcSetChaserColor(CurrentChaser, LastRoundChaser);
+            //pe.RpcSetChaserColor(CurrentChaser, LastRoundChaser);
+            pe.RpcDeActivateValkyrie(CurrentChaser, LastRoundChaser);
         }
 
         CurrentChaser.GetComponent<PlayerEntity>().CmdSetRegenSP(AEntity.SpRegenDefault * m_chaser.ChaserSPRegenMultiplier);

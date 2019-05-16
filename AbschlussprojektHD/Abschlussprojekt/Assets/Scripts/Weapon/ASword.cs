@@ -82,7 +82,8 @@ namespace Assets.Scripts.Weapon
             {
                 // check if player was hit
                 if (_hit.gameObject.tag != m_Player.DamageTag &&
-                    _hit.gameObject.tag != "Player") return;
+                    _hit.gameObject.tag != "Player" &&
+                    _hit.gameObject.tag != m_Player.ValkyrieTag) return;
 
                 // check if hit player was already hit
                 if (alreadyhit.Contains(_hit.gameObject)) return;
