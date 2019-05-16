@@ -103,7 +103,8 @@ public class RoundManager : MonoBehaviour {
                     // reset players position to a lobby position
                     player.RpcChangeStartButtonTextToStart();
                     player.RpcTeleport(SpawnpointHandler.NextLobbypoint(), ETP.LOBBYTP);
-                    player.RpcChangeToDefaultColor(Chaser.CurrentChaser);
+                    //player.RpcChangeToDefaultColor(Chaser.CurrentChaser);
+                    player.RpcSetGOActiveState(Chaser.CurrentChaser, false);
                     player.wannaPlay = false;
                     MyNetworkManager.gameRunning = false;
                     MyNetworkManager.ReloadPlayers();
