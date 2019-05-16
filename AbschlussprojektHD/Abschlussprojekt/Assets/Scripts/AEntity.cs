@@ -21,7 +21,6 @@ public abstract class AEntity : NetworkBehaviour
 #pragma warning disable 0649
     private string m_DamageTag;
 #pragma warning restore
-
     public string DamageTag { get { return m_DamageTag; } }
 
     public static float DashConsumption { get { return 10.0f; } }
@@ -55,6 +54,20 @@ public abstract class AEntity : NetworkBehaviour
     ///<summary>Player look position</summary>
     [SerializeField]
     protected Transform m_lookAt;
+
+    [Header("Valkyrie")]
+#if UNITY_EDITOR
+    [TagSelector]
+#endif
+    [SerializeField]
+#pragma warning disable 0649
+    private string m_ValkyrieTag;
+#pragma warning restore
+    public string ValkyrieTag { get { return m_ValkyrieTag; } }
+
+    [SerializeField]
+    ///<summary>Valkyrie Gameobject</summary>
+    protected GameObject m_Valkyrie;
 
     [Header("Camera")]
     ///<summary>Player Camera</summary>
@@ -1080,11 +1093,11 @@ public abstract class AEntity : NetworkBehaviour
     /// <summary>
     /// Set next round time and save it local
     /// </summary>
-    /// <param name="_time">time for next round</param>
+    /// <param name="_roundTime">time for next round</param>
     [ClientRpc]
-    public void RpcSetRoundTime(float _time)
+    public void RpcSetRoundTime(float _roundTime)
     {
-        LocalRoundTime = _time;
+        LocalRoundTime = _roundTime;
     }
 
     [ClientRpc]
@@ -1159,12 +1172,20 @@ public abstract class AEntity : NetworkBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {
-            // check if hit object is player
+            Debug.Log(hit.collider.gameObject.tag, hit.collider.gameObject);
+            // check if hit object is player or Valkyrie
             if (hit.collider.gameObject.tag != DamageTag)
-                return;
+                if (hit.collider.gameObject.tag != ValkyrieTag)
+                    return;
+
+            PlayerEntity p = null;
+
+            if (hit.collider.gameObject.tag == DamageTag)
+                p = hit.collider.gameObject.GetComponentInParent<Rig>().GetComponentInParent<PlayerEntity>();
+            else
+                p = hit.collider.gameObject.GetComponentInParent<PlayerEntity>();
 
             // get Playerentity (GetParent because Capsule is hit and Capsules parent has playerentity)
-            PlayerEntity p = hit.collider.gameObject.GetComponentInParent<PlayerEntity>();
 
             // check if chaserstatus is not equal
             if (IsChaser != p.IsChaser)
