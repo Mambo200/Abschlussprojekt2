@@ -142,6 +142,11 @@ public class RoundManager : MonoBehaviour {
         if (MyNetworkManager.AllPlayersPlaying.Count > 1)
             CurrentRoundTime -= Time.deltaTime;
 
+        // reset current round time if chaser left
+        if (Chaser.CurrentChaser == null && CurrentRoundTime > 0)
+            CurrentRoundTime = 0;
+
+        // When round is over, afterround starts
         if (CurrentRoundTime == 0)
         {
             // reduce time till next round
