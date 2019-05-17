@@ -4,6 +4,8 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
+// Tobias Stroedicke
+
 public class Chaser : NetworkBehaviour {
 
     private static Chaser m_chaser;

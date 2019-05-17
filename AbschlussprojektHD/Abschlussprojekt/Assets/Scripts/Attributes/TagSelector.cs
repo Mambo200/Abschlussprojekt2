@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 
+// code from http://www.brechtos.com/tagselectorattribute/
+
 public class TagSelector : PropertyAttribute
 {
     public bool UseDefaultTagFieldDrawer = false;

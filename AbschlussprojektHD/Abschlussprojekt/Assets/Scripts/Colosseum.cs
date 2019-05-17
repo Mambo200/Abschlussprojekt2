@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Tobias Stroedicke
+
 public class Colosseum : MonoBehaviour {
 
     private static Colosseum m_colosseum;

@@ -7,7 +7,7 @@ using System.Diagnostics;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 
-// (current) ammo, reload time
+// Tobias Stroedicke
 
 public abstract class AWeapon : MonoBehaviour
 {

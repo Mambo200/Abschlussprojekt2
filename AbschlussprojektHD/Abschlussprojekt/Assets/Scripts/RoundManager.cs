@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
+// Tobias Stroedicke
+
 public class RoundManager : MonoBehaviour {
 
     public int minimumPlayers;
@@ -37,6 +39,7 @@ public class RoundManager : MonoBehaviour {
 
     /// <summary>Wait time for next round to start after round is finished</summary>
     private float tillNextRound = 7;
+    /// <summary>Wait time for next round to start after round is finished</summary>
     public float TillNextRound
     {
         get { return tillNextRound; }
@@ -54,7 +57,7 @@ public class RoundManager : MonoBehaviour {
             return 10f;
 #endif
 #pragma warning disable 0162
-            return 30f;
+            return 60f;
 #pragma warning restore
         }
     }
@@ -67,7 +70,7 @@ public class RoundManager : MonoBehaviour {
             return 5f;
 #endif
 #pragma warning disable 0162
-            return 10f;
+            return 20f;
 #pragma warning restore
         }
     }
@@ -103,7 +106,6 @@ public class RoundManager : MonoBehaviour {
                     // reset players position to a lobby position
                     player.RpcChangeStartButtonTextToStart();
                     player.RpcTeleport(SpawnpointHandler.NextLobbypoint(), ETP.LOBBYTP);
-                    //player.RpcChangeToDefaultColor(Chaser.CurrentChaser);
                     player.RpcSetGOActiveState(Chaser.CurrentChaser, false);
                     player.wannaPlay = false;
                     MyNetworkManager.gameRunning = false;

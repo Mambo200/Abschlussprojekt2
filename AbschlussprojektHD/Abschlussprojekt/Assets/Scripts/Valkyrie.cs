@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Tobias Stroedicke
+
 public class Valkyrie : MonoBehaviour {
 #if UNITY_EDITOR
     [TagSelector]
@@ -10,6 +12,8 @@ public class Valkyrie : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
     {
+        // get gameobjects in scene with tag
+
         GameObject[] gos = GameObject.FindGameObjectsWithTag(m_ignoreCollisiontag);
         foreach (GameObject go in gos)
         {
@@ -34,9 +38,4 @@ public class Valkyrie : MonoBehaviour {
             Physics.IgnoreCollision(this.GetComponent<Collider>(), col, true);
         }
     }
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }

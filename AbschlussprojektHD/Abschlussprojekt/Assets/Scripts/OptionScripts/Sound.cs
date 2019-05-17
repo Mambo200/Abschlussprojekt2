@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 
+// Tobias Stroedicke
+
 public class Sound : MonoBehaviour {
     [Header("Main Sound")]
 #pragma warning disable 0649

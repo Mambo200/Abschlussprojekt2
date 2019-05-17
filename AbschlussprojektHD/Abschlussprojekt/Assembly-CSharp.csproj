@@ -67,7 +67,6 @@
     <Compile Include="Assets\Scripts\Chaser.cs" />
     <Compile Include="Assets\Scripts\Colosseum.cs" />
     <Compile Include="Assets\Scripts\ETP.cs" />
-    <Compile Include="Assets\Scripts\Movement.cs" />
     <Compile Include="Assets\Scripts\MyNetworkManager.cs" />
     <Compile Include="Assets\Scripts\OptionScripts\CameraInvert.cs" />
     <Compile Include="Assets\Scripts\OptionScripts\CameraSpeedX.cs" />
@@ -78,9 +77,7 @@
     <Compile Include="Assets\Scripts\QuitButton.cs" />
     <Compile Include="Assets\Scripts\Rig.cs" />
     <Compile Include="Assets\Scripts\RoundManager.cs" />
-    <Compile Include="Assets\Scripts\SimpleCameraController.cs" />
     <Compile Include="Assets\Scripts\SpawnpointHandler.cs" />
-    <Compile Include="Assets\Scripts\TestScripts\NewBehaviourScript.cs" />
     <Compile Include="Assets\Scripts\Valkyrie.cs" />
     <Compile Include="Assets\Scripts\Weapon\AGun.cs" />
     <Compile Include="Assets\Scripts\Weapon\ASword.cs" />

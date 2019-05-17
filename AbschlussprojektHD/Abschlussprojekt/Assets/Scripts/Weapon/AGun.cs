@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
+// Tobias Stroedicke
+
 namespace Assets.Scripts.Weapon
 {
     public abstract class AGun : AWeapon

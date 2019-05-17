@@ -6,6 +6,11 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using Cinemachine;
 
+// Tobias Stroedicke
+
+/// <summary>
+/// Main Class of Player
+/// </summary>
 [RequireComponent(typeof(Rigidbody))]
 public abstract class AEntity : NetworkBehaviour
 {
@@ -21,6 +26,8 @@ public abstract class AEntity : NetworkBehaviour
 #pragma warning disable 0649
     private string m_DamageTag;
 #pragma warning restore
+
+    ///<summary>see <see cref="m_DamageTag"/></summary>
     public string DamageTag { get { return m_DamageTag; } }
 
     public static float DashConsumption { get { return 10.0f; } }
@@ -61,6 +68,7 @@ public abstract class AEntity : NetworkBehaviour
 #endif
     [SerializeField]
 #pragma warning disable 0649
+    ///<summary>Tag of Valkyrie</summary>
     private string m_ValkyrieTag;
 #pragma warning restore
     public string ValkyrieTag { get { return m_ValkyrieTag; } }
@@ -354,7 +362,7 @@ public abstract class AEntity : NetworkBehaviour
     /// <summary>Default variable of Chaser armor. 
     /// If you want to change the current armor of chaser use <see cref="CurrentArmor"/> instead. (DO NOT USE! USE <see cref="ChaserArmor"/> INSTEAD)</summary>
     [SyncVar]
-    private float chaserArmor = 100f;
+    private float chaserArmor = 60f;
     /// <summary>Chaser Armor property. Please change current armor in <see cref="CurrentArmor"/>. (Everyone can get, only Server can set in <see cref="SetDefaultChaserArmor(float)"/>)</summary>
     public float ChaserArmor
     {
@@ -397,6 +405,8 @@ public abstract class AEntity : NetworkBehaviour
         }
     }
 
+    /// <summary>Current sp regeneration variable (DO NOT USE! USE <see cref="RegenSP"/> INSTEAD)</summary>
+    // regenSP by Max Poppicht
     [SyncVar]
     private float regenSP = SpRegenDefault;
     public float RegenSP
@@ -416,6 +426,7 @@ public abstract class AEntity : NetworkBehaviour
             regenSP = value;
         }
     }
+    
     private float SPRegenMultiplier { get { return Time.deltaTime * 1.1f; } }
 
     /// <summary>How often was player Chaser</summary>
@@ -478,8 +489,10 @@ public abstract class AEntity : NetworkBehaviour
         }
     }
 
+    /// <summary>Chaser kill count variable (DO NOT USE! USE <see cref="ChaserKillCount"/> INSTEAD)</summary>
     [SyncVar]
     private int chaserKillCount = 0;
+    /// <summary>Chaser kill count Property</summary>
     public int ChaserKillCount
     {
         get { return chaserKillCount; }

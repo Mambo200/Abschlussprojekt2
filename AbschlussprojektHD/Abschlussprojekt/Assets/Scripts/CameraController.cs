@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Runtime.InteropServices;
 
+// Tobias Stroedicke
+
 public class CameraController : MonoBehaviour {
 
 #pragma warning disable 0649

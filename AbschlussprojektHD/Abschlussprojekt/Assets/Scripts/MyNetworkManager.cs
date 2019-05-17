@@ -4,6 +4,8 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
+// Tobias Stroedicke
+
 public class MyNetworkManager : NetworkManager {
 
     /// <summary>True when game is running</summary>
@@ -48,20 +50,22 @@ public class MyNetworkManager : NetworkManager {
 
     private void Update()
     {
+        // If client is not connected (in Offline Scene) ignore Networkmanager
         if (!IsClientConnected())
         {
+            // set isserver to false
             CurrentlyServer = false;
             return;
         }
 
+        // if is not server return
         if (!CurrentlyServer) return;
 
+        // if player joined or left reload all player
         if (Reload)
         {
             SearchPlayer(true);
         }
-
-        //Debug.Log("All: " + AllPlayers.Count + " / Lobby: " + AllPlayersLobby.Count + " / WannaPlay: " + AllPlayersWannaPlay.Count + " / Playing: " + AllPlayersPlaying.Count);
     }
 
     /// <summary>
@@ -117,6 +121,7 @@ public class MyNetworkManager : NetworkManager {
         AllPlayersWannaPlay.Clear();
         allPlayersLobby.Clear();
 
+        // Add player gameobject to lists
         foreach (GameObject go in tempGO)
         {
             if (go.name == "PlayerNew(Clone)")
@@ -126,7 +131,6 @@ public class MyNetworkManager : NetworkManager {
                 AllPlayers.Add(go.gameObject.GetComponent<PlayerEntity>());
 
                 // add to playing or lobby list
-#warning If Lobby is set new reconfiguring is required!!!
                 if (go.gameObject.transform.position.y > 400)
                 {
                     // check if player wants to play
@@ -148,7 +152,9 @@ public class MyNetworkManager : NetworkManager {
     public override void OnStopServer()
     {
         base.OnStopServer();
+        // set isserver to false
         CurrentlyServer = false;
+        // clear all lists
         allPlayersGo.Clear();
         allPlayers.Clear();
         allPlayersPlaying.Clear();
@@ -181,6 +187,7 @@ public class MyNetworkManager : NetworkManager {
         Cursor.visible = true;
         Reload = true;
 
+        // activate HUD
         NetworkManagerHUD hud = GameObject.Find("Network Manager").GetComponent<NetworkManagerHUD>();
         hud.showGUI = true;
     }
@@ -236,6 +243,9 @@ public class MyNetworkManager : NetworkManager {
         AllPlayersWannaPlay.Clear();
     }
 
+    /// <summary>
+    /// Will reload players next frame
+    /// </summary>
     public static void ReloadPlayers()
     {
         Reload = true;
