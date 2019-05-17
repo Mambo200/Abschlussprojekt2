@@ -10,6 +10,10 @@ namespace Assets.Scripts.Weapon
     {
         public readonly List<GameObject> alreadyhit = new List<GameObject>();
 
+        public Material m_hitMaterial;
+
+        public Material m_idleMaterial;
+
         public abstract float ActiveDuration { get; }
 
         public float ActivationTime { get; private set; }
@@ -31,7 +35,7 @@ namespace Assets.Scripts.Weapon
             lastShot = Time.time;
             Activated = true;
             ActivationTime = Time.time;
-            gameObject.GetComponent<Renderer>().material = m_Player.ChaserMaterial;
+            gameObject.GetComponent<Renderer>().material = m_hitMaterial;
             return true;
 
         }
@@ -51,7 +55,7 @@ namespace Assets.Scripts.Weapon
                 {
                     Activated = false;
                     alreadyhit.Clear();
-                    gameObject.GetComponent<Renderer>().material = m_Player.DefaultMaterial;
+                    gameObject.GetComponent<Renderer>().material = m_idleMaterial;
                 }
             }
         }

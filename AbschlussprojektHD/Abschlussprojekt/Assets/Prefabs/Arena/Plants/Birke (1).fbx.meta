@@ -10,7 +10,17 @@ ModelImporter:
     2300000: //RootNode
     3300000: //RootNode
     4300000: Birke
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Krone
+    second: {fileID: 2100000, guid: b23467022fa92634ea38f09dcbc0dc0d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lambert1
+    second: {fileID: 2100000, guid: 400f992753746154fa70cd791f0308d1, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
