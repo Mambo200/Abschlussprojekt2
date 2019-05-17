@@ -28,6 +28,7 @@ bld/
 # Uncomment if you have tasks that create the project's static files in wwwroot
 #wwwroot/
 
+
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
@@ -371,3 +372,7 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 AbschlussprojektHD/Abschlussprojekt/Library/PackageCache/com.unity.render-pipelines.high-definition@4.1.0-preview/Runtime/RenderPipelineResources/ShaderGraph/AutodeskInteractiveTransparent.ShaderGraph
+
+
+# Never ignore asset meta data
+!/AbschlussprojektHD/Abschlussprojekt/[Aa]ssets/**/*.meta
