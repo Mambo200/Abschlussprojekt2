@@ -22,9 +22,9 @@ public class PlayerEntity : AEntity
     int jumpcount;
 
     [Header("Player Specified")]
-    public float m_maxdashtime = 1.5f;
+    public float m_maxdashtime = 5f;
 
-    public float m_dashstopspeed = 0.25f;
+    public float m_dashstopspeed = 0.1f;
 
     public float m_currentdashtime = 0f;
 
@@ -33,6 +33,8 @@ public class PlayerEntity : AEntity
     public float m_isgrounedoffset = 0.1f;
 
     private float m_DefaultMovementSpeed;
+
+    public float m_dashSpeed = 40f;
 
     public float cooldowntime = 1f;
 
@@ -258,10 +260,14 @@ public class PlayerEntity : AEntity
             walljumpDir = dir;
         }
 
+        //Animation
         Vector2 animationDir;
 
         animationDir.x = Input.GetAxisRaw("Horizontal");
         animationDir.y = Input.GetAxisRaw("Vertical");
+
+
+        #region ---Animation---
 
         //Walking Straight, forward
         if (animationDir.y > 0)
@@ -303,9 +309,28 @@ public class PlayerEntity : AEntity
             Anim.SetBool("walkingBack", false);
         }
 
+        //Dash Animation
+        if (m_MovementSpeed == m_dashSpeed)
+        {
+            Anim.SetBool("dashing", true);
+        }
+        else
+        {
+            Anim.SetBool("dashing", false);
+        }
+
+        #endregion
+
+        
+
         Move(dir);
 
         Dash(dir);
+
+        
+
+        
+
 
         if (!isShooting)
         {
@@ -449,7 +474,7 @@ public class PlayerEntity : AEntity
 
                 if (m_currentdashtime < m_maxdashtime)
                 {
-                    m_MovementSpeed = 20f;
+                    m_MovementSpeed = m_dashSpeed;
                 }
                 isdashing = false;
 
@@ -476,10 +501,10 @@ public class PlayerEntity : AEntity
 
                 if (m_currentdashtime < m_maxdashtime)
                 {
-                    m_MovementSpeed = 20f;
+                    m_MovementSpeed = m_dashSpeed;
                 }
-
                 isdashing = false;
+
             }
             #endregion
 
@@ -503,9 +528,10 @@ public class PlayerEntity : AEntity
 
                 if (m_currentdashtime < m_maxdashtime)
                 {
-                    m_MovementSpeed = 20f;
+                    m_MovementSpeed = m_dashSpeed;
                 }
                 isdashing = false;
+
             }
             #endregion
 
@@ -529,12 +555,13 @@ public class PlayerEntity : AEntity
 
                 if (m_currentdashtime < m_maxdashtime)
                 {
-                    m_MovementSpeed = 20f;
+                    m_MovementSpeed = m_dashSpeed;
                 }
                 isdashing = false;
+
             }
             #endregion
-        
+
         }
 
         m_currentdashtime += m_dashstopspeed;
