@@ -57,6 +57,7 @@ public class PlayerEntity : AEntity
 
     ///<summary>Movement Speed of Player</summary>
     public float m_MovementSpeed;
+    public float m_MovementSpeedChaser;
     ///<summary>Speed with which the Player can rotate</summary>
     public float m_RotationSpeed;
     ///<summary>The force with which the Player can Jump</summary>
@@ -395,7 +396,8 @@ public class PlayerEntity : AEntity
 
         if (isgrounded && !wasHit)
         {
-            Vector3 velocity = _direction.normalized * m_MovementSpeed;
+            float f = IsChaser ? m_MovementSpeedChaser : m_MovementSpeed;
+            Vector3 velocity = _direction.normalized * f;
             velocity.y = m_rigidbody.velocity.y;
             m_rigidbody.velocity = velocity;
             
@@ -404,7 +406,8 @@ public class PlayerEntity : AEntity
 
     private void WallMove(Vector3 _direction)
     {
-        Vector3 velocity = _direction.normalized * m_MovementSpeed;
+        float f = IsChaser ? m_MovementSpeedChaser : m_MovementSpeed;
+        Vector3 velocity = _direction.normalized * f;
         velocity.y = m_rigidbody.velocity.y;
         m_rigidbody.velocity = velocity;
         jumpcount++;

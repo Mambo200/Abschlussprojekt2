@@ -21,7 +21,6 @@ public abstract class AEntity : NetworkBehaviour
 #pragma warning disable 0649
     private string m_DamageTag;
 #pragma warning restore
-
     public string DamageTag { get { return m_DamageTag; } }
 
     public static float DashConsumption { get { return 10.0f; } }
@@ -55,6 +54,20 @@ public abstract class AEntity : NetworkBehaviour
     ///<summary>Player look position</summary>
     [SerializeField]
     protected Transform m_lookAt;
+
+    [Header("Valkyrie")]
+#if UNITY_EDITOR
+    [TagSelector]
+#endif
+    [SerializeField]
+#pragma warning disable 0649
+    private string m_ValkyrieTag;
+#pragma warning restore
+    public string ValkyrieTag { get { return m_ValkyrieTag; } }
+
+    [SerializeField]
+    ///<summary>Valkyrie Gameobject</summary>
+    protected GameObject m_Valkyrie;
 
     [Header("Camera")]
     ///<summary>Player Camera</summary>
@@ -161,6 +174,11 @@ public abstract class AEntity : NetworkBehaviour
     {
         get
         {
+            if (!isServer)
+            {
+                Debug.LogWarning("Round Manager is only available for Server!!!", this.gameObject);
+                return null;
+            }
             if (roundManager == null)
             {
                 // get gameobject
@@ -716,6 +734,11 @@ public abstract class AEntity : NetworkBehaviour
     /// <param name="_newValue">new Value of variable</param>
     public virtual float BeforeCurrentHPChanged(float _newValue)
     {
+        // check if player is dead next frame
+        if (CurrentHP > 0 && _newValue <= 0)
+        {
+            RpcTeleport(SpawnpointHandler.NextDeadPoint(), ETP.DEADTP);
+        }
         if (_newValue <= 0)
             return 0;
         else
@@ -895,12 +918,10 @@ public abstract class AEntity : NetworkBehaviour
         if (IsChaser)
         {
             CurrentArmor = ChaserArmor;
-            m_body.GetComponent<Renderer>().material = ChaserMaterial; 
         }
         else
         {
             CurrentArmor = PlayerArmor;
-            m_body.GetComponent<Renderer>().material = PlayerMaterial;
         }
     }
     #endregion
@@ -935,11 +956,15 @@ public abstract class AEntity : NetworkBehaviour
             {
                 if (IsChaser)
                 {
-                    RpcTeleport(new Vector3(0, 5, 0), ETP.CHASERTP);
+                    RpcTeleport(SpawnpointHandler.NextChaserpoint(), ETP.CHASERTP);
+                }
+                else if (CurrentHP <= 0)
+                {
+                    RpcTeleport(SpawnpointHandler.NextDeadPoint(), ETP.DEADTP);
                 }
                 else
                 {
-                    RpcTeleport(new Vector3(0, 5, 0), ETP.HUNTEDTP);
+                    RpcTeleport(SpawnpointHandler.NextSpawnpointPlayer(), ETP.HUNTEDTP);
                 }
             }
             else
@@ -982,6 +1007,9 @@ public abstract class AEntity : NetworkBehaviour
                 GameUI();
                 break;
             case ETP.CHASERTP:
+                GameUI();
+                break;
+            case ETP.DEADTP:
                 GameUI();
                 break;
             default:
@@ -1041,8 +1069,22 @@ public abstract class AEntity : NetworkBehaviour
             Debug.Log("current chaser is null");
     }
 
+    [ClientRpc]
+    public void RpcDeActivateValkyrie(GameObject _chaser, GameObject _lastChaser)
+    {
+        if (_lastChaser != null)
+            _lastChaser.GetComponent<PlayerEntity>().m_Valkyrie.SetActive(false);
+        else
+            Debug.Log("last chaser is null");
+
+        if (_chaser != null)
+            _chaser.GetComponent<PlayerEntity>().m_Valkyrie.SetActive(true);
+        else
+            Debug.Log("current chaser is null");
+    }
+
     /// <summary>
-    /// eset Color of current chaser
+    /// Reset Color of current chaser
     /// </summary>
     /// <param name="_chaser">current chaser</param>
     [ClientRpc]
@@ -1063,18 +1105,25 @@ public abstract class AEntity : NetworkBehaviour
     /// <summary>
     /// Set next round time and save it local
     /// </summary>
-    /// <param name="_time">time for next round</param>
+    /// <param name="_roundTime">time for next round</param>
     [ClientRpc]
-    public void RpcSetRoundTime(float _time)
+    public void RpcSetRoundTime(float _roundTime)
     {
-        LocalRoundTime = _time;
+        LocalRoundTime = _roundTime;
     }
 
     [ClientRpc]
-    public void RpcSetGOActiveState(GameObject _player, bool _setActive, int _index)
+    public void RpcSetWeaponActiveState(GameObject _player, bool _setActive, int _index)
     {
         PlayerEntity pe = _player.GetComponent<PlayerEntity>();
         pe.m_WeaponsGO[_index].SetActive(_setActive);
+    }
+
+    [ClientRpc]
+    public void RpcSetGOActiveState(GameObject _gameObject, bool _setActive)
+    {
+        if (_gameObject != null)
+            _gameObject.SetActive(_setActive);
     }
 
     /// <summary>
@@ -1142,12 +1191,20 @@ public abstract class AEntity : NetworkBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {
-            // check if hit object is player
+            Debug.Log(hit.collider.gameObject.tag, hit.collider.gameObject);
+            // check if hit object is player or Valkyrie
             if (hit.collider.gameObject.tag != DamageTag)
-                return;
+                if (hit.collider.gameObject.tag != ValkyrieTag)
+                    return;
+
+            PlayerEntity p = null;
+
+            if (hit.collider.gameObject.tag == DamageTag)
+                p = hit.collider.gameObject.GetComponentInParent<Rig>().GetComponentInParent<PlayerEntity>();
+            else
+                p = hit.collider.gameObject.GetComponentInParent<PlayerEntity>();
 
             // get Playerentity (GetParent because Capsule is hit and Capsules parent has playerentity)
-            PlayerEntity p = hit.collider.gameObject.GetComponentInParent<PlayerEntity>();
 
             // check if chaserstatus is not equal
             if (IsChaser != p.IsChaser)
@@ -1172,7 +1229,14 @@ public abstract class AEntity : NetworkBehaviour
         if (RoundManager.NextRoundTime - RoundManager.CurrentRoundTime <= 1) return;
 
         if (_hit == null) return;
-        PlayerEntity pHit = _hit.GetComponent<PlayerEntity>();
+
+        PlayerEntity pHit = null;
+        Debug.Log(_hit.tag, _hit);
+        if (_hit.tag == DamageTag)
+            pHit = _hit.GetComponentInParent<Rig>().GetComponentInParent<PlayerEntity>();
+        else
+            pHit = _hit.GetComponentInParent<PlayerEntity>();
+
         if (pHit == null) return;
 
         pHit.GetDamage(WeaponDamage.Damage(_weaponName), this);
@@ -1232,7 +1296,7 @@ public abstract class AEntity : NetworkBehaviour
     {
         foreach (PlayerEntity pe in MyNetworkManager.AllPlayers)
         {
-            pe.RpcSetGOActiveState(this.gameObject, _setActive, _index);
+            pe.RpcSetWeaponActiveState(this.gameObject, _setActive, _index);
         }
     }
 

@@ -103,7 +103,8 @@ public class RoundManager : MonoBehaviour {
                     // reset players position to a lobby position
                     player.RpcChangeStartButtonTextToStart();
                     player.RpcTeleport(SpawnpointHandler.NextLobbypoint(), ETP.LOBBYTP);
-                    player.RpcChangeToDefaultColor(Chaser.CurrentChaser);
+                    //player.RpcChangeToDefaultColor(Chaser.CurrentChaser);
+                    player.RpcSetGOActiveState(Chaser.CurrentChaser, false);
                     player.wannaPlay = false;
                     MyNetworkManager.gameRunning = false;
                     MyNetworkManager.ReloadPlayers();
@@ -142,6 +143,11 @@ public class RoundManager : MonoBehaviour {
         if (MyNetworkManager.AllPlayersPlaying.Count > 1)
             CurrentRoundTime -= Time.deltaTime;
 
+        // reset current round time if chaser left
+        if (Chaser.CurrentChaser == null && CurrentRoundTime > 0)
+            CurrentRoundTime = 0;
+
+        // When round is over, afterround starts
         if (CurrentRoundTime == 0)
         {
             // reduce time till next round
@@ -160,7 +166,7 @@ public class RoundManager : MonoBehaviour {
         // check if chaser is dead
         if (RoundCount != 0)
         {
-            if (Chaser.CurrentChaser.gameObject.GetComponent<PlayerEntity>().CurrentHP <= 0)
+            if (Chaser.CurrentChaser != null && Chaser.CurrentChaser.gameObject.GetComponent<PlayerEntity>().CurrentHP <= 0)
                 RoundOver();
 
             // check if all players are dead

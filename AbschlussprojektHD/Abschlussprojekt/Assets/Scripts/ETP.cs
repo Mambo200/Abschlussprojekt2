@@ -11,5 +11,6 @@ public enum ETP
 {
     LOBBYTP,
     HUNTEDTP,
+    DEADTP,
     CHASERTP
 }
