@@ -17,7 +17,23 @@ public class Valkyrie : MonoBehaviour {
             if (col == null) continue;
             Physics.IgnoreCollision(this.GetComponent<Collider>(), col, true);
         }
-	}
+
+        gos = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject go in gos)
+        {
+            Collider col = go.GetComponent<Collider>();
+            if (col == null) continue;
+            Physics.IgnoreCollision(this.GetComponent<Collider>(), col, true);
+        }
+
+        gos = GameObject.FindGameObjectsWithTag("Hitable");
+        foreach (GameObject go in gos)
+        {
+            Collider col = go.GetComponent<Collider>();
+            if (col == null) continue;
+            Physics.IgnoreCollision(this.GetComponent<Collider>(), col, true);
+        }
+    }
 	
 	// Update is called once per frame
 	void Update () {

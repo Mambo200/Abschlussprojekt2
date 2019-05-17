@@ -11,7 +11,22 @@ ModelImporter:
     2300000: //RootNode
     3300000: //RootNode
     4300000: Bonsai
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Krone
+    second: {fileID: 2100000, guid: 1db6958274e3d47478c7b447cea3b188, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Stamm
+    second: {fileID: 2100000, guid: 31bb8cd29a746504a8550f0a565dc94a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lambert5
+    second: {fileID: 2100000, guid: 61a7108199b9e7945bfeb579dce750ad, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
