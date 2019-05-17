@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
+// Max Poppicht
+// Tobias Stroedicke
 public class PlayerEntity : AEntity
 {
     bool isgrounded;
@@ -89,6 +91,8 @@ public class PlayerEntity : AEntity
     {
         base.Update();
 
+        // Max Poppicht
+        // decrease time for line renderer being enabled
         if (!isLocalPlayer)
         {
             WaitTimer -= Time.deltaTime;
@@ -99,13 +103,17 @@ public class PlayerEntity : AEntity
             }
         }
 
-        //Only execute code benath this if, code unten nur von dem lokalen player
+        //Only execute code beneath this if this is local player
         if (!isLocalPlayer)
             return;
 
         TimeCounter();
 
         isShooting = false;
+
+        // Tobias Stroedicke
+        // Pause
+        #region Pause
 
         if (Input.GetAxisRaw("Pause") != 0)
         {
@@ -136,6 +144,7 @@ public class PlayerEntity : AEntity
         {
             return;
         }
+        #endregion
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
@@ -147,6 +156,10 @@ public class PlayerEntity : AEntity
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
         }
+
+        // Tobias Stroedicke
+        #region Weapon
+
         bool weaponChanged = false;
 
         // change weapon via mouse scroll wheel
@@ -206,9 +219,12 @@ public class PlayerEntity : AEntity
                     CmdSetGOActiveState(false, PreviousWeaponIndex);
             }
         }
+        #endregion
 
+        // Max Poppicht
         timesincelastcall += Time.deltaTime;
 
+        // Calculates the grounded
         isgrounded = Physics.Raycast(transform.position, Vector3.down, distancetoground + m_isgrounedoffset);
 
         if (isgrounded == true)
@@ -230,7 +246,7 @@ public class PlayerEntity : AEntity
             if (Input.GetAxisRaw("Fire1") > 0)
                 Shoot();
         }
-        // if weapon has not rapid fire
+        // if weapon does not have rapid fire
         else
         {
             if (Input.GetAxisRaw("Fire1") > 0)
@@ -249,25 +265,30 @@ public class PlayerEntity : AEntity
         forward.y = 0;
         var right = m_playerCamera.transform.right;
         right.y = 0;
+
         // Mouse Input
         Vector3 dir = Input.GetAxisRaw("Horizontal") * right +
             Input.GetAxisRaw("Vertical") * forward;
 
-        
-
+        // Max Poppicht
+        // Checks for various things before setting direction to Walljump direction
         if(dir.x != 0 && dir.z != 0 && isgrounded)
         {
             walljumpDir = dir;
         }
 
-        //Animation
+        // Max Poppicht
+        #region ---Animation---
+
+
+        // Direction for 
         Vector2 animationDir;
 
+        // Get Direction from Mouse input
         animationDir.x = Input.GetAxisRaw("Horizontal");
         animationDir.y = Input.GetAxisRaw("Vertical");
 
 
-        #region ---Animation---
 
         //Walking Straight, forward
         if (animationDir.y > 0)
@@ -322,16 +343,13 @@ public class PlayerEntity : AEntity
         #endregion
 
         
-
+        // Move Method
         Move(dir);
-
+        // Dash Method
         Dash(dir);
 
-        
-
-        
-
-
+        // Max Poppicht
+        // Checks for shooting to enable and disable the Line Renderer for Bullet Tracer 
         if (!isShooting)
         {
             if (m_lineRenderer.enabled == true)
@@ -344,7 +362,10 @@ public class PlayerEntity : AEntity
             }
         }
 
+        // Tobias Stroedicke
+        #region Knockback Timer and bool
 
+        // if player was hit, set variable to false, so move function does not call and player can apply knockback
         if (wasHit)
         {
             if (hitTimer <= 0)
@@ -356,11 +377,15 @@ public class PlayerEntity : AEntity
                 hitTimer -= Time.deltaTime;
         }
 
+        #endregion
 
     }
 
 
     #region Override Functions
+    /// <summary>
+    /// Initialize Player and set important variables
+    /// </summary>
     protected override void Initialize()
     {
         base.Initialize();
@@ -375,6 +400,10 @@ public class PlayerEntity : AEntity
     #endregion
 
     #region Movement
+    // Max Poppicht
+    /// <summary>
+    /// Makes the Player Jump
+    /// </summary>
     private void Jump()
     {
         if(isgrounded)
@@ -384,8 +413,14 @@ public class PlayerEntity : AEntity
         }
     }
 
+    /// <summary>
+    /// Move Player
+    /// </summary>
+    /// <param name="_direction">Direction of traveling</param>
     private void Move(Vector3 _direction)
     {
+        // Tobias Stroedicke
+        #region Look at
         m_lookAt.position = transform.position + m_playerCamera.transform.forward;
 
         Transform t = m_playerCamera.transform;
@@ -393,7 +428,11 @@ public class PlayerEntity : AEntity
         t.position = pos;
         transform.LookAt(m_lookAt);
         transform.rotation = new Quaternion(0, transform.rotation.y, 0, transform.rotation.w);
+        #endregion
 
+        // Max Poppicht
+        // Tobias Stroedicke
+        #region Run
         if (isgrounded && !wasHit)
         {
             float f = IsChaser ? m_MovementSpeedChaser : m_MovementSpeed;
@@ -402,11 +441,19 @@ public class PlayerEntity : AEntity
             m_rigidbody.velocity = velocity;
             
         }
+        #endregion
     }
 
-    private void WallMove(Vector3 _direction)
+    /// <summary>
+    ///  Makes the Player Jump off walls 
+    /// </summary>
+    /// <param name="_direction"> Direction of traveling</param>
+    // Max Poppicht
+    private void WallJump(Vector3 _direction)
     {
+        // Tobias Stroedicke
         float f = IsChaser ? m_MovementSpeedChaser : m_MovementSpeed;
+        // Max Poppicht
         Vector3 velocity = _direction.normalized * f;
         velocity.y = m_rigidbody.velocity.y;
         m_rigidbody.velocity = velocity;
@@ -414,29 +461,34 @@ public class PlayerEntity : AEntity
         CmdWalljump();
     }
 
-    
-
-    
-
+    // Max Poppicht
     private void OnCollisionEnter(Collision collision)
     {
         OnCollisionStay(collision);
     }
 
+    /// <summary>
+    /// Walljump
+    /// </summary>
+    /// <param name="collision"></param>
+    // Max Poppicht
     private void OnCollisionStay(Collision collision)
     {
+        // Player has to be in the air, and last wall can't be jumped twice
         if (!isgrounded && lastwalljumped != collision.gameObject)
         {
             if (Input.GetKey(KeyCode.LeftControl))
             {
+                // Changes direction of multiple walljumps
                 if(jumpcount % 2 == 0)
                 {
-                    WallMove(-walljumpDir);
+                    WallJump(-walljumpDir);
                 }
                 else
                 {
-                    WallMove(walljumpDir);
+                    WallJump(walljumpDir);
                 }
+                // Adds force and saves last wall
                 m_rigidbody.AddForce(Vector3.up * m_JumpForce, ForceMode.VelocityChange);
                 lastwalljumped = collision.gameObject;
             }
@@ -444,25 +496,28 @@ public class PlayerEntity : AEntity
         }
     }
 
-    
-    
-
-
-
+    /// <summary>
+    ///  Makes the Player dash
+    /// </summary>
+    /// <param name="_direction"></param>
+    // Max Poppicht
     private void Dash(Vector3 _direction)
     {
+        // Checking for Cooldown as well as SP Amount
         if (Time.time > timestamp && CurrentSP > 10 && isgrounded)
         {
-
+            // All 4 dashes are the same except for minor differences
             #region ---DASH RIGHT---
             if (Input.GetButtonDown("LeftShift")  && Input.GetButton("D_Key") || Input.GetButtonDown("D_Key") && Input.GetButton("LeftShift"))
             {
+                // Cooldown
                 timestamp = Time.time + cooldowntime;
 
                 m_currentdashtime = 0.0f;
 
                 isdashing = true;
 
+                // Cooldown and Call
                 if (timesincelastcall >= 1)
                 {
                     if (isdashing)
@@ -472,6 +527,7 @@ public class PlayerEntity : AEntity
                     timesincelastcall = 0;
                 }
 
+                // Speed and distance of Dash
                 if (m_currentdashtime < m_maxdashtime)
                 {
                     m_MovementSpeed = m_dashSpeed;
@@ -566,25 +622,35 @@ public class PlayerEntity : AEntity
 
         m_currentdashtime += m_dashstopspeed;
 
+        // Resets your speed to default value after dash
         if (m_currentdashtime == m_resetdashtime)
         {
             m_MovementSpeed = m_DefaultMovementSpeed;
         }
 
     }
-
+    /// <summary>
+    /// Makes Player Shoot
+    /// </summary>
+    // Tobias Stroedicke
     private void Shoot()
     {
+        // if player did not press start return
         if (!wannaPlay)
             return;
 
+        // check if player is allowed to shoot, else return
         if (!GetCurrentWeapon.Shoot())
             return;
 
+        // if current weapon is gun calculate ray and activate line renderer
         if (GetCurrentWeapon.GetWeaponName == AWeapon.WeaponName.MACHINEGUN)
         {
             Ray ray = m_playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
             CmdWeapon(ray.origin, ray.direction, AWeapon.WeaponName.MACHINEGUN);
+
+            // Max Poppicht
+            #region Line Renderer
 
             m_lineRenderer.positionCount = 2;
             RaycastHit hit;
@@ -600,6 +666,7 @@ public class PlayerEntity : AEntity
 
                 CmdShowTracer(endPos);
             }
+            #endregion
             
         }
         isShooting = true;
@@ -608,6 +675,11 @@ public class PlayerEntity : AEntity
         
     }
 
+    /// <summary>
+    /// Rotate Player
+    /// </summary>
+    /// <param name="_rotation">rotation of player</param>
+    // Tobias Stroedicke
     private void Rotate(Vector3 _rotation)
     {
         Vector3 rotation = transform.localEulerAngles
@@ -636,6 +708,10 @@ public class PlayerEntity : AEntity
         JoinUI();
     }
 
+    /// <summary>
+    /// decrease current round time
+    /// </summary>
+    // Tobias Stroedicke
     private void TimeCounter()
     {
         LocalRoundTime -= Time.deltaTime; 
@@ -644,6 +720,7 @@ public class PlayerEntity : AEntity
     /// <summary>
     /// Player resuming
     /// </summary>
+    // Tobias Stroedicke
     public void PlayerResuming()
     {
         Pause p = m_Pause.GetComponent<Pause>();
@@ -658,6 +735,13 @@ public class PlayerEntity : AEntity
         }
     }
 
+    /// <summary>
+    /// show tracer for other players
+    /// </summary>
+    /// <param name="_startPos">start position of line renderer</param>
+    /// <param name="_endPos">end position of line renderer</param>
+    // Max Poppicht
+    // Tobias Stroedicke
     [ClientRpc]
     public void RpcShowTracer(Vector3 _startPos, Vector3 _endPos)
     {
@@ -667,9 +751,6 @@ public class PlayerEntity : AEntity
             m_lineRenderer.SetPosition(1, _endPos);
             m_lineRenderer.enabled = true;
             WaitTimer = WaitTimerDefault;
-
-            
-            
         }
     }
 
@@ -677,6 +758,7 @@ public class PlayerEntity : AEntity
     /// Give server endPos of the Shooting Ray to calculate Tracer
     /// </summary>
     /// <param name="_endPos"></param>
+    //  Max Poppicht
     [Command]
     public void CmdShowTracer(Vector3 _endPos)
     {

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Tobias Stroedicke
+
 public class Pause : MonoBehaviour {
 
     public PlayerEntity m_Player;
@@ -13,10 +15,12 @@ public class Pause : MonoBehaviour {
 
     public GameObject BackGround { get { return m_BackGround; } }
 #pragma warning disable 0649
+    /// <summary>This gameobject is the first one you see when you press pause</summary>
     [SerializeField]
     private GameObject m_PauseEnter;
 #pragma warning restore
 
+    /// <summary>This gameobject is the first one you see when you press pause</summary>
     public GameObject PauseEnter { get { return m_PauseEnter; } }
 #pragma warning disable 0649
     [SerializeField]
@@ -79,6 +83,9 @@ public class Pause : MonoBehaviour {
         opt_CameraInvert.OnBecomeActive();
     }
 
+    /// <summary>
+    /// Quit Pause Menu
+    /// </summary>
     public void PlayerResuming()
     {
         Options.SetActive(false);

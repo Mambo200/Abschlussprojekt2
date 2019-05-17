@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
+// Tobias Stroedicke
+
 public class SpawnpointHandler : NetworkBehaviour{
 
     /// <summary>Index of Player Spawn in Scene</summary>

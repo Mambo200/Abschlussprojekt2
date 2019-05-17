@@ -4,6 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Tobias Stroedicke
+
 public class WeaponMachineGun : AGun
 {
 

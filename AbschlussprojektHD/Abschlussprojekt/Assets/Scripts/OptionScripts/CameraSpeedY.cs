@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Tobias Stroedicke
+
 public class CameraSpeedY : MonoBehaviour {
 #pragma warning disable 0649
     [SerializeField]

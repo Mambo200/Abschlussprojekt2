@@ -1,14 +1,14 @@
 fileFormatVersion: 2
-guid: 06dcf9c62256f9d49a34a2049d1120b6
+guid: ce667825691245e46bbe6020c7743513
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
     100000: //RootNode
     400000: //RootNode
-    2100000: No Name
+    2100000: 01 - Default
     2300000: //RootNode
     3300000: //RootNode
-    4300000: Colosseum_WIP_6_Full
+    4300000: LP unwrap
   externalObjects: {}
   materials:
     importMaterials: 1
