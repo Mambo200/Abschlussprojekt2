@@ -387,7 +387,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &102839220
 Transform:
@@ -472,7 +472,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!64 &144847743
 MeshCollider:
@@ -611,7 +611,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &159389132
 Transform:
@@ -790,6 +790,10 @@ Prefab:
       propertyPath: m_Name
       value: Birke (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 503855d733918724298835d94fa84e53, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 503855d733918724298835d94fa84e53, type: 3}
   m_IsPrefabAsset: 0
@@ -963,6 +967,10 @@ Prefab:
     - target: {fileID: 100000, guid: 2232cf0486d957049bef9dd50a7076a7, type: 3}
       propertyPath: m_TagString
       value: IgnoreValkyreCollision
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2232cf0486d957049bef9dd50a7076a7, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2232cf0486d957049bef9dd50a7076a7, type: 3}
@@ -1160,6 +1168,10 @@ Prefab:
       propertyPath: m_Name
       value: Birke (7)
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 503855d733918724298835d94fa84e53, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 503855d733918724298835d94fa84e53, type: 3}
   m_IsPrefabAsset: 0
@@ -1279,6 +1291,46 @@ Prefab:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 0172916cccfaf7941995daf1ec1e0544, type: 2}
+    - target: {fileID: 100002, guid: f6192b62e1a2cb946ac2d7bf60c5af2e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100006, guid: f6192b62e1a2cb946ac2d7bf60c5af2e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100012, guid: f6192b62e1a2cb946ac2d7bf60c5af2e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100008, guid: f6192b62e1a2cb946ac2d7bf60c5af2e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100014, guid: f6192b62e1a2cb946ac2d7bf60c5af2e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100016, guid: f6192b62e1a2cb946ac2d7bf60c5af2e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: f6192b62e1a2cb946ac2d7bf60c5af2e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: f6192b62e1a2cb946ac2d7bf60c5af2e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100010, guid: f6192b62e1a2cb946ac2d7bf60c5af2e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100018, guid: f6192b62e1a2cb946ac2d7bf60c5af2e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f6192b62e1a2cb946ac2d7bf60c5af2e, type: 3}
   m_IsPrefabAsset: 0
@@ -1540,7 +1592,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &332287071
 Transform:
@@ -1625,7 +1677,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &343431449
 Transform:
@@ -1761,7 +1813,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &378719148
 Transform:
@@ -1898,7 +1950,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &418401278
 Transform:
@@ -1983,7 +2035,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &423857848
 Transform:
@@ -2111,6 +2163,10 @@ Prefab:
       propertyPath: m_Name
       value: Birke (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 503855d733918724298835d94fa84e53, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 503855d733918724298835d94fa84e53, type: 3}
   m_IsPrefabAsset: 0
@@ -2174,6 +2230,10 @@ Prefab:
       propertyPath: m_LocalEulerAnglesHint.y
       value: 113.812004
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 503855d733918724298835d94fa84e53, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 503855d733918724298835d94fa84e53, type: 3}
   m_IsPrefabAsset: 0
@@ -2198,7 +2258,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &453283271
 Transform:
@@ -2283,7 +2343,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &468758514
 Transform:
@@ -2317,7 +2377,7 @@ MeshRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 468758513}
   m_Enabled: 0
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1
@@ -2369,7 +2429,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &491207283
 Transform:
@@ -2520,7 +2580,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &612218972
 Transform:
@@ -2605,7 +2665,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &624624032
 Transform:
@@ -2690,7 +2750,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &645737091
 Transform:
@@ -2724,7 +2784,7 @@ MeshRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 645737090}
   m_Enabled: 0
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1
@@ -2772,7 +2832,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &663734503
 Transform:
@@ -2913,7 +2973,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &723036295
 Transform:
@@ -2949,7 +3009,7 @@ MeshRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 723036294}
   m_Enabled: 0
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1
@@ -3000,7 +3060,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &727935618
 Transform:
@@ -3275,7 +3335,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &777023341
 Transform:
@@ -3510,6 +3570,46 @@ Prefab:
     - target: {fileID: 100004, guid: f6192b62e1a2cb946ac2d7bf60c5af2e, type: 3}
       propertyPath: m_Name
       value: Haus (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100018, guid: f6192b62e1a2cb946ac2d7bf60c5af2e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: f6192b62e1a2cb946ac2d7bf60c5af2e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100016, guid: f6192b62e1a2cb946ac2d7bf60c5af2e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100010, guid: f6192b62e1a2cb946ac2d7bf60c5af2e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100008, guid: f6192b62e1a2cb946ac2d7bf60c5af2e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: f6192b62e1a2cb946ac2d7bf60c5af2e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100006, guid: f6192b62e1a2cb946ac2d7bf60c5af2e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100014, guid: f6192b62e1a2cb946ac2d7bf60c5af2e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: f6192b62e1a2cb946ac2d7bf60c5af2e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100012, guid: f6192b62e1a2cb946ac2d7bf60c5af2e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f6192b62e1a2cb946ac2d7bf60c5af2e, type: 3}
@@ -3768,6 +3868,10 @@ Prefab:
       propertyPath: m_Name
       value: Birke (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 503855d733918724298835d94fa84e53, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 503855d733918724298835d94fa84e53, type: 3}
   m_IsPrefabAsset: 0
@@ -3888,7 +3992,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &972350455
 Transform:
@@ -4015,6 +4119,10 @@ Prefab:
     - target: {fileID: 100000, guid: 503855d733918724298835d94fa84e53, type: 3}
       propertyPath: m_Name
       value: Birke (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 503855d733918724298835d94fa84e53, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 503855d733918724298835d94fa84e53, type: 3}
@@ -4187,6 +4295,10 @@ Prefab:
       propertyPath: m_Name
       value: Birke (6)
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 503855d733918724298835d94fa84e53, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 503855d733918724298835d94fa84e53, type: 3}
   m_IsPrefabAsset: 0
@@ -4211,7 +4323,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &1087551156
 Transform:
@@ -4296,7 +4408,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &1097211279
 Transform:
@@ -4432,7 +4544,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &1105939751
 Transform:
@@ -4468,7 +4580,7 @@ MeshRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1105939750}
   m_Enabled: 0
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1
@@ -4622,7 +4734,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &1144927512
 Transform:
@@ -4849,7 +4961,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &1217405282
 Transform:
@@ -4928,6 +5040,10 @@ Prefab:
       propertyPath: m_LocalEulerAnglesHint.y
       value: 81.978004
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 949bf3b6e25827348bddfde3c1929cab, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 949bf3b6e25827348bddfde3c1929cab, type: 3}
   m_IsPrefabAsset: 0
@@ -5004,7 +5120,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &1287302595
 Transform:
@@ -5131,6 +5247,10 @@ Prefab:
     - target: {fileID: 100000, guid: 503855d733918724298835d94fa84e53, type: 3}
       propertyPath: m_Name
       value: Birke (8)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 503855d733918724298835d94fa84e53, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 503855d733918724298835d94fa84e53, type: 3}
@@ -5365,7 +5485,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &1404208712
 Transform:
@@ -5654,7 +5774,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &1512495542
 Transform:
@@ -5693,7 +5813,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &1513656605
 Transform:
@@ -5948,7 +6068,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &1608923063
 Transform:
@@ -6033,7 +6153,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &1633564669
 Transform:
@@ -6222,7 +6342,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &1686022066
 Transform:
@@ -6256,7 +6376,7 @@ MeshRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1686022065}
   m_Enabled: 0
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1
@@ -6410,7 +6530,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &1703129676
 Transform:
@@ -6546,9 +6666,32 @@ Prefab:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 9aeb7f9c0e649ac47b578c6992160ad8, type: 2}
+    - target: {fileID: 100000, guid: ce667825691245e46bbe6020c7743513, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ce667825691245e46bbe6020c7743513, type: 3}
   m_IsPrefabAsset: 0
+--- !u!1 &1744477197 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: ce667825691245e46bbe6020c7743513,
+    type: 3}
+  m_PrefabInternal: {fileID: 1744477196}
+--- !u!64 &1744477198
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1744477197}
+  m_Material: {fileID: 13400000, guid: 1558a4d6b1a0251458dad8c004ad26d3, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_SkinWidth: 0.01
+  m_Mesh: {fileID: 4300000, guid: ce667825691245e46bbe6020c7743513, type: 3}
 --- !u!1 &1748881922
 GameObject:
   m_ObjectHideFlags: 0
@@ -6565,7 +6708,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &1748881923
 Transform:
@@ -6753,7 +6896,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &1789966342
 Transform:
@@ -6937,7 +7080,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &1796178565
 Transform:
@@ -7191,7 +7334,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &1959071289
 Transform:
@@ -7276,7 +7419,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &2004242863
 Transform:
@@ -7471,7 +7614,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &2019295907
 Transform:
@@ -7556,7 +7699,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &2022920594
 Transform:
@@ -7893,7 +8036,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &2096304146
 Transform:
@@ -8034,7 +8177,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &2127641799
 Transform:
@@ -8119,7 +8262,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &2137478919
 Transform:
@@ -8153,7 +8296,7 @@ MeshRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2137478918}
   m_Enabled: 0
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1
@@ -8204,7 +8347,7 @@ GameObject:
   m_TagString: IgnoreValkyreCollision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &2143930724
 Transform:
