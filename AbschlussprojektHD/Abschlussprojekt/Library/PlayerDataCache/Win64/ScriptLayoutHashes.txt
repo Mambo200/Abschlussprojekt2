@@ -1,6 +1,6 @@
 WindowsStandalone
 PlayerPath?
-D:/Benutzerdaten/Uni/Dokumente/Github Zeug/Abschlussprojekt2/AbschlussprojektHD/Abschlussprojekt/Build/Abschlussprojekt.exe
+E:/Tobias/Dokumente/Github Zeug/AbschlussHD/AbschlussprojektHD/Abschlussprojekt/Build/Walkyries Wrath.exe
 SceneListBegin?
 Assets/Scenes/Offline.unity
 Assets/Scenes/Online.unity
